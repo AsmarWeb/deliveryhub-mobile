@@ -1,98 +1,118 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from "axios";
+import { Redirect } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { getCurrentUser } from "../services/auth";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+type Destination = "/login" | "/merchant" | "/driver";
 
 export default function HomeScreen() {
+  const [destination, setDestination] = useState<Destination | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function restoreSession() {
+      try {
+        const token = await SecureStore.getItemAsync("deliveryhub_token");
+
+        if (!token) {
+          if (mounted) setDestination("/login");
+          return;
+        }
+
+        const user = await getCurrentUser();
+
+        const roles = user.roles?.map((role) => role.name) ?? [];
+
+        if (!mounted) return;
+
+        if (roles.includes("driver")) {
+          setDestination("/driver");
+        } else if (roles.includes("merchant")) {
+          setDestination("/merchant");
+        } else {
+          setDestination("/login");
+        }
+      } catch (error) {
+        // Only remove the session if Laravel confirms
+        // the token is no longer authorized.
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          await SecureStore.deleteItemAsync("deliveryhub_token");
+        }
+
+        if (mounted) setDestination("/login");
+      }
+    }
+
+    void restoreSession();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (destination) {
+    return <Redirect href={destination} />;
+  }
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <View style={styles.container}>
+      <View style={styles.logoBox}>
+        <Text style={styles.logoSymbol}>D</Text>
+      </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <Text style={styles.brand}>DeliveryHub</Text>
+      <Text style={styles.subtitle}>Smart Delivery Management</Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <ActivityIndicator size="large" color="#60A5FA" style={styles.loader} />
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <Text style={styles.loadingText}>جاري تجهيز حسابك...</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#0B1730",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  logoBox: {
+    width: 88,
+    height: 88,
+    borderRadius: 26,
+    backgroundColor: "#2563EB",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 22,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  logoSymbol: {
+    fontSize: 46,
+    fontWeight: "900",
+    color: "#FFFFFF",
   },
-  title: {
-    textAlign: 'center',
+  brand: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 0.3,
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    fontSize: 14,
+    color: "#94A3B8",
+    marginTop: 10,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  loader: {
+    marginTop: 42,
+  },
+  loadingText: {
+    color: "#CBD5E1",
+    fontSize: 13,
+    marginTop: 18,
   },
 });
