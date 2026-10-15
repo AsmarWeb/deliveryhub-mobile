@@ -1,5 +1,5 @@
-import DashboardScreen from "../../components/DashboardScreen";
+import { Redirect } from "expo-router";
 
 export default function DriverDashboard() {
-  return <DashboardScreen role="driver" />;
+  return <Redirect href="/driver/home" />;
 }

@@ -3,12 +3,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  getDashboard,
-  type DashboardResponse,
-} from '../services/dashboard';
-import {
-  Alert,
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   StatusBar,
@@ -17,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { logout } from "../services/auth";
+import { getDashboard, type DashboardResponse } from "../services/dashboard";
 
 type Role = "merchant" | "driver";
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -38,45 +35,49 @@ export default function DashboardScreen({ role }: { role: Role }) {
   const [dashboardError, setDashboardError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadDashboard = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setDashboardLoading(true);
-    try {
-      const response = await getDashboard();
-      if (response.role !== role) {
-        setDashboard(null);
+  const loadDashboard = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setDashboardLoading(true);
+      try {
+        const response = await getDashboard();
+        if (response.role !== role) {
+          setDashboard(null);
+          setDashboardError(true);
+          return;
+        }
+        setDashboard(response);
+        setDashboardError(false);
+      } catch {
         setDashboardError(true);
-        return;
+      } finally {
+        setDashboardLoading(false);
+        setRefreshing(false);
       }
-      setDashboard(response);
-      setDashboardError(false);
-    } catch {
-      setDashboardError(true);
-    } finally {
-      setDashboardLoading(false);
-      setRefreshing(false);
-    }
-  }, [role]);
+    },
+    [role],
+  );
 
   useEffect(() => {
     void loadDashboard();
   }, [loadDashboard]);
 
-  const primaryValue = dashboard?.role === "merchant"
-    ? dashboard.data.total_deliveries
-    : dashboard?.role === "driver"
-      ? dashboard.data.pending_assignments
-      : null;
+  const primaryValue =
+    dashboard?.role === "merchant"
+      ? dashboard.data.total_deliveries
+      : dashboard?.role === "driver"
+        ? dashboard.data.pending_assignments
+        : null;
 
-  const secondaryValue = dashboard?.role === "merchant"
-    ? dashboard.data.active_deliveries
-    : dashboard?.role === "driver"
-      ? dashboard.data.accepted_assignments
-      : null;
+  const secondaryValue =
+    dashboard?.role === "merchant"
+      ? dashboard.data.active_deliveries
+      : dashboard?.role === "driver"
+        ? dashboard.data.accepted_assignments
+        : null;
 
   const metricText = (value: number | null) =>
     dashboardLoading && !dashboard ? "…" : value === null ? "—" : String(value);
-
 
   const ar = language === "ar";
   const merchant = role === "merchant";
@@ -94,13 +95,13 @@ export default function DashboardScreen({ role }: { role: Role }) {
           title: t("طلب توصيل", "New delivery"),
           icon: "add-circle-outline",
           color: "#2563EB",
-          action: () => comingSoon(),
+          action: () => router.push("/merchant/create-delivery"),
         },
         {
           title: t("شحناتي", "Deliveries"),
           icon: "cube-outline",
           color: "#7C3AED",
-          action: () => comingSoon(),
+          action: () => router.push("/merchant/deliveries"),
         },
         {
           title: t("التتبع", "Tracking"),
@@ -120,7 +121,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
           title: t("المهام", "Assignments"),
           icon: "clipboard-outline",
           color: "#2563EB",
-          action: () => comingSoon(),
+          action: () => router.push("/driver/assignments"),
         },
         {
           title: t("الاستلام", "Pickup"),
@@ -273,10 +274,19 @@ export default function DashboardScreen({ role }: { role: Role }) {
           <View style={styles.statusRow}>
             <Text style={[styles.dataNotice, { flex: 1 }]}>
               {dashboardError
-                ? t("تعذر تحديث البيانات. حاول مجدداً.", "Unable to update data. Try again.")
+                ? t(
+                    "تعذر تحديث البيانات. حاول مجدداً.",
+                    "Unable to update data. Try again.",
+                  )
                 : dashboardLoading
-                  ? t("جاري تحميل بيانات حسابك...", "Loading your account data...")
-                  : t("إحصائيات حسابك من DeliveryHub", "Your DeliveryHub account statistics")}
+                  ? t(
+                      "جاري تحميل بيانات حسابك...",
+                      "Loading your account data...",
+                    )
+                  : t(
+                      "إحصائيات حسابك من DeliveryHub",
+                      "Your DeliveryHub account statistics",
+                    )}
             </Text>
             <Pressable
               onPress={() => void loadDashboard(true)}
@@ -285,22 +295,34 @@ export default function DashboardScreen({ role }: { role: Role }) {
               accessibilityLabel={t("تحديث الإحصائيات", "Refresh statistics")}
               style={styles.refreshButton}
             >
-              {refreshing ? <ActivityIndicator size="small" color={colors.blue} /> :
-                <Ionicons name="refresh-outline" size={20} color={colors.blue} />}
+              {refreshing ? (
+                <ActivityIndicator size="small" color={colors.blue} />
+              ) : (
+                <Ionicons
+                  name="refresh-outline"
+                  size={20}
+                  color={colors.blue}
+                />
+              )}
             </Pressable>
           </View>
 
           {dashboard?.role === "merchant" && (
             <View style={styles.detailCard}>
-              <Text style={styles.detailTitle}>{t("ملخص التوصيلات", "Delivery summary")}</Text>
-              <Text style={styles.detailText}>
-                {t("بانتظار المعالجة", "Pending")}: {dashboard.data.pending_deliveries}
+              <Text style={styles.detailTitle}>
+                {t("ملخص التوصيلات", "Delivery summary")}
               </Text>
               <Text style={styles.detailText}>
-                {t("مكتملة", "Completed")}: {dashboard.data.completed_deliveries}
+                {t("بانتظار المعالجة", "Pending")}:{" "}
+                {dashboard.data.pending_deliveries}
               </Text>
               <Text style={styles.detailText}>
-                {t("إشعارات غير مقروءة", "Unread notifications")}: {dashboard.data.unread_notifications}
+                {t("مكتملة", "Completed")}:{" "}
+                {dashboard.data.completed_deliveries}
+              </Text>
+              <Text style={styles.detailText}>
+                {t("إشعارات غير مقروءة", "Unread notifications")}:{" "}
+                {dashboard.data.unread_notifications}
               </Text>
               {dashboard.data.recent_deliveries.length > 0 && (
                 <>
@@ -309,8 +331,12 @@ export default function DashboardScreen({ role }: { role: Role }) {
                   </Text>
                   {dashboard.data.recent_deliveries.map((delivery) => (
                     <View key={delivery.id} style={styles.deliveryRow}>
-                      <Text style={styles.deliveryCode}>{delivery.tracking_number}</Text>
-                      <Text style={styles.deliveryStatus}>{delivery.status}</Text>
+                      <Text style={styles.deliveryCode}>
+                        {delivery.tracking_number}
+                      </Text>
+                      <Text style={styles.deliveryStatus}>
+                        {delivery.status}
+                      </Text>
                     </View>
                   ))}
                 </>
@@ -320,16 +346,22 @@ export default function DashboardScreen({ role }: { role: Role }) {
 
           {dashboard?.role === "driver" && (
             <View style={styles.detailCard}>
-              <Text style={styles.detailTitle}>{t("ملخص السائق", "Driver summary")}</Text>
-              <Text style={styles.detailText}>
-                {t("توصيلات مكتملة", "Completed deliveries")}: {dashboard.data.completed_deliveries}
+              <Text style={styles.detailTitle}>
+                {t("ملخص السائق", "Driver summary")}
               </Text>
               <Text style={styles.detailText}>
-                {t("حالة التوفر", "Availability")}: {dashboard.data.is_available
-                  ? t("متاح", "Available") : t("غير متاح", "Unavailable")}
+                {t("توصيلات مكتملة", "Completed deliveries")}:{" "}
+                {dashboard.data.completed_deliveries}
               </Text>
               <Text style={styles.detailText}>
-                {t("إشعارات غير مقروءة", "Unread notifications")}: {dashboard.data.unread_notifications}
+                {t("حالة التوفر", "Availability")}:{" "}
+                {dashboard.data.is_available
+                  ? t("متاح", "Available")
+                  : t("غير متاح", "Unavailable")}
+              </Text>
+              <Text style={styles.detailText}>
+                {t("إشعارات غير مقروءة", "Unread notifications")}:{" "}
+                {dashboard.data.unread_notifications}
               </Text>
             </View>
           )}
