@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { getDashboard, type DashboardResponse } from "../../services/dashboard";
 import { getDeliveryStatusLabel } from "../../utils/deliveryStatus";
@@ -34,14 +35,16 @@ function Metric({
   title,
   value,
   accent,
+  width,
 }: {
   icon: IconName;
   title: string;
   value: number | string;
   accent: string;
+  width?: `${number}%`;
 }) {
   return (
-    <View style={styles.metric}>
+    <View style={[styles.metric, width ? { width } : null]}>
       <View style={[styles.metricIcon, { backgroundColor: `${accent}1A` }]}>
         <Ionicons name={icon} size={20} color={accent} />
       </View>
@@ -91,37 +94,56 @@ export default function MerchantDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
+  const requestId = useRef(0);
+  const { width } = useWindowDimensions();
+  const metricWidth: `${number}%` = width >= 680 ? "23%" : "47%";
   const t = (ar: string, en: string) => (language === "ar" ? ar : en);
 
   const load = useCallback(async (refresh = false) => {
+    const currentRequest = ++requestId.current;
     if (refresh) setRefreshing(true);
     else setLoading(true);
     try {
       const result = await getDashboard();
-      if (result.role !== "merchant")
+      if (currentRequest !== requestId.current) return;
+      if (result.role !== "merchant") {
         throw new Error("Unexpected dashboard role");
+      }
       setData(result.data);
       setError(false);
-    } catch {
+    } catch (cause) {
+      if (currentRequest !== requestId.current) return;
+      console.warn("Merchant dashboard refresh failed", cause);
       setError(true);
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (currentRequest === requestId.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       void load();
+      return () => {
+        // Ignore requests that resolve after the screen loses focus.
+        requestId.current += 1;
+      };
     }, [load]),
   );
 
   const number = (value?: number) =>
-    value === undefined ? "—" : String(value);
+    typeof value === "number" && Number.isFinite(value)
+      ? new Intl.NumberFormat(language === "ar" ? "ar-AE" : "en-AE").format(
+          value,
+        )
+      : "—";
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -229,6 +251,7 @@ export default function MerchantDashboard() {
               title={t("إجمالي التوصيلات", "Total deliveries")}
               value={number(data?.total_deliveries)}
               accent={C.cyan}
+              width={metricWidth}
             />
             <Metric
               icon="navigate-outline"
@@ -241,12 +264,14 @@ export default function MerchantDashboard() {
               title={t("مكتملة", "Completed")}
               value={number(data?.completed_deliveries)}
               accent={C.green}
+              width={metricWidth}
             />
             <Metric
               icon="time-outline"
               title={t("بانتظار المعالجة", "Pending")}
               value={number(data?.pending_deliveries)}
               accent={C.amber}
+              width={metricWidth}
             />
           </View>
 
@@ -476,7 +501,7 @@ const styles = StyleSheet.create({
     marginBottom: 27,
   },
   metric: {
-    width: "48%",
+    width: "47%",
     flexGrow: 1,
     backgroundColor: C.surface,
     borderColor: C.border,
