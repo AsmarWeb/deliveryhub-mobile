@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import ConnectedDeliveryTracking from "../../../components/tracking/ConnectedDeliveryTracking";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import {
@@ -160,6 +161,15 @@ export default function DeliveryDetailsScreen() {
             <Text style={styles.statusText}>{statusLabel}</Text>
           </View>
         </View>
+
+        {["accepted", "pickup", "in_transit"].includes(delivery.status) && (
+          <View style={styles.card}>
+            <ConnectedDeliveryTracking
+              key={delivery.id}
+              deliveryId={delivery.id}
+            />
+          </View>
+        )}
 
         {error && <View style={styles.noticeCard}>
           <Text style={styles.noticeText}>تعذر تحديث البيانات. اسحب للأسفل للمحاولة مجدداً.</Text>

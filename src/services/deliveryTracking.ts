@@ -24,7 +24,7 @@ export async function getDeliveryTracking(
   deliveryId: number | string
 ): Promise<DeliveryTrackingResponse["data"]> {
   const response = await api.get<DeliveryTrackingResponse>(
-    `/v1/deliveries/${encodeURIComponent(String(deliveryId))}/tracking`
+    `/deliveries/${encodeURIComponent(String(deliveryId))}/tracking`
   );
 
   return response.data.data;
