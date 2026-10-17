@@ -17,6 +17,7 @@ import {
 } from "react-native";
 
 import { login } from "../services/auth";
+import { getApplicationStatus, operationalRoute } from "../services/application";
 
 export default function LoginScreen() {
   const [language, setLanguage] = useState<"ar" | "en">("ar");
@@ -50,22 +51,9 @@ export default function LoginScreen() {
     setLoading(true);
 
     try {
-      const user = await login(email.trim().toLowerCase(), password);
-      const roles = user.roles?.map((role) => role.name) ?? [];
-
-      if (roles.includes("merchant")) {
-        router.replace("/merchant");
-      } else if (roles.includes("driver")) {
-        router.replace("/driver");
-      } else {
-        Alert.alert(
-          t("الحساب غير مدعوم", "Unsupported account"),
-          t(
-            "هذا الإصدار مخصص للتجار والسائقين حالياً.",
-            "This version currently supports merchants and drivers.",
-          ),
-        );
-      }
+      await login(email.trim().toLowerCase(), password);
+      const application = await getApplicationStatus();
+      router.replace(operationalRoute(application));
     } catch (error) {
       let message = t(
         "تعذر تسجيل الدخول. تحقق من اتصالك بالخادم.",

@@ -1,118 +1,39 @@
-import axios from "axios";
-import { Redirect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import { useState } from "react";
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 
-import { getCurrentUser } from "../services/auth";
+type Icon = React.ComponentProps<typeof Ionicons>["name"];
+const palette = { navy: "#0B1730", blue: "#2563EB", pale: "#EFF6FF", text: "#0F172A", muted: "#64748B", border: "#E2E8F0" };
 
-type Destination = "/login" | "/merchant" | "/driver";
-
-export default function HomeScreen() {
-  const [destination, setDestination] = useState<Destination | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function restoreSession() {
-      try {
-        const token = await SecureStore.getItemAsync("deliveryhub_token");
-
-        if (!token) {
-          if (mounted) setDestination("/login");
-          return;
-        }
-
-        const user = await getCurrentUser();
-
-        const roles = user.roles?.map((role) => role.name) ?? [];
-
-        if (!mounted) return;
-
-        if (roles.includes("driver")) {
-          setDestination("/driver");
-        } else if (roles.includes("merchant")) {
-          setDestination("/merchant");
-        } else {
-          setDestination("/login");
-        }
-      } catch (error) {
-        // Only remove the session if Laravel confirms
-        // the token is no longer authorized.
-        if (axios.isAxiosError(error) && error.response?.status === 401) {
-          await SecureStore.deleteItemAsync("deliveryhub_token");
-        }
-
-        if (mounted) setDestination("/login");
-      }
-    }
-
-    void restoreSession();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (destination) {
-    return <Redirect href={destination} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.logoBox}>
-        <Text style={styles.logoSymbol}>D</Text>
-      </View>
-
-      <Text style={styles.brand}>DeliveryHub</Text>
-      <Text style={styles.subtitle}>Smart Delivery Management</Text>
-
-      <ActivityIndicator size="large" color="#60A5FA" style={styles.loader} />
-
-      <Text style={styles.loadingText}>جاري تجهيز حسابك...</Text>
-    </View>
-  );
+function Feature({ icon, title, description }: { icon: Icon; title: string; description: string }) {
+  return <View style={styles.feature}><View style={styles.featureIcon}><Ionicons name={icon} size={23} color={palette.blue} /></View><View style={{ flex: 1 }}><Text style={styles.featureTitle}>{title}</Text><Text style={styles.featureDescription}>{description}</Text></View></View>;
 }
 
+export default function HomeScreen() {
+  const [language, setLanguage] = useState<"ar" | "en">("ar");
+  const t = (ar: string, en: string) => language === "ar" ? ar : en;
+  return <View style={styles.root}>
+    <StatusBar barStyle="light-content" />
+    <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+      <LinearGradient colors={[palette.navy, "#15366E", palette.blue]} style={styles.hero}>
+        <View style={styles.top}><View style={styles.brand}><Ionicons name="cube" size={25} color="#FFFFFF" /><Text style={styles.brandText}>Delivery<Text style={{ color: "#BFDBFE" }}>Hub</Text></Text></View><Pressable accessibilityRole="button" onPress={() => setLanguage(language === "ar" ? "en" : "ar")} style={styles.language}><Ionicons name="language-outline" size={17} color="#FFFFFF" /><Text style={styles.languageText}>{language === "ar" ? "EN" : "عربي"}</Text></Pressable></View>
+        <View style={styles.heroBody}><View style={styles.tag}><Ionicons name="location-outline" size={14} color="#BFDBFE" /><Text style={styles.tagText}>{t("منصة توصيل في الإمارات", "Built for deliveries in the UAE")}</Text></View><Text style={styles.heroTitle}>{t("توصيلات أعمالك،\nفي مكان واحد", "Your deliveries,\none simple platform")}</Text><Text style={styles.heroDescription}>{t("أنشئ طلبات التوصيل، تابع مراحلها، وتواصل مع شبكة السائقين عبر تجربة سهلة وآمنة.", "Create deliveries, follow their progress, and connect with drivers through a simple, secure experience.")}</Text><View style={styles.heroArt}><Ionicons name="storefront-outline" size={51} color="#FFFFFF" /><View style={styles.dots}><Ionicons name="arrow-forward-circle" size={34} color="#BFDBFE" /></View><Ionicons name="car-sport-outline" size={56} color="#FFFFFF" /></View></View>
+        <Pressable accessibilityRole="button" onPress={() => router.push("/register")} style={styles.mainButton}><Text style={styles.mainButtonText}>{t("انضم إلى DeliveryHub", "Join DeliveryHub")}</Text><Ionicons name="arrow-forward" size={19} color={palette.navy} /></Pressable>
+        <Pressable accessibilityRole="button" onPress={() => router.push("/login")} style={styles.loginButton}><Text style={styles.loginText}>{t("لديك حساب؟ تسجيل الدخول", "Already have an account? Sign in")}</Text></Pressable>
+      </LinearGradient>
+      <View style={styles.content}><Text style={styles.sectionEyebrow}>{t("حلولنا", "OUR SOLUTIONS")}</Text><Text style={styles.sectionTitle}>{t("منصة واحدة. فرص أكثر.", "One platform. More possibilities.")}</Text>
+        <Feature icon="storefront-outline" title={t("للتجار والشركات", "For merchants and businesses")} description={t("إدارة طلبات التوصيل والأسعار وتتبع حالة الشحنات من لوحة واحدة.", "Manage delivery requests, pricing, and shipment statuses in one dashboard.")} />
+        <Feature icon="car-outline" title={t("للسائقين", "For drivers")} description={t("قدّم طلب الانضمام إلى شبكة السائقين وتابع إجراءات القبول.", "Apply to join the driver network and follow the review process.")} />
+        <Feature icon="shield-checkmark-outline" title={t("متابعة واضحة وآمنة", "Clear and secure tracking")} description={t("اعرف حالة كل طلب من إنشائه وحتى التسليم.", "See every delivery stage from creation to completion.")} />
+        <View style={styles.how}><Text style={styles.howTitle}>{t("كيف تعمل المنصة؟", "How does it work?")}</Text>{[t("سجّل حسابك أو قدّم طلب الانضمام", "Register or apply to join"), t("أنشئ طلب توصيل أو استقبل المهام المتاحة", "Create a delivery or receive eligible assignments"), t("تابع التنفيذ حتى اكتمال التوصيل", "Follow progress through completion")].map((label, i) => <View style={styles.step} key={i}><View style={styles.stepNumber}><Text style={styles.stepNumberText}>{i + 1}</Text></View><Text style={styles.stepText}>{label}</Text></View>)}</View>
+        <View style={styles.cta}><Text style={styles.ctaTitle}>{t("جاهز للانطلاق؟", "Ready to get started?")}</Text><Text style={styles.ctaDescription}>{t("اختر نوع حسابك وابدأ رحلتك مع DeliveryHub.", "Choose your account type and get started with DeliveryHub.")}</Text><Pressable accessibilityRole="button" style={styles.ctaButton} onPress={() => router.push("/register")}><Text style={styles.ctaButtonText}>{t("ابدأ الآن", "Get started")}</Text><Ionicons name="arrow-forward" color="#FFFFFF" size={18} /></Pressable></View>
+        <Text style={styles.footer}>© 2026 DeliveryHub · UAE</Text>
+      </View>
+    </ScrollView>
+  </View>;
+}
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0B1730",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  logoBox: {
-    width: 88,
-    height: 88,
-    borderRadius: 26,
-    backgroundColor: "#2563EB",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 22,
-  },
-  logoSymbol: {
-    fontSize: 46,
-    fontWeight: "900",
-    color: "#FFFFFF",
-  },
-  brand: {
-    fontSize: 32,
-    fontWeight: "800",
-    color: "#FFFFFF",
-    letterSpacing: 0.3,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#94A3B8",
-    marginTop: 10,
-  },
-  loader: {
-    marginTop: 42,
-  },
-  loadingText: {
-    color: "#CBD5E1",
-    fontSize: 13,
-    marginTop: 18,
-  },
+  root:{flex:1,backgroundColor:"#F5F7FB"},scroll:{paddingBottom:24},hero:{paddingTop:60,paddingHorizontal:22,paddingBottom:30,borderBottomLeftRadius:30,borderBottomRightRadius:30},top:{flexDirection:"row",alignItems:"center",justifyContent:"space-between"},brand:{flexDirection:"row",alignItems:"center",gap:8},brandText:{fontSize:22,fontWeight:"900",color:"#FFFFFF"},language:{flexDirection:"row",alignItems:"center",gap:6,borderWidth:1,borderColor:"#FFFFFF66",paddingHorizontal:12,paddingVertical:9,borderRadius:12},languageText:{color:"#FFFFFF",fontWeight:"800"},heroBody:{marginTop:38},tag:{flexDirection:"row",gap:6,alignItems:"center",marginBottom:14},tagText:{color:"#BFDBFE",fontSize:12,fontWeight:"700"},heroTitle:{color:"#FFFFFF",fontSize:34,lineHeight:46,fontWeight:"900",textAlign:"center"},heroDescription:{color:"#DBEAFE",fontSize:14,lineHeight:24,marginTop:14,textAlign:"center"},heroArt:{marginTop:26,marginBottom:27,height:120,borderRadius:22,backgroundColor:"#FFFFFF18",borderWidth:1,borderColor:"#FFFFFF2A",flexDirection:"row",justifyContent:"space-evenly",alignItems:"center"},dots:{padding:8},mainButton:{minHeight:54,borderRadius:15,backgroundColor:"#FFFFFF",alignItems:"center",justifyContent:"center",flexDirection:"row",gap:12},mainButtonText:{fontSize:15,fontWeight:"900",color:palette.navy},loginButton:{alignItems:"center",paddingTop:19,paddingBottom:5},loginText:{color:"#FFFFFF",fontSize:13,fontWeight:"700"},content:{paddingHorizontal:19,paddingTop:31},sectionEyebrow:{color:palette.blue,fontWeight:"900",fontSize:11,letterSpacing:1},sectionTitle:{fontSize:23,fontWeight:"900",color:palette.text,marginTop:8,marginBottom:20},feature:{flexDirection:"row",alignItems:"flex-start",gap:14,padding:17,borderRadius:17,borderWidth:1,borderColor:palette.border,backgroundColor:"#FFFFFF",marginBottom:11},featureIcon:{width:44,height:44,borderRadius:13,backgroundColor:palette.pale,alignItems:"center",justifyContent:"center"},featureTitle:{fontSize:15,fontWeight:"900",color:palette.text},featureDescription:{fontSize:12,lineHeight:21,color:palette.muted,marginTop:5},how:{backgroundColor:"#FFFFFF",borderRadius:19,padding:20,marginTop:19,borderWidth:1,borderColor:palette.border},howTitle:{fontSize:19,fontWeight:"900",color:palette.text,marginBottom:20},step:{flexDirection:"row",alignItems:"center",gap:12,marginBottom:15},stepNumber:{height:31,width:31,borderRadius:16,backgroundColor:palette.pale,alignItems:"center",justifyContent:"center"},stepNumberText:{color:palette.blue,fontWeight:"900"},stepText:{flex:1,fontSize:13,color:palette.text,lineHeight:21},cta:{backgroundColor:palette.navy,padding:23,borderRadius:20,marginTop:22},ctaTitle:{fontSize:21,fontWeight:"900",color:"#FFFFFF"},ctaDescription:{fontSize:13,lineHeight:21,color:"#CBD5E1",marginTop:8},ctaButton:{backgroundColor:palette.blue,padding:15,borderRadius:12,marginTop:20,flexDirection:"row",alignItems:"center",justifyContent:"center",gap:10},ctaButtonText:{color:"#FFFFFF",fontWeight:"900"},footer:{textAlign:"center",fontSize:11,color:palette.muted,marginTop:25}
 });

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Redirect, Slot } from "expo-router";
+import { Redirect, Slot, useFocusEffect } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -10,20 +10,29 @@ import {
   View,
 } from "react-native";
 
+import { getApplicationStatus } from "../services/application";
 import { getCurrentUser } from "../services/auth";
 
 type Role = "merchant" | "driver";
-type Status = "loading" | "allowed" | "unauthorized" | "offline";
+
+type Status =
+  | "loading"
+  | "allowed"
+  | "unauthorized"
+  | "not-approved"
+  | "offline";
 
 export default function ProtectedRoute({ role }: { role: Role }) {
   const [status, setStatus] = useState<Status>("loading");
   const [retry, setRetry] = useState(0);
 
-  const checkAccess = useCallback(async () => {
-    setStatus("loading");
+  const checkAccess = useCallback(async (isActive: () => boolean) => {
+    if (isActive()) setStatus("loading");
 
     try {
       const token = await SecureStore.getItemAsync("deliveryhub_token");
+
+      if (!isActive()) return;
 
       if (!token) {
         setStatus("unauthorized");
@@ -32,35 +41,60 @@ export default function ProtectedRoute({ role }: { role: Role }) {
 
       const user = await getCurrentUser();
 
+      if (!isActive()) return;
+
+      const application = await getApplicationStatus();
+
+      if (!isActive()) return;
+
+      // This assumes getApplicationStatus returns
+      // { application: { type, status, ... } }.
+      const account = application;
+
+      if (account.status !== "active") {
+        setStatus("not-approved");
+        return;
+      }
+
       const roles = user.roles?.map((item) => item.name) ?? [];
 
-      setStatus(roles.includes(role) ? "allowed" : "unauthorized");
+      if (account.type !== role || !roles.includes(role)) {
+        setStatus("unauthorized");
+        return;
+      }
+
+      setStatus("allowed");
     } catch (error) {
+      if (!isActive()) return;
+
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         await SecureStore.deleteItemAsync("deliveryhub_token");
-        setStatus("unauthorized");
-      } else if (axios.isAxiosError(error) && error.response?.status === 403) {
-        setStatus("unauthorized");
+
+        if (isActive()) setStatus("unauthorized");
+      } else if (
+        axios.isAxiosError(error) &&
+        error.response?.status === 403 &&
+        error.response?.data?.code === "ACCOUNT_NOT_ACTIVE"
+      ) {
+        setStatus("not-approved");
       } else {
         setStatus("offline");
       }
     }
-  }, [role]);
+  }, []);
 
-  useEffect(() => {
-    let active = true;
+  // Recheck when the protected route gains focus.
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
 
-    async function run() {
-      // Avoid setting state after unmount.
-      if (active) await checkAccess();
-    }
+      void checkAccess(() => active);
 
-    void run();
-
-    return () => {
-      active = false;
-    };
-  }, [checkAccess, retry]);
+      return () => {
+        active = false;
+      };
+    }, [checkAccess, retry]),
+  );
 
   if (status === "allowed") {
     return <Slot />;
@@ -68,6 +102,10 @@ export default function ProtectedRoute({ role }: { role: Role }) {
 
   if (status === "unauthorized") {
     return <Redirect href="/login" />;
+  }
+
+  if (status === "not-approved") {
+    return <Redirect href="/registration-status" />;
   }
 
   return (
@@ -118,8 +156,8 @@ const styles = StyleSheet.create({
     height: 76,
     backgroundColor: "#2563EB",
     borderRadius: 23,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
   },
   icon: {

@@ -1,12 +1,10 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
-
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "react-native";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { LanguageProvider } from "../contexts/LanguageContext";
 
-// Keep native splash visible until the application is ready.
 void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -24,38 +22,17 @@ export default function RootLayout() {
             },
           }}
         >
-          {/* Application home */}
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-            }}
-          />
+          <Stack.Screen name="index" />
 
-          {/* Authentication */}
-          <Stack.Screen
-            name="login"
-            options={{
-              headerShown: false,
-              animation: "fade",
-            }}
-          />
+          <Stack.Screen name="startup" options={{ animation: "fade" }} />
 
-          {/* Merchant dashboard */}
-          <Stack.Screen
-            name="merchant"
-            options={{
-              headerShown: false,
-            }}
-          />
+          <Stack.Screen name="login" options={{ animation: "fade" }} />
 
-          {/* Driver dashboard */}
-          <Stack.Screen
-            name="driver"
-            options={{
-              headerShown: false,
-            }}
-          />
+          <Stack.Screen name="merchant" />
+
+          <Stack.Screen name="driver" />
+
+          <Stack.Screen name="registration-status" />
         </Stack>
 
         <AnimatedSplashOverlay />
