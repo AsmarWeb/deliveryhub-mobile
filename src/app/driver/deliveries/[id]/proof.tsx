@@ -100,6 +100,14 @@ export default function ProofOfDeliveryScreen() {
       return;
     }
 
+    if (!photo) {
+      Alert.alert(
+        "صورة التسليم مطلوبة",
+        "يرجى التقاط صورة أو اختيار صورة لإثبات التسليم.",
+      );
+      return;
+    }
+
     if (submitting) return;
 
     setSubmitting(true);

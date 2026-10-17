@@ -63,7 +63,12 @@ class DriverLocationTracking {
     if (token !== this.generation || this.sending) return false;
     this.sending = true;
     try {
+      const deliveryId = this.snapshot.deliveryId;
+
+      if (deliveryId === null) return false;
+
       await api.patch("/driver/location", {
+        delivery_id: deliveryId,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       });

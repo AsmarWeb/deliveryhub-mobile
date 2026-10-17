@@ -61,7 +61,7 @@ export async function syncDriverLocation(
   sending = true;
 
   try {
-    await api.post(endpoint, {
+    await api.patch(endpoint, {
       latitude,
       longitude,
       accuracy,
