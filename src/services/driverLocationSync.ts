@@ -1,52 +1,71 @@
 import api from "./api";
 import type { DriverCoordinates } from "./driverGps";
 
-type LocationPayload = {
-  latitude: number;
-  longitude: number;
-  accuracy: number | null;
-};
-
 let sending = false;
 let lastSentAt = 0;
 
 const MIN_INTERVAL_MS = 10000;
+const MAX_LOCATION_AGE_MS = 30000;
+const MAX_ACCURACY_METERS = 150;
 
 export async function syncDriverLocation(
   coordinates: DriverCoordinates,
   endpoint: string
 ): Promise<boolean> {
-  if (!endpoint.startsWith("/") || endpoint.startsWith("//")) {
-    throw new Error("Invalid location API endpoint");
+  if (
+    !endpoint.startsWith("/") ||
+    endpoint.startsWith("//")
+  ) {
+    throw new Error("Invalid location endpoint");
+  }
+
+  const {
+    latitude,
+    longitude,
+    accuracy,
+    timestamp,
+  } = coordinates;
+
+  if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    Math.abs(latitude) > 90 ||
+    Math.abs(longitude) > 180
+  ) {
+    return false;
   }
 
   if (
-    !Number.isFinite(coordinates.latitude) ||
-    !Number.isFinite(coordinates.longitude) ||
-    Math.abs(coordinates.latitude) > 90 ||
-    Math.abs(coordinates.longitude) > 180
+    !Number.isFinite(timestamp) ||
+    Date.now() - timestamp > MAX_LOCATION_AGE_MS ||
+    timestamp > Date.now() + 5000
   ) {
-    throw new Error("Invalid GPS coordinates");
+    return false;
+  }
+
+  if (
+    accuracy !== null &&
+    (!Number.isFinite(accuracy) ||
+      accuracy < 0 ||
+      accuracy > MAX_ACCURACY_METERS)
+  ) {
+    return false;
   }
 
   if (sending) return false;
 
-  const now = Date.now();
-
-  if (now - lastSentAt < MIN_INTERVAL_MS) {
+  if (Date.now() - lastSentAt < MIN_INTERVAL_MS) {
     return false;
   }
 
   sending = true;
 
-  const payload: LocationPayload = {
-    latitude: coordinates.latitude,
-    longitude: coordinates.longitude,
-    accuracy: coordinates.accuracy,
-  };
-
   try {
-    await api.post(endpoint, payload);
+    await api.post(endpoint, {
+      latitude,
+      longitude,
+      accuracy,
+    });
 
     lastSentAt = Date.now();
 
