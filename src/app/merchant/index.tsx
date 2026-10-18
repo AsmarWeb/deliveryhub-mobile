@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -89,7 +90,7 @@ function Action({
 }
 
 export default function MerchantDashboard() {
-  const [language, setLanguage] = useState<"ar" | "en">("ar");
+  const { language, setLanguage } = useLanguage();
   const [data, setData] = useState<MerchantData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

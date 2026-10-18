@@ -1,20 +1,49 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Delivery, formatDeliveryFee, getDeliveries } from "../../services/deliveries";
 
-const statusLabels: Record<string, string> = {
-  draft: "مسودة", pending_pricing: "بانتظار التسعير",
-  priced: "بانتظار موافقتك", matching: "البحث عن سائق",
-  assigned: "تم تعيين سائق", accepted: "تم قبول الطلب",
-  pickup: "جاري الاستلام", in_transit: "قيد التوصيل",
-  delivered: "تم التسليم", completed: "مكتمل", cancelled: "ملغي",
-  pickup_failed: "فشل الاستلام", delivery_failed: "فشل التسليم",
-  rescheduled: "أعيدت الجدولة", expired: "منتهي الصلاحية",
+const statusLabels: Record<"ar" | "en", Record<string, string>> = {
+  ar: {
+  draft: "مسودة",
+  pending_pricing: "بانتظار التسعير",
+  priced: "بانتظار موافقتك",
+  matching: "البحث عن سائق",
+  assigned: "تم تعيين سائق",
+  accepted: "تم قبول الطلب",
+  pickup: "جاري الاستلام",
+  in_transit: "قيد التوصيل",
+  delivered: "تم التسليم",
+  completed: "مكتمل",
+  cancelled: "ملغي",
+  pickup_failed: "فشل الاستلام",
+  delivery_failed: "فشل التسليم",
+  rescheduled: "أعيدت الجدولة",
+  expired: "منتهي الصلاحية"
+  },
+  en: {
+  draft: "Draft",
+  pending_pricing: "Awaiting pricing",
+  priced: "Awaiting your approval",
+  matching: "Finding a driver",
+  assigned: "Driver assigned",
+  accepted: "Order accepted",
+  pickup: "Picking up",
+  in_transit: "In transit",
+  delivered: "Delivered",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  pickup_failed: "Pickup failed",
+  delivery_failed: "Delivery failed",
+  rescheduled: "Rescheduled",
+  expired: "Expired"
+  },
 };
 
 export default function DeliveriesScreen() {
+  const { language, t } = useLanguage();
   const [items, setItems] = useState<Delivery[]>([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
@@ -74,13 +103,13 @@ export default function DeliveriesScreen() {
       <Text style={styles.recipient}>{item.recipient_name}</Text>
       <View style={styles.cardFooter}>
         <Text style={[styles.status, needsApproval && styles.attentionText]}>
-          {statusLabels[item.status] || item.status}
+          {statusLabels[language][item.status] || item.status}
         </Text>
-        <Text style={styles.date}>{new Date(item.created_at).toLocaleDateString("en-AE")}</Text>
+        <Text style={styles.date}>{new Date(item.created_at).toLocaleDateString(language === "ar" ? "ar-AE" : "en-AE")}</Text>
       </View>
       {needsApproval && <View style={styles.priceRow}>
         <Ionicons name="alert-circle-outline" size={18} color="#B45309" />
-        <Text style={styles.priceLabel}>موافقتك مطلوبة — {formatDeliveryFee(item)}</Text>
+        <Text style={styles.priceLabel}>{t("موافقتك مطلوبة — ", "Your approval is required — ")}{formatDeliveryFee(item)}</Text>
       </View>}
     </Pressable>;
   };
@@ -88,8 +117,8 @@ export default function DeliveriesScreen() {
   return <View style={styles.container}>
     <View style={styles.header}>
       <Pressable onPress={() => router.back()}><Ionicons name="arrow-back" size={24} color="#FFFFFF" /></Pressable>
-      <Text style={styles.title}>شحناتي</Text>
-      <Pressable onPress={refresh} accessibilityLabel="تحديث القائمة">
+      <Text style={styles.title}>{t("شحناتي", "My Deliveries")}</Text>
+      <Pressable onPress={refresh} accessibilityLabel={t("تحديث القائمة", "Refresh deliveries")}>
         <Ionicons name="refresh-outline" size={24} color="#FFFFFF" />
       </Pressable>
     </View>
@@ -100,13 +129,13 @@ export default function DeliveriesScreen() {
         onEndReached={loadMore} onEndReachedThreshold={0.4}
         ListHeaderComponent={error && items.length > 0 ?
           <Pressable style={styles.errorBanner} onPress={refresh}>
-            <Text style={styles.errorText}>تعذر تحديث القائمة. اضغط للمحاولة مجدداً.</Text>
+            <Text style={styles.errorText}>{t("تعذر تحديث القائمة. اضغط للمحاولة مجدداً.", "Could not refresh deliveries. Tap to retry.")}</Text>
           </Pressable> : null}
         ListEmptyComponent={<View style={styles.empty}>
           <Ionicons name="cube-outline" size={54} color="#94A3B8" />
-          <Text style={styles.emptyTitle}>{error ? "تعذر تحميل التوصيلات" : "لا توجد توصيلات حتى الآن"}</Text>
+          <Text style={styles.emptyTitle}>{error ? t("تعذر تحميل التوصيلات", "Unable to load deliveries") : t("لا توجد توصيلات حتى الآن", "No deliveries yet")}</Text>
           {error && <Pressable style={styles.retry} onPress={() => { setLoading(true); void load(); }}>
-            <Text style={styles.retryText}>إعادة المحاولة</Text>
+            <Text style={styles.retryText}>{t("إعادة المحاولة", "Try again")}</Text>
           </Pressable>}
         </View>}
         ListFooterComponent={loadingMore ? <ActivityIndicator color="#2563EB" style={{ margin: 20 }} /> : null}

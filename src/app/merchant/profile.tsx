@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -29,7 +30,7 @@ export default function MerchantProfileScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [language, setLanguage] = useState<"ar" | "en">("ar");
+  const { language, setLanguage } = useLanguage();
   const t = (ar: string, en: string) => language === "ar" ? ar : en;
 
   useFocusEffect(
@@ -99,7 +100,7 @@ export default function MerchantProfileScreen() {
               <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
             </Pressable>
             <Text style={styles.heroTitle}>{t("حسابي", "My account")}</Text>
-            <Pressable accessibilityRole="button" onPress={() => setLanguage((v) => v === "ar" ? "en" : "ar")}>
+            <Pressable accessibilityRole="button" onPress={() => void setLanguage(language === "ar" ? "en" : "ar")}>
               <Text style={styles.language}>{language === "ar" ? "EN" : "عربي"}</Text>
             </Pressable>
           </View>

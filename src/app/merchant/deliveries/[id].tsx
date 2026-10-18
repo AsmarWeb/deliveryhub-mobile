@@ -1,3 +1,4 @@
+import { useLanguage } from "../../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import ConnectedDeliveryTracking from "../../../components/tracking/ConnectedDeliveryTracking";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -11,14 +12,41 @@ import {
   formatDeliveryFee, getDelivery, submitDelivery,
 } from "../../../services/deliveries";
 
-const statusLabels: Record<string, string> = {
-  draft: "مسودة", pending_pricing: "بانتظار التسعير",
-  priced: "بانتظار موافقتك على السعر", matching: "البحث عن سائق",
-  assigned: "تم تعيين سائق", accepted: "تم قبول الطلب",
-  pickup: "جاري الاستلام", in_transit: "قيد التوصيل",
-  delivered: "تم التسليم", completed: "مكتمل", cancelled: "ملغي",
-  pickup_failed: "فشل الاستلام", delivery_failed: "فشل التسليم",
-  rescheduled: "أعيدت الجدولة", expired: "منتهي الصلاحية",
+const statusLabels: Record<"ar" | "en", Record<string, string>> = {
+  ar: {
+  draft: "مسودة",
+  pending_pricing: "بانتظار التسعير",
+  priced: "بانتظار موافقتك على السعر",
+  matching: "البحث عن سائق",
+  assigned: "تم تعيين سائق",
+  accepted: "تم قبول الطلب",
+  pickup: "جاري الاستلام",
+  in_transit: "قيد التوصيل",
+  delivered: "تم التسليم",
+  completed: "مكتمل",
+  cancelled: "ملغي",
+  pickup_failed: "فشل الاستلام",
+  delivery_failed: "فشل التسليم",
+  rescheduled: "أعيدت الجدولة",
+  expired: "منتهي الصلاحية"
+  },
+  en: {
+  draft: "Draft",
+  pending_pricing: "Awaiting pricing",
+  priced: "Awaiting price approval",
+  matching: "Finding a driver",
+  assigned: "Driver assigned",
+  accepted: "Order accepted",
+  pickup: "Picking up",
+  in_transit: "In transit",
+  delivered: "Delivered",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  pickup_failed: "Pickup failed",
+  delivery_failed: "Delivery failed",
+  rescheduled: "Rescheduled",
+  expired: "Expired"
+  },
 };
 
 function errorMessage(error: unknown, fallback: string): string {
@@ -29,15 +57,16 @@ function errorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-function addressText(address: Delivery["pickup_address"]): string {
-  if (!address) return "العنوان غير متاح";
+function addressText(address: Delivery["pickup_address"], language: "ar" | "en"): string {
+  if (!address) return language === "ar" ? "العنوان غير متاح" : "Address unavailable";
   return [address.label, address.address_line || address.address_line_1,
     address.area, address.city, address.emirate]
     .filter((value, index, arr) => !!value && arr.indexOf(value) === index)
-    .join("، ") || "العنوان غير متاح";
+    .join(language === "ar" ? "، " : ", ") || (language === "ar" ? "العنوان غير متاح" : "Address unavailable");
 }
 
 export default function DeliveryDetailsScreen() {
+  const { language, t } = useLanguage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,18 +110,18 @@ export default function DeliveryDetailsScreen() {
       setSubmitting(true);
       const updated = await submitDelivery(delivery.id);
       setDelivery(updated);
-      Alert.alert("تم إرسال الطلب", "أصبح الطلب الآن بانتظار التسعير.");
+      Alert.alert(t("تم إرسال الطلب", "Delivery submitted"), t("أصبح الطلب الآن بانتظار التسعير.", "Your delivery is now awaiting pricing."));
     } catch (err) {
-      Alert.alert("تعذر إرسال الطلب", errorMessage(err, "تحقق من الاتصال وحالة الطلب ثم حاول مجدداً."));
+      Alert.alert(t("تعذر إرسال الطلب", "Unable to submit delivery"), errorMessage(err, t("تحقق من الاتصال وحالة الطلب ثم حاول مجدداً.", "Check your connection and delivery status, then try again.")));
       void loadDelivery(true);
     } finally { setSubmitting(false); }
   }
 
   function confirmSubmit() {
     if (!delivery || submitting || approving) return;
-    Alert.alert("تأكيد إرسال الطلب", "هل تريد إرسال هذا الطلب للمراجعة والتسعير؟", [
-      { text: "إلغاء", style: "cancel" },
-      { text: "إرسال الطلب", onPress: () => void handleSubmitDelivery() },
+    Alert.alert(t("تأكيد إرسال الطلب", "Confirm submission"), t("هل تريد إرسال هذا الطلب للمراجعة والتسعير؟", "Submit this delivery for review and pricing?"), [
+      { text: t("إلغاء", "Cancel"), style: "cancel" },
+      { text: t("إرسال الطلب", "Submit delivery"), onPress: () => void handleSubmitDelivery() },
     ]);
   }
 
@@ -102,52 +131,52 @@ export default function DeliveryDetailsScreen() {
       setApproving(true);
       const updated = await approveDeliveryPrice(delivery.id);
       setDelivery(updated);
-      Alert.alert("تمت الموافقة", "تم اعتماد السعر، وأصبح الطلب جاهزاً للبحث عن سائق.");
+      Alert.alert(t("تمت الموافقة", "Price approved"), t("تم اعتماد السعر، وأصبح الطلب جاهزاً للبحث عن سائق.", "The price was approved. Your delivery is ready for driver matching."));
     } catch (err) {
-      Alert.alert("تعذر اعتماد السعر", errorMessage(err, "حدّث الطلب ثم حاول مرة أخرى."));
+      Alert.alert(t("تعذر اعتماد السعر", "Unable to approve price"), errorMessage(err, t("حدّث الطلب ثم حاول مرة أخرى.", "Refresh the delivery and try again.")));
       void loadDelivery(true);
     } finally { setApproving(false); }
   }
 
   function confirmApproval() {
     if (!delivery || approving || submitting || !canApproveDeliveryPrice(delivery)) return;
-    Alert.alert("تأكيد الموافقة على السعر",
-      `هل توافق على رسوم توصيل بقيمة ${formatDeliveryFee(delivery)}؟`, [
-        { text: "إلغاء", style: "cancel" },
-        { text: "أوافق على السعر", onPress: () => void handleApprovePrice() },
+    Alert.alert(t("تأكيد الموافقة على السعر", "Confirm price approval"),
+      `${t("هل توافق على رسوم توصيل بقيمة", "Do you approve the delivery fee of")} ${formatDeliveryFee(delivery)}${language === "ar" ? "؟" : "?"}`, [
+        { text: t("إلغاء", "Cancel"), style: "cancel" },
+        { text: t("أوافق على السعر", "Approve price"), onPress: () => void handleApprovePrice() },
       ]);
   }
 
   if (loading && !delivery) return (
     <View style={styles.center}>
       <ActivityIndicator size="large" color="#2563EB" />
-      <Text style={styles.loadingText}>جاري تحميل تفاصيل التوصيل...</Text>
+      <Text style={styles.loadingText}>{t("جاري تحميل تفاصيل التوصيل...", "Loading delivery details...")}</Text>
     </View>
   );
   if (!delivery) return (
     <View style={styles.center}>
       <Ionicons name="alert-circle-outline" size={50} color="#EF4444" />
-      <Text style={styles.errorText}>تعذر تحميل تفاصيل التوصيل</Text>
+      <Text style={styles.errorText}>{t("تعذر تحميل تفاصيل التوصيل", "Unable to load delivery details")}</Text>
       <Pressable style={styles.backButton} onPress={() => void loadDelivery()}>
-        <Text style={styles.backButtonText}>إعادة المحاولة</Text>
+        <Text style={styles.backButtonText}>{t("إعادة المحاولة", "Try again")}</Text>
       </Pressable>
-      <Pressable onPress={() => router.back()}><Text>العودة</Text></Pressable>
+      <Pressable onPress={() => router.back()}><Text>{t("العودة", "Back")}</Text></Pressable>
     </View>
   );
 
   const isDraft = delivery.status === "draft";
   const isPriced = delivery.status === "priced";
-  const statusLabel = statusLabels[delivery.status] || delivery.status;
+  const statusLabel = statusLabels[language][delivery.status] || delivery.status;
   const hasPrice = delivery.delivery_fee != null && Number.isFinite(Number(delivery.delivery_fee));
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} accessibilityLabel="العودة">
+        <Pressable onPress={() => router.back()} accessibilityLabel={t("العودة", "Back")}>
           <Ionicons name="arrow-back" size={25} color="#FFFFFF" />
         </Pressable>
-        <Text style={styles.headerTitle}>تفاصيل التوصيل</Text>
-        <Pressable onPress={() => void loadDelivery(true)} accessibilityLabel="تحديث الطلب">
+        <Text style={styles.headerTitle}>{t("تفاصيل التوصيل", "Delivery Details")}</Text>
+        <Pressable onPress={() => void loadDelivery(true)} accessibilityLabel={t("تحديث الطلب", "Refresh delivery")}>
           <Ionicons name="refresh-outline" size={25} color="#FFFFFF" />
         </Pressable>
       </View>
@@ -155,7 +184,7 @@ export default function DeliveryDetailsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void loadDelivery(true)} />}>
         <View style={styles.trackingCard}>
           <Ionicons name="cube" size={35} color="#60A5FA" />
-          <Text style={styles.trackingLabel}>رقم التتبع</Text>
+          <Text style={styles.trackingLabel}>{t("رقم التتبع", "Tracking Number")}</Text>
           <Text style={styles.trackingNumber} selectable>{delivery.tracking_number}</Text>
           <View style={[styles.statusBadge, isPriced && styles.statusBadgeAttention]}>
             <Text style={styles.statusText}>{statusLabel}</Text>
@@ -172,23 +201,23 @@ export default function DeliveryDetailsScreen() {
         )}
 
         {error && <View style={styles.noticeCard}>
-          <Text style={styles.noticeText}>تعذر تحديث البيانات. اسحب للأسفل للمحاولة مجدداً.</Text>
+          <Text style={styles.noticeText}>{t("تعذر تحديث البيانات. اسحب للأسفل للمحاولة مجدداً.", "Unable to refresh data. Pull down to retry.")}</Text>
         </View>}
 
         {(isPriced || hasPrice || delivery.status === "pending_pricing") && (
           <View style={styles.card}>
-            <Text style={styles.sectionTitle}>رسوم التوصيل</Text>
-            <Text style={styles.feeText}>{hasPrice ? formatDeliveryFee(delivery) : "لم يتم تحديد السعر بعد"}</Text>
+            <Text style={styles.sectionTitle}>{t("رسوم التوصيل", "Delivery Fee")}</Text>
+            <Text style={styles.feeText}>{hasPrice ? formatDeliveryFee(delivery) : t("لم يتم تحديد السعر بعد", "Price not available yet")}</Text>
             {delivery.status === "pending_pricing" &&
-              <Text style={styles.hint}>سيظهر السعر هنا بعد مراجعته من الإدارة. اسحب للأسفل لتحديث الطلب.</Text>}
+              <Text style={styles.hint}>{t("سيظهر السعر هنا بعد مراجعته من الإدارة. اسحب للأسفل لتحديث الطلب.", "The price will appear here after admin review. Pull down to refresh.")}</Text>}
             {isPriced && (
               <>
-                <Text style={styles.hint}>راجع الرسوم المعتمدة من الإدارة ثم وافق للبدء بالبحث عن سائق.</Text>
+                <Text style={styles.hint}>{t("راجع الرسوم المعتمدة من الإدارة ثم وافق للبدء بالبحث عن سائق.", "Review the approved delivery fee, then confirm to start finding a driver.")}</Text>
                 <Pressable style={[styles.approveButton, (approving || !canApproveDeliveryPrice(delivery)) && styles.disabledButton]}
                   disabled={approving || !canApproveDeliveryPrice(delivery)} onPress={confirmApproval}>
                   {approving ? <ActivityIndicator color="#FFFFFF" /> : <>
                     <Ionicons name="checkmark-circle-outline" size={22} color="#FFFFFF" />
-                    <Text style={styles.submitButtonText}>الموافقة على السعر</Text>
+                    <Text style={styles.submitButtonText}>{t("الموافقة على السعر", "Approve Price")}</Text>
                   </>}
                 </Pressable>
               </>
@@ -197,32 +226,32 @@ export default function DeliveryDetailsScreen() {
         )}
 
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>عناوين التوصيل</Text>
-          <InfoRow icon="location-outline" label="عنوان الاستلام" value={addressText(delivery.pickup_address)} />
-          <InfoRow icon="navigate-outline" label="عنوان التسليم" value={addressText(delivery.dropoff_address)} />
+          <Text style={styles.sectionTitle}>{t("عناوين التوصيل", "Delivery Addresses")}</Text>
+          <InfoRow icon="location-outline" label={t("عنوان الاستلام", "Pickup Address")} value={addressText(delivery.pickup_address, language)} />
+          <InfoRow icon="navigate-outline" label={t("عنوان التسليم", "Drop-off Address")} value={addressText(delivery.dropoff_address, language)} />
         </View>
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>معلومات المستلم</Text>
-          <InfoRow icon="person-outline" label="اسم المستلم" value={delivery.recipient_name} />
-          <InfoRow icon="call-outline" label="رقم الهاتف" value={delivery.recipient_phone} />
+          <Text style={styles.sectionTitle}>{t("معلومات المستلم", "Recipient Information")}</Text>
+          <InfoRow icon="person-outline" label={t("اسم المستلم", "Recipient Name")} value={delivery.recipient_name} />
+          <InfoRow icon="call-outline" label={t("رقم الهاتف", "Phone Number")} value={delivery.recipient_phone} />
         </View>
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>معلومات الشحنة</Text>
-          <InfoRow icon="cube-outline" label="نوع الطرد" value={delivery.package_type || "غير محدد"} />
-          <InfoRow icon="scale-outline" label="الوزن" value={delivery.weight != null ? `${delivery.weight} kg` : "غير محدد"} />
-          <InfoRow icon="calendar-outline" label="تاريخ الإنشاء" value={new Date(delivery.created_at).toLocaleDateString("en-AE")} />
-          <InfoRow icon="document-text-outline" label="تعليمات إضافية" value={delivery.special_instructions || "لا توجد"} />
+          <Text style={styles.sectionTitle}>{t("معلومات الشحنة", "Package Information")}</Text>
+          <InfoRow icon="cube-outline" label={t("نوع الطرد", "Package Type")} value={delivery.package_type || t("غير محدد", "Not specified")} />
+          <InfoRow icon="scale-outline" label={t("الوزن", "Weight")} value={delivery.weight != null ? `${delivery.weight} kg` : t("غير محدد", "Not specified")} />
+          <InfoRow icon="calendar-outline" label={t("تاريخ الإنشاء", "Created At")} value={new Date(delivery.created_at).toLocaleDateString(language === "ar" ? "ar-AE" : "en-AE")} />
+          <InfoRow icon="document-text-outline" label={t("تعليمات إضافية", "Additional Instructions")} value={delivery.special_instructions || t("لا توجد", "None")} />
         </View>
         {isDraft && <Pressable style={[styles.submitButton, submitting && styles.disabledButton]}
           disabled={submitting} onPress={confirmSubmit}>
           {submitting ? <ActivityIndicator color="#FFFFFF" /> : <>
             <Ionicons name="send-outline" size={20} color="#FFFFFF" />
-            <Text style={styles.submitButtonText}>إرسال الطلب للتسعير</Text>
+            <Text style={styles.submitButtonText}>{t("إرسال الطلب للتسعير", "Submit for Pricing")}</Text>
           </>}
         </Pressable>}
         {!isDraft && <View style={styles.noticeCard}>
           <Ionicons name="information-circle-outline" size={22} color="#2563EB" />
-          <Text style={styles.noticeText}>حالة الطلب الحالية: {statusLabel}</Text>
+          <Text style={styles.noticeText}>{t("حالة الطلب الحالية: ", "Current status: ")}{statusLabel}</Text>
         </View>}
       </ScrollView>
     </View>

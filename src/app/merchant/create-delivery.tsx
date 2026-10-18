@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
@@ -176,7 +177,7 @@ function getValidationMessage(error: unknown, fallback: string): string {
 }
 
 export default function CreateDeliveryScreen() {
-  const [language, setLanguage] = useState<Language>("ar");
+  const { language, setLanguage } = useLanguage();
   const ar = language === "ar";
   const t = (a: string, e: string) => (ar ? a : e);
   const [step, setStep] = useState(0);
