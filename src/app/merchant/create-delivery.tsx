@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import {
+  createDelivery,
   createMerchantAddress,
   getMerchantAddresses,
   type MerchantAddress,
@@ -267,11 +268,11 @@ export default function CreateDeliveryScreen() {
       const status = axios.isAxiosError(err) ? err.response?.status : undefined;
 
       Alert.alert(
-        t("تعذر إنشاء الطلب", "Unable to create delivery"),
+        t("تعذر حفظ العنوان", "Unable to save address"),
         status === 422
           ? getValidationMessage(
               err,
-              t("تحقق من بيانات الطلب", "Check delivery details"),
+              t("تحقق من بيانات العنوان", "Check address details"),
             )
           : status === 401
             ? t("انتهت جلسة تسجيل الدخول", "Your session has expired")
@@ -320,27 +321,142 @@ export default function CreateDeliveryScreen() {
     setStep((s) => Math.min(s + 1, 3));
   }
   async function submit() {
-    if (pickupId === dropoffId) {
+    if (busy.current || saving) return;
+
+    const validationErrors: Record<string, string> = {};
+
+    if (pickupId == null) {
+      validationErrors.pickup = t(
+        "اختر عنوان الاستلام",
+        "Select pickup address",
+      );
+    }
+
+    if (dropoffId == null) {
+      validationErrors.dropoff = t(
+        "اختر عنوان التسليم",
+        "Select drop-off address",
+      );
+    } else if (pickupId === dropoffId) {
+      validationErrors.dropoff = t(
+        "يجب أن يختلف عنوان التسليم عن الاستلام",
+        "Drop-off address must differ from pickup address",
+      );
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       setStep(0);
-
-      setErrors({
-        dropoff: t(
-          "يجب اختيار عنوان تسليم مختلف",
-          "Select a different drop-off address",
-        ),
-      });
-
       return;
     }
-    if (
-      busy.current ||
-      pickupId == null ||
-      dropoffId == null ||
-      !recipientName.trim() ||
-      !recipientPhone.trim()
-    )
+
+    if (!recipientName.trim()) {
+      validationErrors.name = t(
+        "اسم المستلم مطلوب",
+        "Recipient name is required",
+      );
+    }
+
+    const phone = recipientPhone.trim();
+    if (!phone) {
+      validationErrors.phone = t(
+        "رقم هاتف المستلم مطلوب",
+        "Recipient phone is required",
+      );
+    } else if (phone.replace(/\\D/g, "").length < 7) {
+      validationErrors.phone = t(
+        "أدخل رقم هاتف صحيحاً",
+        "Enter a valid phone number",
+      );
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setStep(1);
       return;
+    }
+
+    const weightText = weight.trim().replace(",", ".");
+    const parsedWeight = weightText ? Number(weightText) : undefined;
+
+    if (
+      parsedWeight !== undefined &&
+      (!Number.isFinite(parsedWeight) || parsedWeight <= 0)
+    ) {
+      setErrors({
+        weight: t("الوزن غير صحيح", "Invalid weight"),
+      });
+      setStep(2);
+      return;
+    }
+
+    if (pickupId == null || dropoffId == null) return;
+
+    busy.current = true;
+    setSaving(true);
+    setErrors({});
+
+    try {
+      const delivery = await createDelivery({
+        pickup_address_id: pickupId,
+        dropoff_address_id: dropoffId,
+        recipient_name: recipientName.trim(),
+        recipient_phone: phone,
+        ...(packageType.trim()
+          ? { package_type: packageType.trim() }
+          : {}),
+        ...(parsedWeight !== undefined
+          ? { weight: parsedWeight }
+          : {}),
+        ...(instructions.trim()
+          ? { special_instructions: instructions.trim() }
+          : {}),
+      });
+
+      setSuccess({
+        id: delivery.id,
+        tracking: delivery.tracking_number || String(delivery.id),
+      });
+    } catch (error) {
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+
+      let message = getValidationMessage(
+        error,
+        t(
+          "تعذر إنشاء الطلب. تحقق من الاتصال وحاول مجدداً.",
+          "Unable to create delivery. Check your connection and try again.",
+        ),
+      );
+
+      if (status === 401) {
+        message = t(
+          "انتهت جلسة تسجيل الدخول. سجل الدخول مجدداً.",
+          "Your session has expired. Please sign in again.",
+        );
+      } else if (status === 403) {
+        message = t(
+          "ليس لديك صلاحية إنشاء طلب توصيل.",
+          "You do not have permission to create deliveries.",
+        );
+      } else if (status === 429) {
+        message = t(
+          "طلبات كثيرة. انتظر قليلاً ثم حاول مجدداً.",
+          "Too many requests. Please try again later.",
+        );
+      }
+
+      Alert.alert(
+        t("تعذر إنشاء طلب التوصيل", "Unable to create delivery"),
+        message,
+      );
+    } finally {
+      busy.current = false;
+      setSaving(false);
+    }
   }
+
   const stepTitles = [
     t("عناوين التوصيل", "Delivery addresses"),
     t("بيانات المستلم", "Recipient details"),
