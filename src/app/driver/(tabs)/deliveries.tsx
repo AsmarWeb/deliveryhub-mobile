@@ -403,6 +403,14 @@ export default function DriverDeliveriesScreen() {
                 {new Date(tracking.lastSentAt).toLocaleTimeString()}
               </Text>
             )}
+            {trackingThis && tracking.message && (
+              <Text style={styles.trackingError}>
+                {t(
+                  "تعذر إرسال آخر تحديث للموقع. ستتم المحاولة عند وصول تحديث جديد.",
+                  "The latest location update could not be sent. Another attempt will be made on the next GPS update."
+                )}
+              </Text>
+            )}
             {tracking.status === "error" && (
               <Text style={styles.trackingError}>
                 {tracking.message ??

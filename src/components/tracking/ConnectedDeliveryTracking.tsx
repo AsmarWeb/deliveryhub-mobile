@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { useCallback } from "react";
 import {
   ActivityIndicator,
@@ -19,6 +20,8 @@ type Props = {
 export default function ConnectedDeliveryTracking({
   deliveryId,
 }: Props) {
+  const { t } = useLanguage();
+
   const fetchTracking = useCallback(async () => {
     const result = await getDeliveryTracking(deliveryId);
 
@@ -55,7 +58,7 @@ export default function ConnectedDeliveryTracking({
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2563EB" />
         <Text style={styles.message}>
-          جارٍ تحميل بيانات التتبع...
+          {t("جارٍ تحميل بيانات التتبع...", "Loading tracking data...")}
         </Text>
       </View>
     );
@@ -65,10 +68,10 @@ export default function ConnectedDeliveryTracking({
     <View style={styles.container}>
       {error && (
         <View style={styles.errorBox}>
-          <Text style={styles.errorText}>{error}</Text>
+          <Text style={styles.errorText}>{t("تعذر تحديث بيانات التتبع. حاول مجدداً.", "Unable to update tracking data. Please try again.")}</Text>
 
           <Pressable onPress={() => void refresh()}>
-            <Text style={styles.retry}>إعادة المحاولة</Text>
+            <Text style={styles.retry}>{t("إعادة المحاولة", "Try Again")}</Text>
           </Pressable>
         </View>
       )}
@@ -84,13 +87,13 @@ export default function ConnectedDeliveryTracking({
         />
       ) : (
         <Text style={styles.message}>
-          لا تتوفر بيانات تتبع لهذه التوصيلة.
+          {t("لا تتوفر بيانات تتبع لهذه التوصيلة.", "Tracking data is not available for this delivery.")}
         </Text>
       )}
 
       {refreshing && (
         <Text style={styles.updating}>
-          جارٍ تحديث بيانات الموقع...
+          {t("جارٍ تحديث بيانات الموقع...", "Updating location data...")}
         </Text>
       )}
     </View>

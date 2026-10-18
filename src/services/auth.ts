@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import api from "./api";
+import { driverLocationTracking } from "./locationTracking";
 
 export interface UserRole {
   id: number;
@@ -39,6 +40,8 @@ export async function getCurrentUser(): Promise<User> {
 }
 
 export async function logout(): Promise<void> {
+  driverLocationTracking.stop();
+
   try {
     await api.post("/auth/logout");
   } finally {

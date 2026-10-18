@@ -1,6 +1,7 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -28,35 +29,64 @@ const ACTIVE_STATUSES = new Set([
 ]);
 
 export default function LiveTrackingScreen() {
+  const { language, t } = useLanguage();
+  const requestCounter = useRef(0);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
 
   const load = useCallback(async (refresh = false) => {
+    const requestId = ++requestCounter.current;
     if (refresh) setRefreshing(true);
     else setLoading(true);
 
     try {
-      const firstPage = await getDeliveries(1);
+      const activeDeliveries = new Map<number | string, Delivery>();
+      let currentPage = 1;
+      let lastPage = 1;
 
-      const active = firstPage.data.filter((delivery) =>
-        ACTIVE_STATUSES.has(delivery.status)
-      );
+      do {
+        const result = await getDeliveries(currentPage);
 
-      setDeliveries(active);
-      setError(false);
+        if (requestId !== requestCounter.current) return;
+
+        for (const delivery of result.data) {
+          if (ACTIVE_STATUSES.has(delivery.status)) {
+            activeDeliveries.set(delivery.id, delivery);
+          }
+        }
+
+        const reportedLastPage = Number(result.last_page);
+
+        lastPage = Number.isSafeInteger(reportedLastPage)
+          && reportedLastPage >= currentPage
+          ? reportedLastPage
+          : currentPage;
+
+        currentPage += 1;
+      } while (currentPage <= lastPage);
+
+      if (requestId === requestCounter.current) {
+        setDeliveries(Array.from(activeDeliveries.values()));
+        setError(false);
+      }
     } catch {
-      setError(true);
+      if (requestId === requestCounter.current) setError(true);
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (requestId === requestCounter.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       void load();
+      return () => {
+        requestCounter.current += 1;
+      };
     }, [load])
   );
 
@@ -72,7 +102,7 @@ export default function LiveTrackingScreen() {
         </Pressable>
 
         <Text style={styles.headerTitle}>
-          تتبع التوصيلات
+          {t("تتبع التوصيلات", "Live Tracking")}
         </Text>
 
         <Pressable onPress={() => void load(true)}>
@@ -109,7 +139,7 @@ export default function LiveTrackingScreen() {
                 color="#2563EB"
               />
               <Text style={styles.infoText}>
-                الطلبات النشطة التي يمكن متابعة تقدمها
+                {t("الطلبات النشطة التي يمكن متابعة تقدمها", "Active deliveries you can track")}
               </Text>
             </View>
           }
@@ -136,7 +166,7 @@ export default function LiveTrackingScreen() {
                   </Text>
 
                   <Text style={styles.status}>
-                    {getDeliveryStatusLabel(item.status, "ar")}
+                    {getDeliveryStatusLabel(item.status, language)}
                   </Text>
                 </View>
 
@@ -148,7 +178,7 @@ export default function LiveTrackingScreen() {
               </View>
 
               <Text style={styles.recipient}>
-                المستلم: {item.recipient_name}
+                {t("المستلم:", "Recipient:")} {item.recipient_name}
               </Text>
 
               <View style={styles.trackButton}>
@@ -158,7 +188,7 @@ export default function LiveTrackingScreen() {
                   color="#2563EB"
                 />
                 <Text style={styles.trackText}>
-                  عرض تفاصيل التوصيل
+                  {t("عرض تفاصيل التوصيل", "View Delivery Details")}
                 </Text>
               </View>
             </Pressable>
@@ -172,14 +202,14 @@ export default function LiveTrackingScreen() {
               />
               <Text style={styles.emptyText}>
                 {error
-                  ? "تعذر تحميل التوصيلات"
-                  : "لا توجد توصيلات نشطة في الصفحة الحالية"}
+                  ? t("تعذر تحميل التوصيلات", "Unable to load deliveries")
+                  : t("لا توجد توصيلات نشطة في الصفحة الحالية", "No active deliveries on this page")}
               </Text>
 
               {error && (
                 <Pressable onPress={() => void load()}>
                   <Text style={styles.retry}>
-                    إعادة المحاولة
+                    {t("إعادة المحاولة", "Try Again")}
                   </Text>
                 </Pressable>
               )}

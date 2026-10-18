@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -10,6 +11,7 @@ const STALE_AFTER_MS = 60_000;
 export default function TrackingFreshness({
   lastUpdatedAt,
 }: Props) {
+  const { t } = useLanguage();
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -46,8 +48,14 @@ export default function TrackingFreshness({
 
       <Text style={styles.text}>
         {fresh
-          ? "موقع السائق محدث مؤخراً"
-          : "لا تتوفر تحديثات حديثة لموقع السائق"}
+          ? t(
+              "موقع السائق محدث مؤخراً",
+              "Driver location was updated recently"
+            )
+          : t(
+              "لا تتوفر تحديثات حديثة لموقع السائق",
+              "No recent driver location updates"
+            )}
       </Text>
     </View>
   );

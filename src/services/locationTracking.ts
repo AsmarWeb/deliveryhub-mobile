@@ -23,6 +23,7 @@ class DriverLocationTracking {
   private listeners = new Set<Listener>();
   private generation = 0;
   private sending = false;
+  private uploadController: AbortController | null = null;
   private snapshot: TrackingSnapshot = { status: "idle", deliveryId: null };
 
   subscribe(listener: Listener): () => void {
@@ -44,6 +45,8 @@ class DriverLocationTracking {
 
   stop(): void {
     ++this.generation;
+    this.uploadController?.abort();
+    this.uploadController = null;
     this.subscription?.remove();
     this.subscription = null;
     this.appSubscription?.remove();
@@ -61,31 +64,88 @@ class DriverLocationTracking {
     token: number,
   ): Promise<boolean> {
     if (token !== this.generation || this.sending) return false;
+
+    const { latitude, longitude, accuracy } = position.coords;
+    const timestamp = position.timestamp;
+    const age = Date.now() - timestamp;
+
+    if (
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude) ||
+      Math.abs(latitude) > 90 ||
+      Math.abs(longitude) > 180 ||
+      !Number.isFinite(timestamp) ||
+      age > 30000 ||
+      age < -5000 ||
+      (accuracy !== null &&
+        (!Number.isFinite(accuracy) ||
+          accuracy < 0 ||
+          accuracy > 150))
+    ) {
+      return false;
+    }
+
+    const controller = new AbortController();
+    this.uploadController = controller;
     this.sending = true;
+
     try {
       const deliveryId = this.snapshot.deliveryId;
 
       if (deliveryId === null) return false;
 
-      await api.patch("/driver/location", {
-        delivery_id: deliveryId,
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
+      await api.patch(
+        "/driver/location",
+        {
+          delivery_id: deliveryId,
+          latitude,
+          longitude,
+        },
+        { signal: controller.signal }
+      );
       if (token !== this.generation) return false;
-      this.publish({ lastSentAt: new Date().toISOString() });
+      this.publish({
+        lastSentAt: new Date().toISOString(),
+        message: undefined,
+      });
       return true;
     } catch (error: unknown) {
-      if (token === this.generation) {
+      if (token === this.generation && !controller.signal.aborted) {
         const response = (
-          error as { response?: { data?: { message?: string } } }
+          error as {
+            response?: {
+              status?: number;
+              data?: { message?: string };
+            };
+          }
         )?.response;
-        this.fail(
-          response?.data?.message ?? "Unable to send location to server.",
-        );
+
+        const status = response?.status;
+
+        // Temporary network failures should not stop GPS tracking.
+        const retryable =
+          status === undefined ||
+          status === 408 ||
+          status === 429 ||
+          status >= 500;
+
+        if (retryable) {
+          this.publish({
+            message:
+              "Location upload failed. Waiting for the next GPS update.",
+          });
+        } else {
+          this.fail(
+            response?.data?.message ??
+              "Location tracking was rejected by the server.",
+          );
+        }
       }
       return false;
     } finally {
+      if (this.uploadController === controller) {
+        this.uploadController = null;
+      }
       this.sending = false;
     }
   }

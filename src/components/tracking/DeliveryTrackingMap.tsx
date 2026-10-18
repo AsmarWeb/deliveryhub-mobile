@@ -1,3 +1,4 @@
+import { useLanguage } from "../../contexts/LanguageContext";
 import { useEffect, useMemo, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import WebView from "react-native-webview";
@@ -81,6 +82,7 @@ const HTML = `
 
       if (markers[key]) {
         markers[key].setLatLng(position);
+        markers[key].setPopupContent(label);
         return;
       }
 
@@ -97,21 +99,21 @@ const HTML = `
       updateMarker(
         "driver",
         data.driverLocation,
-        "Driver",
+        data.labels?.driver || "Driver",
         "#2563EB"
       );
 
       updateMarker(
         "pickup",
         data.pickupLocation,
-        "Pickup",
+        data.labels?.pickup || "Pickup",
         "#059669"
       );
 
       updateMarker(
         "dropoff",
         data.dropoffLocation,
-        "Drop-off",
+        data.labels?.dropoff || "Drop-off",
         "#DC2626"
       );
 
@@ -162,11 +164,15 @@ export default function DeliveryTrackingMap({
   dropoffLocation,
   lastUpdatedAt,
 }: Props) {
+  const { language, t } = useLanguage();
   const webViewRef = useRef<WebView>(null);
   const ready = useRef(false);
 
   const payload = useMemo(
     () => ({
+      labels: language === "ar"
+        ? { driver: "السائق", pickup: "الاستلام", dropoff: "التسليم" }
+        : { driver: "Driver", pickup: "Pickup", dropoff: "Drop-off" },
       driverLocation: validPoint(driverLocation)
         ? driverLocation
         : null,
@@ -177,7 +183,7 @@ export default function DeliveryTrackingMap({
         ? dropoffLocation
         : null,
     }),
-    [driverLocation, pickupLocation, dropoffLocation]
+    [driverLocation, pickupLocation, dropoffLocation, language]
   );
 
   const payloadRef = useRef(payload);
@@ -223,8 +229,13 @@ export default function DeliveryTrackingMap({
       <View style={styles.footer}>
         <Text style={styles.text}>
           {validDate
-            ? `آخر تحديث: ${date!.toLocaleString()}`
-            : "بانتظار تحديث موقع السائق"}
+            ? `${t("آخر تحديث:", "Last updated:")} ${date!.toLocaleString(
+                language === "ar" ? "ar-AE" : "en-AE"
+              )}`
+            : t(
+                "بانتظار تحديث موقع السائق",
+                "Waiting for driver location update"
+              )}
         </Text>
 
         <Text style={styles.attribution}>

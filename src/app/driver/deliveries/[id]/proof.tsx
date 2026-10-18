@@ -17,6 +17,7 @@ import {
 } from "react-native";
 
 import { submitProofOfDelivery } from "../../../../services/proof";
+import { driverLocationTracking } from "../../../../services/locationTracking";
 
 type Photo = {
   uri: string;
@@ -119,6 +120,12 @@ export default function ProofOfDeliveryScreen() {
         notes,
         photo,
       });
+
+      if (
+        driverLocationTracking.getSnapshot().deliveryId === deliveryId
+      ) {
+        driverLocationTracking.stop();
+      }
 
       Alert.alert(
         "تم التسليم بنجاح",
