@@ -1,3 +1,4 @@
+import DispatchControl from "../../../components/dispatch/DispatchControl";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -186,6 +187,7 @@ export default function DriverProfileScreen() {
         </Text>
       </LinearGradient>
 
+      <DispatchControl />
       {loading && !profile ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#2563EB" />

@@ -31,7 +31,7 @@ const BLUE = "#2563EB";
 function groupOf(item: DriverAssignment): Filter {
   if (item.status === "pending") return "new";
   if (
-    ["rejected", "cancelled"].includes(item.status) ||
+    ["rejected", "cancelled", "expired"].includes(item.status) ||
     ["delivered", "completed", "cancelled"].includes(
       item.delivery?.status ?? "",
     )
@@ -148,6 +148,7 @@ export default function DriverOrdersScreen() {
   };
 
   const statusLabel = (item: DriverAssignment) => {
+    if (item.status === "expired") return t("انتهت مهلة العرض", "Offer expired");
     if (item.status === "pending") return t("جديدة", "New");
     if (item.status === "rejected") return t("مرفوضة", "Rejected");
     const status = item.delivery?.status ?? item.status;

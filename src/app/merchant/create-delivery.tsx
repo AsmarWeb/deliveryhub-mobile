@@ -1,3 +1,6 @@
+import { normalizeCodAmount } from "../../utils/cod";
+import UaeAddressFields, { EMPTY_UAE_DETAILS, type UaeDetails } from "../../components/addresses/UaeAddressFields";
+import { formatAddress, normalizeMakani } from "../../utils/address";
 import { normalizeContactPhone } from "../../utils/phone";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -150,9 +153,7 @@ function LocationMap({
 }
 
 function addressDescription(a: MerchantAddress, ar: boolean) {
-  return [a.address_line, a.street, a.area, a.city]
-    .filter(Boolean)
-    .join(ar ? "، " : ", ");
+  return formatAddress(a, ar);
 }
 
 function getValidationMessage(error: unknown, fallback: string): string {
@@ -191,6 +192,7 @@ export default function CreateDeliveryScreen() {
   const [packageType, setPackageType] = useState("");
   const [weight, setWeight] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [codAmount, setCodAmount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const busy = useRef(false);
@@ -203,6 +205,10 @@ export default function CreateDeliveryScreen() {
   const [addressLine, setAddressLine] = useState("");
   const [addressPhone, setAddressPhone] = useState("");
   const [addressSaving, setAddressSaving] = useState(false);
+  const addressLock = useRef(false);
+  const [uaeDetails, setUaeDetails] = useState<UaeDetails>({ ...EMPTY_UAE_DETAILS });
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [pinConfirmed, setPinConfirmed] = useState(false);
   const [success, setSuccess] = useState<{
     id: number;
     tracking: string;
@@ -232,17 +238,21 @@ export default function CreateDeliveryScreen() {
     setErrors((e) => ({ ...e, [kind]: "" }));
   }
   async function saveMapAddress() {
-    if (!mapFor || addressSaving) return;
-    if (!addressCity.trim() || !addressLine.trim()) {
-      Alert.alert(
-        t("بيانات ناقصة", "Missing details"),
-        t(
-          "المدينة وتفاصيل العنوان مطلوبتان",
-          "City and address details are required",
-        ),
-      );
-      return;
+    if (!mapFor || addressLock.current) return;
+    setAddressError(null);
+    if (!addressCity.trim() || !addressLine.trim() || !uaeDetails.emirate) {
+      setAddressError(t("اختر الإمارة وأدخل المدينة وتفاصيل العنوان.", "Choose an emirate and enter the city and address details.")); return;
     }
+    if (!pinConfirmed) {
+      setAddressError(t("حدد الموقع على الخريطة أو أكّد موقع الدبوس الحالي.", "Select a map location or confirm the current pin.")); return;
+    }
+    const makani = normalizeMakani(uaeDetails.makani_number);
+    if (makani && (uaeDetails.emirate !== "dubai" || !/^[0-9]{10}$/.test(makani))) {
+      setAddressError(t("رقم مكاني يجب أن يكون 10 أرقام لعنوان في دبي.", "Makani must be 10 digits for a Dubai address.")); return;
+    }
+    const phone = addressPhone.trim() ? normalizeContactPhone(addressPhone) : undefined;
+    if (phone === null) { setAddressError(t("أدخل رقم تواصل صحيحًا.", "Enter a valid contact phone.")); return; }
+    addressLock.current = true;
     const kind = mapFor;
     setAddressSaving(true);
     try {
@@ -255,7 +265,13 @@ export default function CreateDeliveryScreen() {
         city: addressCity.trim(),
         area: addressArea.trim() || undefined,
         address_line: addressLine.trim(),
-        contact_phone: addressPhone.trim() || undefined,
+        contact_phone: phone,
+        emirate: uaeDetails.emirate,
+        building: uaeDetails.building.trim() || undefined,
+        unit: uaeDetails.unit.trim() || undefined,
+        landmark: uaeDetails.landmark.trim() || undefined,
+        makani_number: makani || undefined,
+        delivery_instructions: uaeDetails.delivery_instructions.trim() || undefined,
         latitude: mapPoint.latitude,
         longitude: mapPoint.longitude,
       });
@@ -268,8 +284,7 @@ export default function CreateDeliveryScreen() {
     } catch (err) {
       const status = isAxiosError(err) ? err.response?.status : undefined;
 
-      Alert.alert(
-        t("تعذر حفظ العنوان", "Unable to save address"),
+      setAddressError(
         status === 422
           ? getValidationMessage(
               err,
@@ -284,6 +299,9 @@ export default function CreateDeliveryScreen() {
                   "Check your connection and try again",
                 ),
       );
+    } finally {
+      addressLock.current = false;
+      setAddressSaving(false);
     }
   }
   function next() {
@@ -317,6 +335,7 @@ export default function CreateDeliveryScreen() {
       if (!Number.isFinite(n) || n <= 0)
         e.weight = t("الوزن غير صحيح", "Invalid weight");
     }
+    if (step === 2 && normalizeCodAmount(codAmount) === null) e.cod = t("أدخل مبلغًا صحيحًا بمنزلتين عشريتين كحد أقصى، دون فواصل آلاف.", "Enter an amount with at most two decimals and no thousands separators.");
     setErrors(e);
     if (Object.keys(e).length) return;
     setStep((s) => Math.min(s + 1, 3));
@@ -391,6 +410,8 @@ export default function CreateDeliveryScreen() {
       return;
     }
 
+    const cod = normalizeCodAmount(codAmount);
+    if (cod === null) { setErrors({ cod: t("مبلغ الدفع عند الاستلام غير صحيح.", "Invalid cash-on-delivery amount.") }); setStep(2); return; }
     if (pickupId == null || dropoffId == null || phone === null) return;
 
     busy.current = true;
@@ -403,6 +424,7 @@ export default function CreateDeliveryScreen() {
         dropoff_address_id: dropoffId,
         recipient_name: recipientName.trim(),
         recipient_phone: phone,
+        ...(cod !== "0.00" ? { cod_amount: cod } : {}),
         ...(packageType.trim()
           ? { package_type: packageType.trim() }
           : {}),
@@ -547,6 +569,9 @@ export default function CreateDeliveryScreen() {
             onPress={() => {
               setMapPoint(DEFAULT_COORDS);
               setMapError(false);
+              setUaeDetails({ ...EMPTY_UAE_DETAILS });
+              setAddressError(null);
+              setPinConfirmed(false);
               setAddressLabel("");
               setAddressCity("");
               setAddressArea("");
@@ -819,6 +844,8 @@ export default function CreateDeliveryScreen() {
               )}
               {step === 2 && (
                 <View style={styles.card}>
+                  {input(t("مبلغ البضاعة للتحصيل عند الاستلام — AED (اختياري)", "Goods cash-on-delivery amount — AED (optional)"), codAmount, setCodAmount, "0.00", "cod", "decimal-pad")}
+                  <Text style={styles.noticeText}>{t("اتركه فارغًا إذا كانت البضاعة مدفوعة مسبقًا. لا تُضف رسوم التوصيل إلى هذا المبلغ.", "Leave blank for prepaid goods. Do not include delivery fees in this amount.")}</Text>
                   {input(
                     t("نوع الطرد", "Package type"),
                     packageType,
@@ -847,6 +874,7 @@ export default function CreateDeliveryScreen() {
               )}
               {step === 3 && (
                 <>
+                  <View style={styles.notice}><Text style={styles.noticeText}>{t("مبلغ البضاعة المطلوب تحصيله", "Goods amount to collect")}: {normalizeCodAmount(codAmount) ?? "—"} AED</Text></View>
                   {summary(
                     t("عنوان الاستلام", "Pickup address"),
                     `${selectedPickup?.label || ""}\n${selectedPickup ? addressDescription(selectedPickup, ar) : ""}`,
@@ -952,7 +980,7 @@ export default function CreateDeliveryScreen() {
             <LocationMap
               mapKey={mapFor}
               point={mapPoint}
-              onSelect={setMapPoint}
+              onSelect={point => { setMapPoint(point); setPinConfirmed(true); }}
               onError={() => setMapError(true)}
             />
           )}
@@ -972,11 +1000,17 @@ export default function CreateDeliveryScreen() {
               {mapPoint.latitude.toFixed(6)}, {mapPoint.longitude.toFixed(6)}
             </Text>
             <ScrollView
-              style={{ maxHeight: 230 }}
+              style={{ maxHeight: 330 }}
               keyboardShouldPersistTaps="handled"
             >
+              {addressError && <Text accessibilityRole="alert" style={{ color: C.red, paddingVertical: 10 }}>{addressError}</Text>}
+              <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: pinConfirmed, disabled: addressSaving }} disabled={addressSaving} onPress={() => setPinConfirmed(!pinConfirmed)} style={{ minHeight: 48, flexDirection: ar ? "row-reverse" : "row", alignItems: "center", gap: 10 }}>
+                <Ionicons name={pinConfirmed ? "checkbox" : "square-outline"} size={24} color={C.blue} />
+                <Text style={{ flex: 1, textAlign: ar ? "right" : "left" }}>{t("أؤكد موقع الدبوس على الخريطة", "I confirm the map pin location")}</Text>
+              </Pressable>
+              <UaeAddressFields value={uaeDetails} onChange={setUaeDetails} ar={ar} disabled={addressSaving} />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { marginTop: 12 }]}
                 value={addressLabel}
                 onChangeText={setAddressLabel}
                 placeholder={t(

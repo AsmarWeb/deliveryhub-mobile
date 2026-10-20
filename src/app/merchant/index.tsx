@@ -1,3 +1,4 @@
+import AvailableDrivers from "../../components/dispatch/AvailableDrivers";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -310,6 +311,7 @@ export default function MerchantDashboard() {
             onPress={() => router.push("/merchant/live-tracking")}
           />
 
+          <AvailableDrivers />
           <View style={[styles.sectionHeader, { marginTop: 25 }]}>
             <Text style={styles.sectionTitle}>
               {t("آخر التوصيلات", "Recent deliveries")}

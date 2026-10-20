@@ -96,6 +96,9 @@ export interface MerchantAddress {
 
   country: string | null;
   city: string | null;
+  emirate?: string | null;
+  landmark?: string | null;
+  makani_number?: string | null;
   area: string | null;
   street: string | null;
   building: string | null;
@@ -119,6 +122,9 @@ export interface CreateMerchantAddressInput {
 
   country?: string;
   city: string;
+  emirate?: string;
+  landmark?: string;
+  makani_number?: string;
   area?: string;
   street?: string;
   building?: string;
@@ -136,6 +142,7 @@ export interface CreateMerchantAddressInput {
  * Create delivery payload.
  */
 export interface CreateDeliveryInput {
+  cod_amount?: string;
   pickup_address_id: number;
   dropoff_address_id: number;
 
@@ -265,4 +272,14 @@ export function formatDeliveryFee(delivery: Delivery): string {
   }
 
   return `${fee.toFixed(2)} ${delivery.currency || "AED"}`;
+}
+
+export function canCancelDelivery(delivery: Pick<Delivery, "status">): boolean {
+  return ["draft", "pending_pricing", "priced", "matching", "expired"].includes(delivery.status);
+}
+export async function cancelDelivery(id: number, reason: string): Promise<Delivery> {
+  if (!Number.isInteger(id) || id <= 0) throw new Error("Invalid delivery ID");
+  const trimmed = reason.trim();
+  if (trimmed.length < 3 || trimmed.length > 500) throw new Error("Invalid cancellation reason");
+  return (await api.post<{ data: Delivery }>(`/deliveries/${id}/cancel`, { reason: trimmed })).data.data;
 }

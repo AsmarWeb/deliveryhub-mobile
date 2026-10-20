@@ -181,7 +181,7 @@ export default function DriverAssignmentsScreen() {
             <Text style={styles.tracking} selectable>
               {delivery?.tracking_number ?? `Assignment #${item.id}`}
             </Text>
-            <Text style={styles.status}>{item.status}</Text>
+            <Text style={styles.status}>{item.status === "expired" ? "انتهت مهلة العرض / Offer expired" : item.status}</Text>
           </View>
         </View>
 

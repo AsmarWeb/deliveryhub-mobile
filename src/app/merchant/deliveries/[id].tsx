@@ -1,3 +1,4 @@
+import CodPanel from "../../../components/finance/CodPanel";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import ConnectedDeliveryTracking from "../../../components/tracking/ConnectedDeliveryTracking";
@@ -5,10 +6,10 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator, Alert, Pressable, RefreshControl,
-  ScrollView, StyleSheet, Text, View,
+  ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import {
-  approveDeliveryPrice, canApproveDeliveryPrice, Delivery,
+  approveDeliveryPrice, canApproveDeliveryPrice, canCancelDelivery, cancelDelivery, Delivery,
   formatDeliveryFee, getDelivery, submitDelivery,
 } from "../../../services/deliveries";
 
@@ -68,6 +69,11 @@ function addressText(address: Delivery["pickup_address"], language: "ar" | "en")
 export default function DeliveryDetailsScreen() {
   const { language, t } = useLanguage();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  const cancelLock = useRef(false);
   const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -105,7 +111,7 @@ export default function DeliveryDetailsScreen() {
   }, [loadDelivery]));
 
   async function handleSubmitDelivery() {
-    if (!delivery || submitting || approving || delivery.status !== "draft") return;
+    if (!delivery || cancelLock.current || cancelling || submitting || approving || delivery.status !== "draft") return;
     try {
       setSubmitting(true);
       const updated = await submitDelivery(delivery.id);
@@ -118,7 +124,7 @@ export default function DeliveryDetailsScreen() {
   }
 
   function confirmSubmit() {
-    if (!delivery || submitting || approving) return;
+    if (!delivery || cancelLock.current || cancelling || submitting || approving) return;
     Alert.alert(t("تأكيد إرسال الطلب", "Confirm submission"), t("هل تريد إرسال هذا الطلب للمراجعة والتسعير؟", "Submit this delivery for review and pricing?"), [
       { text: t("إلغاء", "Cancel"), style: "cancel" },
       { text: t("إرسال الطلب", "Submit delivery"), onPress: () => void handleSubmitDelivery() },
@@ -126,7 +132,7 @@ export default function DeliveryDetailsScreen() {
   }
 
   async function handleApprovePrice() {
-    if (!delivery || approving || submitting || !canApproveDeliveryPrice(delivery)) return;
+    if (!delivery || cancelLock.current || cancelling || approving || submitting || !canApproveDeliveryPrice(delivery)) return;
     try {
       setApproving(true);
       const updated = await approveDeliveryPrice(delivery.id);
@@ -139,12 +145,28 @@ export default function DeliveryDetailsScreen() {
   }
 
   function confirmApproval() {
-    if (!delivery || approving || submitting || !canApproveDeliveryPrice(delivery)) return;
+    if (!delivery || cancelLock.current || cancelling || approving || submitting || !canApproveDeliveryPrice(delivery)) return;
     Alert.alert(t("تأكيد الموافقة على السعر", "Confirm price approval"),
       `${t("هل توافق على رسوم توصيل بقيمة", "Do you approve the delivery fee of")} ${formatDeliveryFee(delivery)}${language === "ar" ? "؟" : "?"}`, [
         { text: t("إلغاء", "Cancel"), style: "cancel" },
         { text: t("أوافق على السعر", "Approve price"), onPress: () => void handleApprovePrice() },
       ]);
+  }
+
+  async function handleCancellation() {
+    if (!delivery || cancelLock.current || submitting || approving) return;
+    if (cancelReason.trim().length < 3) { setCancelError(t("اكتب سببًا من 3 أحرف على الأقل.", "Enter a reason of at least 3 characters.")); return; }
+    cancelLock.current = true; setCancelling(true); setCancelError(null);
+    // Invalidate a refresh started before this mutation.
+    requestCounter.current += 1;
+    try {
+      const updated = await cancelDelivery(delivery.id, cancelReason);
+      requestCounter.current += 1;
+      setLoading(false); setRefreshing(false);
+      setDelivery(updated); setCancelOpen(false); setCancelReason("");
+    } catch (error) {
+      setCancelError(errorMessage(error, t("تعذر الإلغاء. حدّث الطلب وتحقق من حالته ثم حاول مجددًا.", "Cancellation failed. Refresh the delivery and check its status before retrying.")));
+    } finally { cancelLock.current = false; setCancelling(false); setLoading(false); setRefreshing(false); }
   }
 
   if (loading && !delivery) return (
@@ -214,7 +236,7 @@ export default function DeliveryDetailsScreen() {
               <>
                 <Text style={styles.hint}>{t("راجع الرسوم المعتمدة من الإدارة ثم وافق للبدء بالبحث عن سائق.", "Review the approved delivery fee, then confirm to start finding a driver.")}</Text>
                 <Pressable style={[styles.approveButton, (approving || !canApproveDeliveryPrice(delivery)) && styles.disabledButton]}
-                  disabled={approving || !canApproveDeliveryPrice(delivery)} onPress={confirmApproval}>
+                  disabled={cancelling || approving || !canApproveDeliveryPrice(delivery)} onPress={confirmApproval}>
                   {approving ? <ActivityIndicator color="#FFFFFF" /> : <>
                     <Ionicons name="checkmark-circle-outline" size={22} color="#FFFFFF" />
                     <Text style={styles.submitButtonText}>{t("الموافقة على السعر", "Approve Price")}</Text>
@@ -243,12 +265,23 @@ export default function DeliveryDetailsScreen() {
           <InfoRow icon="document-text-outline" label={t("تعليمات إضافية", "Additional Instructions")} value={delivery.special_instructions || t("لا توجد", "None")} />
         </View>
         {isDraft && <Pressable style={[styles.submitButton, submitting && styles.disabledButton]}
-          disabled={submitting} onPress={confirmSubmit}>
+          disabled={cancelling || submitting} onPress={confirmSubmit}>
           {submitting ? <ActivityIndicator color="#FFFFFF" /> : <>
             <Ionicons name="send-outline" size={20} color="#FFFFFF" />
             <Text style={styles.submitButtonText}>{t("إرسال الطلب للتسعير", "Submit for Pricing")}</Text>
           </>}
         </Pressable>}
+        <CodPanel deliveryId={delivery.id} deliveryStatus={delivery.status} role="merchant" />
+        {canCancelDelivery(delivery) && <View style={styles.card}>
+          <Text style={styles.sectionTitle}>{t("إلغاء الطلب", "Cancel delivery")}</Text>
+          <Text style={styles.hint}>{t("الإلغاء متاح قبل إسناد الطلب لسائق. بعد التأكيد لن يمكن استعادة الطلب نفسه.", "Cancellation is available before driver assignment. Once confirmed, this delivery cannot be restored.")}</Text>
+          {!cancelOpen ? <Pressable accessibilityRole="button" disabled={submitting || approving || cancelling} style={[styles.cancelButton, (submitting || approving || cancelling) && styles.disabledButton]} onPress={() => { setCancelError(null); setCancelOpen(true); }}><Text style={styles.cancelText}>{t("إلغاء الطلب", "Cancel delivery")}</Text></Pressable> : <>
+            <TextInput accessibilityLabel={t("سبب الإلغاء", "Cancellation reason")} placeholder={t("سبب الإلغاء (مطلوب)", "Cancellation reason (required)")} value={cancelReason} onChangeText={setCancelReason} editable={!cancelling} maxLength={500} multiline style={[styles.cancelInput, { textAlign: language === "ar" ? "right" : "left" }]} />
+            {cancelError && <Text accessibilityRole="alert" style={styles.cancelText}>{cancelError}</Text>}
+            <Pressable accessibilityRole="button" disabled={cancelling || submitting || approving} onPress={() => void handleCancellation()} style={[styles.cancelButton, cancelling && styles.disabledButton]}>{cancelling ? <ActivityIndicator color="#B91C1C" /> : <Text style={styles.cancelText}>{t("تأكيد إلغاء الطلب نهائيًا", "Confirm delivery cancellation")}</Text>}</Pressable>
+            <Pressable accessibilityRole="button" disabled={cancelling} style={styles.cancelButton} onPress={() => setCancelOpen(false)}><Text>{t("الاحتفاظ بالطلب", "Keep delivery")}</Text></Pressable>
+          </>}
+        </View>}
         {!isDraft && <View style={styles.noticeCard}>
           <Ionicons name="information-circle-outline" size={22} color="#2563EB" />
           <Text style={styles.noticeText}>{t("حالة الطلب الحالية: ", "Current status: ")}{statusLabel}</Text>
@@ -271,6 +304,9 @@ function InfoRow({ icon, label, value }: {
 }
 
 const styles = StyleSheet.create({
+  cancelButton: { minHeight: 48, padding: 12, borderRadius: 12, backgroundColor: "#FEF2F2", alignItems: "center", justifyContent: "center", marginTop: 12 },
+  cancelText: { color: "#B91C1C", fontWeight: "700", lineHeight: 23 },
+  cancelInput: { minHeight: 85, borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, padding: 12, fontSize: 16, marginTop: 12, color: "#0B1730" },
   container: { flex: 1, backgroundColor: "#F5F7FB" },
   header: { backgroundColor: "#0B1730", paddingTop: 60, paddingHorizontal: 22,
     paddingBottom: 24, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },

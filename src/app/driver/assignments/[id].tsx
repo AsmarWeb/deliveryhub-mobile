@@ -1,3 +1,5 @@
+import CodPanel from "../../../components/finance/CodPanel";
+import { addressDestination, formatAddress } from "../../../utils/address";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
@@ -26,17 +28,8 @@ import {
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 type DeliveryAction = "pickup" | "transit";
 
-function addressText(address?: DriverAddress | null): string {
-  if (!address) return "";
-  const parts = [
-    address.address_line,
-    address.street,
-    address.area,
-    address.city,
-  ]
-    .map((value) => value?.trim())
-    .filter((value): value is string => Boolean(value));
-  return [...new Set(parts)].join(", ");
+function addressText(address?: DriverAddress | null, ar = false): string {
+  return address ? formatAddress(address, ar) : "";
 }
 
 async function navigateTo(address: string): Promise<void> {
@@ -96,6 +89,7 @@ function DetailRow({
         <Text style={styles.addressText}>
           {location || t("العنوان غير متوفر", "Address unavailable")}
         </Text>
+        {address?.delivery_instructions ? <DetailRow icon="information-circle-outline" label={t("تعليمات الوصول", "Access instructions")} value={address.delivery_instructions} /> : null}
         {address?.contact_name ? (
           <DetailRow
             icon="person-outline"
@@ -113,7 +107,7 @@ function DetailRow({
         {location ? (
           <Pressable
             style={styles.navigationButton}
-            onPress={() => void onNavigate(location)}
+            onPress={() => void onNavigate(address ? addressDestination(address) : location)}
           >
             <Ionicons name="navigate-outline" size={19} color="#FFFFFF" />
             <Text style={styles.navigationButtonText}>
@@ -229,12 +223,13 @@ export default function DriverAssignmentDetails() {
   }
 
   const delivery = assignment?.delivery;
-  const status = delivery?.status ?? "";
+  const status = assignment?.status === "expired" ? "offer_expired" : delivery?.status ?? "";
   const pickup = delivery?.pickup_address ?? delivery?.pickupAddress;
   const dropoff = delivery?.dropoff_address ?? delivery?.dropoffAddress;
-  const pickupText = addressText(pickup);
-  const dropoffText = addressText(dropoff);
+  const pickupText = addressText(pickup, language === "ar");
+  const dropoffText = addressText(dropoff, language === "ar");
   const statusNames: Record<string, string> = {
+    offer_expired: t("انتهت مهلة عرض المهمة", "Assignment offer expired"),
     assigned: t("تم إسناد الطلب", "Assigned"),
     accepted: t("تم قبول المهمة", "Accepted"),
     pickup: t("تم استلام الشحنة", "Picked up"),
@@ -315,6 +310,7 @@ export default function DriverAssignmentDetails() {
                 </Text>
               </View>
 
+              {delivery && ["pending", "accepted"].includes(assignment.status) && <CodPanel deliveryId={delivery.id} deliveryStatus={delivery.status} role="driver" />}
               <AddressCard
                 onNavigate={openAddress}
                 title={t("موقع الاستلام", "Pickup location")}

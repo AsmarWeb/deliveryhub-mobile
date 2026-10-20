@@ -1,6 +1,14 @@
 import api from "./api";
 
 export interface DriverAddress {
+  latitude?: number | string | null;
+  longitude?: number | string | null;
+  emirate?: string | null;
+  building?: string | null;
+  unit?: string | null;
+  landmark?: string | null;
+  makani_number?: string | null;
+  delivery_instructions?: string | null;
   id: number;
   label?: string | null;
   city?: string | null;

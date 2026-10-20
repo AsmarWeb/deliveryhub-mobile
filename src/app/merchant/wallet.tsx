@@ -93,6 +93,13 @@ export default function MerchantWalletScreen() {
         <Text accessibilityRole="alert" style={[styles.error, align]}>{error}</Text>
         <Pressable accessibilityRole="button" onPress={() => void load()} style={styles.iconButton}><Text style={styles.link}>{t("تحديث البيانات", "Refresh details")}</Text></Pressable>
       </View>}
+      <View style={styles.card}>
+        <Pressable accessibilityRole="button" style={[styles.action, row]} onPress={() => router.push("/merchant/finance")}>
+          <Ionicons name="receipt-outline" size={24} color="#2563EB" />
+          <View style={styles.actionBody}><Text style={[styles.actionTitle, align]}>{t("رسوم التوصيل والعمولات", "Delivery fees & commissions")}</Text><Text style={[styles.description, align]}>{t("راجع رسوم طلباتك وسجلات العمولات", "Review your delivery fees and commission records")}</Text></View>
+          <Ionicons name={ar ? "chevron-back" : "chevron-forward"} size={18} color="#64748B" />
+        </Pressable>
+      </View>
       <Text style={[styles.section, align]}>{t("إدارة الفوترة", "Billing management")}</Text>
       <View style={styles.card}>
         <Pressable accessibilityRole="button" style={[styles.action, row]} onPress={() => router.push("/merchant/subscription")}>

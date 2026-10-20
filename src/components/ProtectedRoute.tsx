@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { Redirect, Slot, useFocusEffect } from "expo-router";
 import { getAuthToken, removeAuthToken } from "../services/authStorage";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -22,7 +22,7 @@ type Status =
   | "not-approved"
   | "offline";
 
-export default function ProtectedRoute({ role }: { role: Role }) {
+export default function ProtectedRoute({ role, accessory }: { role: Role; accessory?: ReactNode }) {
   const [status, setStatus] = useState<Status>("loading");
   const focused = useRef(false);
 
@@ -99,7 +99,7 @@ export default function ProtectedRoute({ role }: { role: Role }) {
   );
 
   if (status === "allowed") {
-    return <Slot />;
+    return <>{accessory}<Slot /></>;
   }
 
   if (status === "unauthorized") {
