@@ -276,6 +276,12 @@ export default function MerchantDashboard() {
             />
           </View>
 
+          <Action
+            icon="card-outline"
+            title={t("الاشتراكات والباقات", "Subscriptions & plans")}
+            onPress={() => router.push("/merchant/subscription")}
+          />
+
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>
               {t("إجراءات سريعة", "Quick actions")}
