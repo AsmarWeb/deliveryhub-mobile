@@ -1,3 +1,4 @@
+import { useUnreadNotifications } from "../../hooks/useUnreadNotifications";
 import AvailableDrivers from "../../components/dispatch/AvailableDrivers";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -91,6 +92,7 @@ function Action({
 }
 
 export default function MerchantDashboard() {
+  const unreadNotifications = useUnreadNotifications();
   const { language, setLanguage } = useLanguage();
   const [data, setData] = useState<MerchantData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -366,13 +368,13 @@ export default function MerchantDashboard() {
               </View>
             )}
           </View>
-          <View style={styles.notice}>
+          <Pressable accessibilityRole="button" onPress={() => router.push("/merchant/notifications")} style={styles.notice}>
             <Ionicons name="notifications-outline" size={19} color={C.cyan} />
             <Text style={styles.noticeText}>
               {t("إشعارات غير مقروءة", "Unread notifications")}:{" "}
-              {number(data?.unread_notifications)}
+              {unreadNotifications === null ? "—" : number(unreadNotifications)}
             </Text>
-          </View>
+          </Pressable>
         </View>
       </ScrollView>
       <View style={styles.bottomNav}>

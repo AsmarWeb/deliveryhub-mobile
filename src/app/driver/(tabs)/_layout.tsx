@@ -1,3 +1,4 @@
+import { useUnreadNotifications } from "../../../hooks/useUnreadNotifications";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform, StyleSheet, type ColorValue } from "react-native";
@@ -25,6 +26,7 @@ function TabIcon({ focused, color, activeIcon, inactiveIcon }: TabIconProps) {
 
 export default function DriverTabsLayout() {
   const { t } = useLanguage();
+  const unread = useUnreadNotifications();
 
   return (
     <Tabs
@@ -93,6 +95,7 @@ export default function DriverTabsLayout() {
         name="notifications"
         options={{
           title: t("الإشعارات", "Alerts"),
+          tabBarBadge: unread ? (unread > 99 ? "99+" : unread) : undefined,
           tabBarAccessibilityLabel: t(
             "الإشعارات والتنبيهات",
             "Notifications and alerts",
