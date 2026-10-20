@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+import { setAuthToken, removeAuthToken } from "./authStorage";
 import api from "./api";
 import { driverLocationTracking } from "./locationTracking";
 
@@ -28,7 +28,7 @@ export async function login(email: string, password: string): Promise<User> {
 
   const { token, user } = response.data;
 
-  await SecureStore.setItemAsync("deliveryhub_token", token);
+  await setAuthToken(token);
 
   return user;
 }
@@ -45,6 +45,6 @@ export async function logout(): Promise<void> {
   try {
     await api.post("/auth/logout");
   } finally {
-    await SecureStore.deleteItemAsync("deliveryhub_token");
+    await removeAuthToken();
   }
 }

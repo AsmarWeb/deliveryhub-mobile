@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+import { removeAuthToken } from "./authStorage";
 import api from "./api";
 import { driverLocationTracking } from "./locationTracking";
 
@@ -30,6 +30,6 @@ export async function logoutUser(): Promise<void> {
     await api.post("/auth/logout");
   } finally {
     // إزالة الرمز المحلي حتى إذا تعذر الوصول للخادم.
-    await SecureStore.deleteItemAsync("deliveryhub_token");
+    await removeAuthToken();
   }
 }

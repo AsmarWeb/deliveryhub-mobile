@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import { Redirect, Slot, useFocusEffect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
+import { getAuthToken, removeAuthToken } from "../services/authStorage";
 import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -30,7 +30,7 @@ export default function ProtectedRoute({ role }: { role: Role }) {
     if (isActive()) setStatus("loading");
 
     try {
-      const token = await SecureStore.getItemAsync("deliveryhub_token");
+      const token = await getAuthToken();
 
       if (!isActive()) return;
 
@@ -68,7 +68,7 @@ export default function ProtectedRoute({ role }: { role: Role }) {
       if (!isActive()) return;
 
       if (isAxiosError(error) && error.response?.status === 401) {
-        await SecureStore.deleteItemAsync("deliveryhub_token");
+        await removeAuthToken();
 
         if (isActive()) setStatus("unauthorized");
       } else if (

@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  AppState,
   Linking,
   Pressable,
   RefreshControl,
@@ -10,7 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../contexts/LanguageContext";
 import {
@@ -18,6 +19,8 @@ import {
   openBillingPortal,
   getBillingPlans,
   getCurrentSubscription,
+  hasPaidAccess,
+  shouldManageSubscription,
   type BillingPlan,
   type CurrentSubscription,
 } from "../../services/billing";
@@ -34,6 +37,7 @@ const C = {
 
 export default function MerchantSubscriptionScreen() {
   const { language } = useLanguage();
+  const { billing } = useLocalSearchParams<{ billing?: string }>();
   const isAr = language === "ar";
   const t = (ar: string, en: string) => (isAr ? ar : en);
 
@@ -44,48 +48,74 @@ export default function MerchantSubscriptionScreen() {
   const [checkoutPlan, setCheckoutPlan] = useState<string | null>(null);
   const [error, setError] = useState(false);
 
+  const request = useRef<AbortController | null>(null);
+  const busy = useRef(false);
+  const [portalBusy, setPortalBusy] = useState(false);
+  const [notice, setNotice] = useState(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
   const load = useCallback(async (refresh = false) => {
+    request.current?.abort();
+    const controller = new AbortController();
+    request.current = controller;
     if (refresh) setRefreshing(true);
     else setLoading(true);
-
     try {
       const [availablePlans, subscription] = await Promise.all([
-        getBillingPlans(),
-        getCurrentSubscription(),
+        getBillingPlans(controller.signal), getCurrentSubscription(controller.signal),
       ]);
-      setPlans(availablePlans);
-      setCurrent(subscription);
-      setError(false);
-    } catch (error) {
-      console.error(
-        "DeliveryHub billing API error:",
-        error
-      );
-      setError(true);
+      if (controller.signal.aborted) return;
+      setPlans(availablePlans); setCurrent(subscription); setError(false);
+    } catch {
+      if (!controller.signal.aborted) setError(true);
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (!controller.signal.aborted) { setLoading(false); setRefreshing(false); }
     }
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      void load();
-    }, [load])
-  );
+  const refreshAfterReturn = useCallback(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    setNotice(true);
+    void load(true);
+    // Stripe confirmation can arrive after the browser returns. Retry briefly,
+    // without assuming that a successful redirect proves a paid subscription.
+    [3000, 6000, 10000, 15000].forEach(delay => {
+      timers.current.push(setTimeout(() => { void load(true); }, delay));
+    });
+  }, [load]);
 
-  const date = (value: string) =>
-    new Intl.DateTimeFormat(isAr ? "ar-AE" : "en-AE", {
+  useFocusEffect(useCallback(() => {
+    if (billing === "return") refreshAfterReturn();
+    else void load();
+    let previous = AppState.currentState;
+    const listener = AppState.addEventListener("change", next => {
+      if (next === "active" && previous !== "active") refreshAfterReturn();
+      previous = next;
+    });
+    return () => {
+      listener.remove(); request.current?.abort();
+      timers.current.forEach(clearTimeout); timers.current = [];
+    };
+  }, [load, refreshAfterReturn, billing]));
+
+  useEffect(() => () => { request.current?.abort(); }, []);
+
+  const date = (value: string | null) =>
+    value && Number.isFinite(Date.parse(value)) ? new Intl.DateTimeFormat(isAr ? "ar-AE" : "en-AE", {
       year: "numeric",
       month: "short",
       day: "numeric",
-    }).format(new Date(value));
+    }).format(new Date(value)) : "—";
 
   const money = (value: string | number, currency: string) =>
     `${Number(value).toLocaleString(isAr ? "ar-AE" : "en-AE")} ${currency}`;
 
 
   async function manageSubscription() {
+    if (busy.current) return;
+    busy.current = true;
+    setPortalBusy(true);
     try {
       const url = await openBillingPortal();
       await Linking.openURL(url);
@@ -94,11 +124,14 @@ export default function MerchantSubscriptionScreen() {
         t("تعذر فتح إدارة الاشتراك", "Unable to manage subscription"),
         t("يرجى المحاولة مرة أخرى.", "Please try again.")
       );
-    }
+    } finally { busy.current = false; setPortalBusy(false); }
   }
 
   async function subscribe(slug: string) {
     if (slug !== "growth" && slug !== "business") return;
+    if (shouldManageSubscription(current)) { await manageSubscription(); return; }
+    if (busy.current) return;
+    busy.current = true;
 
     setCheckoutPlan(slug);
     try {
@@ -110,6 +143,7 @@ export default function MerchantSubscriptionScreen() {
         t("يرجى المحاولة مرة أخرى.", "Please try again.")
       );
     } finally {
+      busy.current = false;
       setCheckoutPlan(null);
     }
   }
@@ -144,6 +178,7 @@ export default function MerchantSubscriptionScreen() {
         )}
       </Text>
 
+      {notice && <Text style={styles.detail}>{t("جارٍ التحقق من تحديث الاشتراك. لا يتم التفعيل إلا بعد تأكيد Stripe. يمكنك سحب الصفحة للتحديث.", "Checking subscription updates. Access requires Stripe confirmation. Pull to refresh if needed.")}</Text>}
       {loading && <ActivityIndicator size="large" color={C.blue} />}
 
       {error && (
@@ -168,7 +203,7 @@ export default function MerchantSubscriptionScreen() {
               <>
                 <Text style={styles.planName}>{current.plan?.name}</Text>
                 <Text style={styles.active}>
-                  {t("نشط", "Active")}
+                  {hasPaidAccess(current) ? t("نشط", "Active") : t("غير نشط أو بانتظار تأكيد الدفع", "Inactive or awaiting payment confirmation")}
                 </Text>
                 <Text style={styles.detail}>
                   {t("تاريخ الانتهاء", "Expires")}: {date(current.ends_at)}
@@ -176,14 +211,17 @@ export default function MerchantSubscriptionScreen() {
 
                 {current.provider === "stripe" && (
                   <Pressable
+                    disabled={portalBusy || checkoutPlan !== null}
                     style={styles.button}
                     onPress={() => void manageSubscription()}
                   >
                     <Text style={styles.buttonText}>
-                      {t("إدارة اشتراكي", "Manage Subscription")}
+                      {portalBusy ? t("جارٍ الفتح…", "Opening…") : t("إدارة اشتراكي", "Manage Subscription")}
                     </Text>
                   </Pressable>
                 )}
+                <Text style={styles.detail}>{t("الأتمتة النشطة", "Active automations")}: {current.automation_usage ?? 0} / {current.plan.max_active_automations ?? 0}</Text>
+                {current.stripe_status && <Text style={styles.detail}>Stripe: {current.stripe_status}</Text>}
                 <Text style={styles.detail}>
                   {t("طريقة الاشتراك", "Subscription source")}:{" "}
                   {current.provider === "stripe"
@@ -228,20 +266,21 @@ export default function MerchantSubscriptionScreen() {
                     : plan.monthly_delivery_limit}
                 </Text>
 
+                <Text style={styles.detail}>{t("حد الأتمتة", "Automation allowance")}: {plan.max_active_automations ?? 0}</Text>
                 {eligible && (
                   <Pressable
                     style={[
                       styles.button,
-                      checkoutPlan !== null && styles.disabled,
+                      (checkoutPlan !== null || portalBusy) && styles.disabled,
                     ]}
-                    disabled={checkoutPlan !== null}
+                    disabled={checkoutPlan !== null || portalBusy}
                     onPress={() => void subscribe(plan.slug)}
                   >
                     {checkoutPlan === plan.slug ? (
                       <ActivityIndicator color="#FFFFFF" />
                     ) : (
                       <Text style={styles.buttonText}>
-                        {t("اشترك الآن", "Subscribe now")}
+                        {shouldManageSubscription(current) ? t("إدارة أو تغيير الخطة", "Manage or change plan") : t("اشترك الآن", "Subscribe now")}
                       </Text>
                     )}
                   </Pressable>

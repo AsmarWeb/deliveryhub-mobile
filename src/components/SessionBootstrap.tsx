@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
+import { getAuthToken } from "../services/authStorage";
 import { useEffect } from "react";
 
 export default function SessionBootstrap() {
@@ -13,7 +13,7 @@ export default function SessionBootstrap() {
 
     async function restore() {
       try {
-        const token = await SecureStore.getItemAsync("deliveryhub_token");
+        const token = await getAuthToken();
 
         if (active && token) {
           router.replace("/startup");

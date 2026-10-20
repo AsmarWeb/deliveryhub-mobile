@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
+import { getAuthToken, removeAuthToken } from "../services/authStorage";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -24,7 +24,7 @@ export default function StartupScreen() {
       setError(false);
 
       try {
-        const token = await SecureStore.getItemAsync("deliveryhub_token");
+        const token = await getAuthToken();
 
         if (!active) return;
 
@@ -63,7 +63,7 @@ export default function StartupScreen() {
         if (!active) return;
 
         if (isAxiosError(err) && err.response?.status === 401) {
-          await SecureStore.deleteItemAsync("deliveryhub_token");
+          await removeAuthToken();
 
           if (active) router.replace("/login");
           return;

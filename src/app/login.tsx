@@ -25,15 +25,22 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  function showError(title: string, message: string) {
+    setFormError(message);
+    if (Platform.OS !== "web") Alert.alert(title, message);
+  }
 
   const ar = language === "ar";
   const t = (arText: string, enText: string) => (ar ? arText : enText);
 
   async function handleLogin() {
     if (loading) return;
+    setFormError(null);
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      Alert.alert(
+      showError(
         t("البريد الإلكتروني", "Email address"),
         t("أدخل بريداً إلكترونياً صحيحاً.", "Enter a valid email."),
       );
@@ -41,7 +48,7 @@ export default function LoginScreen() {
     }
 
     if (!password) {
-      Alert.alert(
+      showError(
         t("كلمة المرور", "Password"),
         t("أدخل كلمة المرور.", "Enter your password."),
       );
@@ -60,6 +67,9 @@ export default function LoginScreen() {
         "Unable to sign in. Check your server connection.",
       );
 
+      if (error instanceof Error && error.message === "AUTH_STORAGE_UNAVAILABLE") {
+        message = t("اسمح للمتصفح بتخزين بيانات الموقع حتى يمكن حفظ جلسة الدخول.", "Allow browser site storage so your sign-in session can be saved.");
+      }
       if (isAxiosError(error)) {
         if (error.response?.status === 422) {
           message = t(
@@ -79,7 +89,7 @@ export default function LoginScreen() {
         }
       }
 
-      Alert.alert(t("تعذر تسجيل الدخول", "Sign-in failed"), message);
+      showError(t("تعذر تسجيل الدخول", "Sign-in failed"), message);
     } finally {
       setLoading(false);
     }
@@ -204,6 +214,7 @@ export default function LoginScreen() {
             </Pressable>
           </View>
 
+        {formError && <Text accessibilityRole="alert" style={{ color: "#B91C1C", backgroundColor: "#FEF2F2", padding: 16, margin: 16, borderRadius: 12, textAlign: ar ? "right" : "left" }}>{formError}</Text>}
           <Pressable
             style={[styles.submitButton, loading && styles.disabled]}
             onPress={handleLogin}
