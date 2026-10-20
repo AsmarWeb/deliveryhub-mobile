@@ -1,3 +1,4 @@
+import { normalizeContactPhone } from "../../utils/phone";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
 import { isAxiosError } from "axios";
@@ -308,7 +309,7 @@ export default function CreateDeliveryScreen() {
         e.name = t("اسم المستلم مطلوب", "Recipient name is required");
       if (!recipientPhone.trim())
         e.phone = t("رقم الهاتف مطلوب", "Phone number is required");
-      else if (recipientPhone.replace(/\D/g, "").length < 7)
+      else if (!normalizeContactPhone(recipientPhone))
         e.phone = t("أدخل رقم هاتف صحيحاً", "Enter a valid phone number");
     }
     if (step === 2 && weight.trim()) {
@@ -357,13 +358,13 @@ export default function CreateDeliveryScreen() {
       );
     }
 
-    const phone = recipientPhone.trim();
-    if (!phone) {
+    const phone = normalizeContactPhone(recipientPhone);
+    if (!recipientPhone.trim()) {
       validationErrors.phone = t(
         "رقم هاتف المستلم مطلوب",
         "Recipient phone is required",
       );
-    } else if (phone.replace(/\\D/g, "").length < 7) {
+    } else if (!phone) {
       validationErrors.phone = t(
         "أدخل رقم هاتف صحيحاً",
         "Enter a valid phone number",
@@ -390,7 +391,7 @@ export default function CreateDeliveryScreen() {
       return;
     }
 
-    if (pickupId == null || dropoffId == null) return;
+    if (pickupId == null || dropoffId == null || phone === null) return;
 
     busy.current = true;
     setSaving(true);

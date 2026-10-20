@@ -8,7 +8,7 @@ export type MerchantRegistration = {
 };
 export type DriverRegistration = {
   name: string; email: string; password: string; password_confirmation: string;
-  phone: string; vehicle_type: string; vehicle_plate: string; license_number: string;
+  phone: string; vehicle_type?: string; vehicle_plate?: string; license_number?: string;
 };
 export type RegistrationResult = { message: string; user_id: number; status: "pending" };
 
@@ -20,11 +20,11 @@ export async function registerDriver(data: DriverRegistration) {
   const response = await api.post<RegistrationResult>("/auth/register/driver", data);
   return response.data;
 }
-export function registrationError(error: unknown): string {
+export function registrationError(error: unknown, ar = true): string {
   if (isAxiosError(error)) {
     const errors = error.response?.data?.errors as Record<string, string[]> | undefined;
     if (errors) return Object.values(errors).flat().join("\n");
-    if (error.response?.status === 429) return "محاولات كثيرة. حاول لاحقاً.";
+    if (error.response?.status === 429) return ar ? "محاولات كثيرة. حاول لاحقاً." : "Too many attempts. Try again later.";
   }
-  return "تعذر إرسال الطلب. تحقق من الاتصال وحاول مجدداً.";
+  return ar ? "تعذر إرسال الطلب. تحقق من الاتصال وحاول مجدداً." : "Could not send your request. Check your connection and retry.";
 }

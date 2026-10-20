@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -31,6 +32,8 @@ export default function MerchantProfileScreen() {
   const [error, setError] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const { language, setLanguage } = useLanguage();
+  const align = { textAlign: language === "ar" ? "right" as const : "left" as const };
+  const row = { flexDirection: language === "ar" ? "row-reverse" as const : "row" as const };
   const t = (ar: string, en: string) => language === "ar" ? ar : en;
 
   useFocusEffect(
@@ -81,6 +84,10 @@ export default function MerchantProfileScreen() {
 
   const confirmSignOut = () => {
     if (signingOut) return;
+    if (Platform.OS === "web") {
+      if (window.confirm(t("هل تريد تسجيل الخروج؟", "Sign out of your account?"))) void signOut();
+      return;
+    }
     Alert.alert(
       t("تسجيل الخروج", "Sign out"),
       t("هل تريد تسجيل الخروج من حسابك؟", "Do you want to sign out of your account?"),
@@ -123,24 +130,40 @@ export default function MerchantProfileScreen() {
             </View>
           ) : null}
 
-          <Text style={styles.sectionTitle}>{t("المعلومات الشخصية", "Personal information")}</Text>
+          <Pressable style={[styles.actionRow, row]} accessibilityRole="button" onPress={() => router.push("/account")}>
+            <Ionicons name="create-outline" size={22} color={C.blue} />
+            <Text style={[styles.actionText, align]}>{t("تعديل واستكمال بيانات الحساب", "Edit & complete account details")}</Text>
+          </Pressable>
+          <Text style={[styles.sectionTitle, align]}>{t("المعلومات الشخصية", "Personal information")}</Text>
           <View style={styles.card}>
             <InfoRow icon="person-outline" label={t("الاسم", "Name")} value={profile?.name || "—"} />
             <InfoRow icon="mail-outline" label={t("البريد الإلكتروني", "Email")} value={profile?.email || "—"} />
             <InfoRow icon="shield-checkmark-outline" label={t("نوع الحساب", "Account type")} value={profile?.roles?.map((role) => role.name).join(", ") || "—"} last />
           </View>
 
-          <Text style={styles.sectionTitle}>{t("إدارة الحساب", "Account settings")}</Text>
+          <Text style={[styles.sectionTitle, align]}>{t("المحفظة والفوترة", "Wallet & billing")}</Text>
           <View style={styles.card}>
-            <Pressable style={styles.actionRow} accessibilityRole="button" onPress={() => void refresh()} disabled={refreshing || loading}>
+            <Pressable style={[styles.actionRow, row]} accessibilityRole="button" onPress={() => router.push("/merchant/wallet")}>
+              <Ionicons name="wallet-outline" size={24} color={C.blue} />
+              <View style={styles.infoBody}>
+                <Text style={[styles.actionText, align]}>{t("المحفظة والفوترة", "Wallet & billing")}</Text>
+                <Text style={[styles.infoLabel, align]}>{t("الاشتراك والفواتير ووسائل الدفع عبر Stripe", "Subscription, invoices and payment methods via Stripe")}</Text>
+              </View>
+              <Ionicons name={language === "ar" ? "chevron-back" : "chevron-forward"} size={18} color={C.muted} />
+            </Pressable>
+          </View>
+
+          <Text style={[styles.sectionTitle, align]}>{t("إدارة الحساب", "Account settings")}</Text>
+          <View style={styles.card}>
+            <Pressable style={[styles.actionRow, row]} accessibilityRole="button" onPress={() => void refresh()} disabled={refreshing || loading}>
               <Ionicons name="refresh-outline" size={22} color={C.blue} />
-              <Text style={styles.actionText}>{t("تحديث بيانات الحساب", "Refresh account details")}</Text>
+              <Text style={[styles.actionText, align]}>{t("تحديث بيانات الحساب", "Refresh account details")}</Text>
               {refreshing ? <ActivityIndicator color={C.blue} /> : <Ionicons name="chevron-forward" size={18} color={C.muted} />}
             </Pressable>
             <View style={styles.separator} />
-            <Pressable style={styles.actionRow} accessibilityRole="button" onPress={() => router.push("/merchant/deliveries")}>
+            <Pressable style={[styles.actionRow, row]} accessibilityRole="button" onPress={() => router.push("/merchant/deliveries")}>
               <Ionicons name="cube-outline" size={22} color={C.blue} />
-              <Text style={styles.actionText}>{t("توصيلاتي", "My deliveries")}</Text>
+              <Text style={[styles.actionText, align]}>{t("توصيلاتي", "My deliveries")}</Text>
               <Ionicons name="chevron-forward" size={18} color={C.muted} />
             </Pressable>
           </View>
@@ -167,12 +190,14 @@ function InfoRow({ icon, label, value, last = false }: {
   value: string;
   last?: boolean;
 }) {
+  const { language } = useLanguage();
+  const align = { textAlign: language === "ar" ? "right" as const : "left" as const };
   return (
-    <View style={[styles.infoRow, !last && styles.infoBorder]}>
+    <View style={[styles.infoRow, !last && styles.infoBorder, { flexDirection: language === "ar" ? "row-reverse" : "row" }]}>
       <Ionicons name={icon} size={21} color={C.blue} />
       <View style={styles.infoBody}>
-        <Text style={styles.infoLabel}>{label}</Text>
-        <Text style={styles.infoValue} selectable>{value}</Text>
+        <Text style={[styles.infoLabel, align]}>{label}</Text>
+        <Text style={[styles.infoValue, align]} selectable>{value}</Text>
       </View>
     </View>
   );
@@ -180,7 +205,7 @@ function InfoRow({ icon, label, value, last = false }: {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: C.bg },
-  content: { paddingBottom: 45 },
+  content: { paddingBottom: 45, maxWidth: 760, width: "100%", alignSelf: "center" },
   hero: { paddingTop: 58, paddingHorizontal: 22, paddingBottom: 34, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, alignItems: "center" },
   topRow: { width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   heroTitle: { color: "#FFFFFF", fontSize: 20, fontWeight: "800" },

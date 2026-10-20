@@ -229,6 +229,9 @@ export default function DriverProfileScreen() {
           >
             {t("المعلومات الشخصية", "Personal information")}
           </Text>
+          <Pressable accessibilityRole="button" onPress={() => router.push("/account")} style={{ padding: 16, minHeight: 48 }}>
+            <Text style={{ color: "#2563EB", fontWeight: "700", textAlign: language === "ar" ? "right" : "left" }}>{t("تعديل واستكمال بيانات الحساب", "Edit & complete account details")}</Text>
+          </Pressable>
           <View style={styles.card}>
             <InfoRow
               icon="person-outline"

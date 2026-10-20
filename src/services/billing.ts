@@ -91,3 +91,17 @@ export function shouldManageSubscription(subscription: CurrentSubscription | nul
     || !["canceled", "incomplete_expired"].includes(subscription.stripe_status ?? "")
   );
 }
+
+// Stable user-facing messages; never expose provider responses or secrets.
+export function billingErrorMessage(error: unknown, isArabic: boolean): string {
+  const status = (error as { response?: { status?: number } })?.response?.status;
+  const messages: Record<number, [string, string]> = {
+    401: ["انتهت الجلسة. سجّل الدخول مجددًا.", "Your session expired. Sign in again."],
+    403: ["لا يملك هذا الحساب صلاحية إدارة الفوترة.", "This account cannot manage billing."],
+    409: ["لديك اشتراك بالفعل. افتح إدارة الاشتراك لتعديله.", "You already have a subscription. Open Manage subscription to change it."],
+    429: ["طلبات كثيرة. انتظر قليلًا ثم أعد المحاولة.", "Too many requests. Wait a moment and retry."],
+    503: ["الفوترة غير متاحة حاليًا. تواصل مع الدعم إذا استمرت المشكلة.", "Billing is temporarily unavailable. Contact support if this continues."],
+  };
+  const fallback: [string, string] = ["تعذر الاتصال بخدمة الفوترة. تحقق من الاتصال وأعد المحاولة.", "Could not connect to billing. Check your connection and retry."];
+  return (messages[status ?? 0] ?? fallback)[isArabic ? 0 : 1];
+}

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   AppState,
   Linking,
   Pressable,
@@ -21,6 +20,7 @@ import {
   getCurrentSubscription,
   hasPaidAccess,
   shouldManageSubscription,
+  billingErrorMessage,
   type BillingPlan,
   type CurrentSubscription,
 } from "../../services/billing";
@@ -47,6 +47,7 @@ export default function MerchantSubscriptionScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [checkoutPlan, setCheckoutPlan] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const request = useRef<AbortController | null>(null);
   const busy = useRef(false);
@@ -116,14 +117,12 @@ export default function MerchantSubscriptionScreen() {
     if (busy.current) return;
     busy.current = true;
     setPortalBusy(true);
+    setActionError(null);
     try {
       const url = await openBillingPortal();
       await Linking.openURL(url);
-    } catch {
-      Alert.alert(
-        t("تعذر فتح إدارة الاشتراك", "Unable to manage subscription"),
-        t("يرجى المحاولة مرة أخرى.", "Please try again.")
-      );
+    } catch (error) {
+      setActionError(billingErrorMessage(error, isAr));
     } finally { busy.current = false; setPortalBusy(false); }
   }
 
@@ -134,14 +133,12 @@ export default function MerchantSubscriptionScreen() {
     busy.current = true;
 
     setCheckoutPlan(slug);
+    setActionError(null);
     try {
       const url = await createBillingCheckout(slug);
       await Linking.openURL(url);
-    } catch {
-      Alert.alert(
-        t("تعذر بدء الدفع", "Unable to start checkout"),
-        t("يرجى المحاولة مرة أخرى.", "Please try again.")
-      );
+    } catch (error) {
+      setActionError(billingErrorMessage(error, isAr));
     } finally {
       busy.current = false;
       setCheckoutPlan(null);
@@ -179,6 +176,7 @@ export default function MerchantSubscriptionScreen() {
       </Text>
 
       {notice && <Text style={styles.detail}>{t("جارٍ التحقق من تحديث الاشتراك. لا يتم التفعيل إلا بعد تأكيد Stripe. يمكنك سحب الصفحة للتحديث.", "Checking subscription updates. Access requires Stripe confirmation. Pull to refresh if needed.")}</Text>}
+      {actionError && <Text accessibilityRole="alert" style={styles.error}>{actionError}</Text>}
       {loading && <ActivityIndicator size="large" color={C.blue} />}
 
       {error && (

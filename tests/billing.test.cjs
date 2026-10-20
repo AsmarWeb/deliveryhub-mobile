@@ -55,3 +55,13 @@ test('subscription requests pass abort signals for safe screen cleanup', async (
   } });
   assert.equal(await service.getCurrentSubscription(controller.signal), null);
 });
+
+test('billing failures give actionable messages without disclosing provider details', () => {
+  const service = billing({});
+  assert.match(service.billingErrorMessage({ response: { status: 409, data: { message: 'sk_test_private' } } }, false), /already have a subscription/);
+  assert.match(service.billingErrorMessage({ response: { status: 429 } }, false), /Wait/);
+  assert.match(service.billingErrorMessage({ response: { status: 503 } }, true), /غير متاحة/);
+  for (const error of [null, undefined, new Error('sk_test_private'), { response: { status: 500 } }]) {
+    assert.doesNotMatch(service.billingErrorMessage(error, false), /sk_test_private/);
+  }
+});

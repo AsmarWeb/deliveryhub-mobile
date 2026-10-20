@@ -106,6 +106,9 @@ export default function RegistrationStatusScreen() {
                   <Text style={styles.detailValue}>{application.business_name}</Text>
                 </View>
               ) : null}
+              <Pressable style={styles.primaryButton} onPress={() => router.push("/account")} accessibilityRole="button">
+                <Text style={styles.primaryText}>{t("بيانات الحساب واستكمال الطلب", "Account details & application")}</Text>
+              </Pressable>
               {active ? (
                 <Pressable style={styles.primaryButton} onPress={() => router.replace(operationalRoute(application))} accessibilityRole="button">
                   <Text style={styles.primaryText}>{t("الانتقال إلى لوحة التحكم", "Open dashboard")}</Text>
