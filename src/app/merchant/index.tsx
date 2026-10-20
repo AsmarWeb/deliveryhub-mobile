@@ -294,6 +294,11 @@ export default function MerchantDashboard() {
             onPress={() => router.push("/merchant/create-delivery")}
           />
           <Action
+            icon="repeat-outline"
+            title={t("أتمتة التوصيلات", "Delivery automations")}
+            onPress={() => router.push("/merchant/automations")}
+          />
+          <Action
             icon="list-outline"
             title={t("جميع التوصيلات", "All deliveries")}
             onPress={() => router.push("/merchant/deliveries")}

@@ -36,7 +36,7 @@ export default function DeliveryGpsSection({
     <ActiveDeliveryTracking
       deliveryId={deliveryId}
       status={status}
-      locationEndpoint="/v1/driver/location"
+      locationEndpoint="/driver/location"
     />
   );
 }

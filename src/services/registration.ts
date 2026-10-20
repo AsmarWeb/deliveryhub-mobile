@@ -1,4 +1,4 @@
-import axios from "axios";
+import { isAxiosError } from "axios";
 import api from "./api";
 
 export type MerchantRegistration = {
@@ -21,7 +21,7 @@ export async function registerDriver(data: DriverRegistration) {
   return response.data;
 }
 export function registrationError(error: unknown): string {
-  if (axios.isAxiosError(error)) {
+  if (isAxiosError(error)) {
     const errors = error.response?.data?.errors as Record<string, string[]> | undefined;
     if (errors) return Object.values(errors).flat().join("\n");
     if (error.response?.status === 429) return "محاولات كثيرة. حاول لاحقاً.";

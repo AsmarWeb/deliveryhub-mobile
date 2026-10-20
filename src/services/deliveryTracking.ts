@@ -10,12 +10,12 @@ export type DeliveryTrackingResponse = {
   data: {
     tracking_number: string;
     status: string;
-    timeline: Array<{
+    timeline: {
       from_status: string | null;
       status: string;
       reason: string | null;
       occurred_at: string | null;
-    }>;
+    }[];
     driver_location: DriverLocation | null;
   };
 };

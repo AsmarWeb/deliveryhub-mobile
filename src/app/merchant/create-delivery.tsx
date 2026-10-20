@@ -1,9 +1,9 @@
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,7 +25,6 @@ import {
   type MerchantAddress,
 } from "../../services/deliveries";
 
-type Language = "ar" | "en";
 type AddressKind = "pickup" | "dropoff";
 type Coordinate = { latitude: number; longitude: number };
 const C = {
@@ -97,7 +96,7 @@ function LocationMap({
   mapKey: string;
   onError: () => void;
 }) {
-  const html = useRef(mapHtml(point)).current;
+  const [html] = useState(() => mapHtml(point));
   function handleMessage(event: WebViewMessageEvent) {
     try {
       const message: unknown = JSON.parse(event.nativeEvent.data);
@@ -156,7 +155,7 @@ function addressDescription(a: MerchantAddress, ar: boolean) {
 }
 
 function getValidationMessage(error: unknown, fallback: string): string {
-  if (!axios.isAxiosError(error)) {
+  if (!isAxiosError(error)) {
     return fallback;
   }
 
@@ -220,9 +219,9 @@ export default function CreateDeliveryScreen() {
       setLoading(false);
     }
   }, []);
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     void load();
-  }, [load]);
+  }, [load]));
 
   const selectedPickup = addresses.find((a) => a.id === pickupId);
   const selectedDropoff = addresses.find((a) => a.id === dropoffId);
@@ -266,7 +265,7 @@ export default function CreateDeliveryScreen() {
       choose(kind, created.id);
       setMapFor(null);
     } catch (err) {
-      const status = axios.isAxiosError(err) ? err.response?.status : undefined;
+      const status = isAxiosError(err) ? err.response?.status : undefined;
 
       Alert.alert(
         t("تعذر حفظ العنوان", "Unable to save address"),
@@ -419,7 +418,7 @@ export default function CreateDeliveryScreen() {
         tracking: delivery.tracking_number || String(delivery.id),
       });
     } catch (error) {
-      const status = axios.isAxiosError(error)
+      const status = isAxiosError(error)
         ? error.response?.status
         : undefined;
 

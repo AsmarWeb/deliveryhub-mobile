@@ -10,9 +10,11 @@ const MAX_ACCURACY_METERS = 150;
 
 export async function syncDriverLocation(
   coordinates: DriverCoordinates,
-  endpoint: string
+  endpoint: string,
+  deliveryId: number
 ): Promise<boolean> {
   if (
+    !Number.isInteger(deliveryId) || deliveryId <= 0 ||
     !endpoint.startsWith("/") ||
     endpoint.startsWith("//")
   ) {
@@ -62,6 +64,7 @@ export async function syncDriverLocation(
 
   try {
     await api.patch(endpoint, {
+      delivery_id: deliveryId,
       latitude,
       longitude,
       accuracy,

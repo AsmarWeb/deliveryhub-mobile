@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -58,9 +58,9 @@ export default function DashboardScreen({ role }: { role: Role }) {
     [role],
   );
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     void loadDashboard();
-  }, [loadDashboard]);
+  }, [loadDashboard]));
 
   const primaryValue =
     dashboard?.role === "merchant"

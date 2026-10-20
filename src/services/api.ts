@@ -1,7 +1,7 @@
-import axios from "axios";
+import { create } from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const api = axios.create({
+const api = create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: 15000,
   headers: {

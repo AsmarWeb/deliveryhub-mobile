@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { isAxiosError } from "axios";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -29,13 +29,14 @@ export default function RegistrationStatusScreen() {
   const t = (arabic: string, english: string) => ar ? arabic : english;
 
   const load = useCallback(async (initial: boolean) => {
-    initial ? setLoading(true) : setRefreshing(true);
+    if (initial) setLoading(true);
+    else setRefreshing(true);
     setError(null);
     try {
       const result = await getApplicationStatus();
       setApplication(result);
     } catch (e) {
-      if (axios.isAxiosError(e) && e.response?.status === 401) {
+      if (isAxiosError(e) && e.response?.status === 401) {
         router.replace("/login");
         return;
       }
@@ -46,7 +47,7 @@ export default function RegistrationStatusScreen() {
     }
   }, [ar]);
 
-  useEffect(() => { void load(true); }, [load]);
+  useFocusEffect(useCallback(() => { void load(true); }, [load]));
 
   async function signOut() {
     try {

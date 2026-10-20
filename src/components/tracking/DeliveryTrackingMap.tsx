@@ -1,5 +1,5 @@
 import { useLanguage } from "../../contexts/LanguageContext";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import WebView from "react-native-webview";
 
@@ -186,18 +186,15 @@ export default function DeliveryTrackingMap({
     [driverLocation, pickupLocation, dropoffLocation, language]
   );
 
-  const payloadRef = useRef(payload);
-  payloadRef.current = payload;
-
-  const sendUpdate = (data: typeof payload) => {
+  const sendUpdate = useCallback((data: typeof payload) => {
     if (!ready.current) return;
 
     webViewRef.current?.postMessage(JSON.stringify(data));
-  };
+  }, []);
 
   useEffect(() => {
     sendUpdate(payload);
-  }, [payload]);
+  }, [payload, sendUpdate]);
 
   const date = lastUpdatedAt
     ? new Date(lastUpdatedAt)
@@ -220,7 +217,7 @@ export default function DeliveryTrackingMap({
         onMessage={(event) => {
           if (event.nativeEvent.data === "MAP_READY") {
             ready.current = true;
-            sendUpdate(payloadRef.current);
+            sendUpdate(payload);
           }
         }}
         style={styles.map}

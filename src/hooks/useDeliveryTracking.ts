@@ -29,74 +29,52 @@ export function useDeliveryTracking({
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRef = useRef(fetchTracking);
-  fetchRef.current = fetchTracking;
-
+  const generation = useRef(0);
   const inFlight = useRef(false);
   const mounted = useRef(false);
 
   const refresh = useCallback(async () => {
-    if (!enabled || inFlight.current) return;
-
+    if (!enabled || !mounted.current || inFlight.current) return;
+    const current = generation.current;
     inFlight.current = true;
-
-    if (mounted.current) {
-      setRefreshing(true);
-    }
-
+    setRefreshing(true);
     try {
-      const result = await fetchRef.current();
-
-      if (mounted.current) {
+      const result = await fetchTracking();
+      if (mounted.current && current === generation.current) {
         setData(result);
         setError(null);
       }
     } catch (err) {
-      if (mounted.current) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "تعذر تحديث بيانات التتبع"
-        );
+      if (mounted.current && current === generation.current) {
+        setError(err instanceof Error ? err.message : "تعذر تحديث بيانات التتبع");
       }
     } finally {
-      inFlight.current = false;
-
-      if (mounted.current) {
+      if (mounted.current && current === generation.current) {
+        inFlight.current = false;
         setLoading(false);
         setRefreshing(false);
       }
     }
-  }, [enabled]);
+  }, [enabled, fetchTracking]);
 
   useEffect(() => {
     mounted.current = true;
-
-    if (enabled) {
-      void refresh();
-    } else {
-      setLoading(false);
-    }
-
-    const timer = enabled
-      ? setInterval(() => {
-          void refresh();
-        }, Math.max(intervalMs, 5000))
-      : null;
-
+    // Start after this effect commits; cleanup cancels the first refresh too.
+    const initial = enabled ? setTimeout(() => { void refresh(); }, 0) : null;
+    const timer = enabled ? setInterval(() => { void refresh(); }, Math.max(intervalMs, 5000)) : null;
     return () => {
       mounted.current = false;
-
-      if (timer !== null) {
-        clearInterval(timer);
-      }
+      generation.current += 1;
+      inFlight.current = false;
+      if (initial !== null) clearTimeout(initial);
+      if (timer !== null) clearInterval(timer);
     };
   }, [enabled, intervalMs, refresh]);
 
   return {
     data,
-    loading,
-    refreshing,
+    loading: enabled && loading,
+    refreshing: enabled && refreshing,
     error,
     refresh,
   };

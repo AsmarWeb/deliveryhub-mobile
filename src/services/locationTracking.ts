@@ -180,7 +180,7 @@ class DriverLocationTracking {
         accuracy: Location.Accuracy.Balanced,
       });
       if (token !== this.generation) return;
-      if (!(await this.send(position, token))) return;
+      await this.send(position, token);
       if (token !== this.generation || AppState.currentState !== "active") {
         if (token === this.generation) this.stop();
         return;

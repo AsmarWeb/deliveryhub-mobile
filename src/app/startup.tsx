@@ -1,4 +1,4 @@
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
@@ -62,7 +62,7 @@ export default function StartupScreen() {
       } catch (err) {
         if (!active) return;
 
-        if (axios.isAxiosError(err) && err.response?.status === 401) {
+        if (isAxiosError(err) && err.response?.status === 401) {
           await SecureStore.deleteItemAsync("deliveryhub_token");
 
           if (active) router.replace("/login");

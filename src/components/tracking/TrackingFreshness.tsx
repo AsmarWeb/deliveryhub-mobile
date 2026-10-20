@@ -12,7 +12,7 @@ export default function TrackingFreshness({
   lastUpdatedAt,
 }: Props) {
   const { t } = useLanguage();
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     const timer = setInterval(() => {

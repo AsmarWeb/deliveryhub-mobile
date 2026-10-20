@@ -19,15 +19,18 @@ export async function requestDriverLocationPermission(): Promise<boolean> {
 export async function sendDriverLocation(
   latitude: number,
   longitude: number,
+  deliveryId: number,
 ): Promise<DriverLocationResponse> {
+  if (!Number.isInteger(deliveryId) || deliveryId <= 0) throw new Error("ACTIVE_DELIVERY_REQUIRED");
   const response = await api.patch<DriverLocationResponse>("/driver/location", {
+    delivery_id: deliveryId,
     latitude,
     longitude,
   });
   return response.data;
 }
 
-export async function updateCurrentDriverLocation(): Promise<DriverLocationResponse> {
+export async function updateCurrentDriverLocation(deliveryId: number): Promise<DriverLocationResponse> {
   const permission = await Location.getForegroundPermissionsAsync();
   if (permission.status !== "granted") {
     throw new Error("LOCATION_PERMISSION_REQUIRED");
@@ -37,5 +40,5 @@ export async function updateCurrentDriverLocation(): Promise<DriverLocationRespo
     accuracy: Location.Accuracy.Balanced,
   });
 
-  return sendDriverLocation(position.coords.latitude, position.coords.longitude);
+  return sendDriverLocation(position.coords.latitude, position.coords.longitude, deliveryId);
 }

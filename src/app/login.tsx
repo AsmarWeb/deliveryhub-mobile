@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -60,7 +60,7 @@ export default function LoginScreen() {
         "Unable to sign in. Check your server connection.",
       );
 
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         if (error.response?.status === 422) {
           message = t(
             "البريد الإلكتروني أو كلمة المرور غير صحيحة.",

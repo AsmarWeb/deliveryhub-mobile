@@ -1,7 +1,7 @@
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 export default function RegistrationChoice(){return <ScrollView style={s.root} contentContainerStyle={s.body}>
-<Text style={s.brand}>DeliveryHub · UAE</Text><Text style={s.title}>انضم إلى المنصة</Text><Text style={s.subtitle}>Choose how you'd like to join</Text>
+<Text style={s.brand}>DeliveryHub · UAE</Text><Text style={s.title}>انضم إلى المنصة</Text><Text style={s.subtitle}>Choose how you&apos;d like to join</Text>
 <Pressable style={s.card} onPress={()=>router.push("/register/merchant")}><Text style={s.heading}>متجر أو شركة · Merchant</Text><Text style={s.description}>أنشئ حساب نشاطك التجاري وأرسل طلب التفعيل.</Text><Text style={s.link}>ابدأ التسجيل ←</Text></Pressable>
 <Pressable style={s.card} onPress={()=>router.push("/register/driver")}><Text style={s.heading}>سائق · Driver</Text><Text style={s.description}>قدّم بياناتك ومركبتك للانضمام بعد مراجعة الإدارة.</Text><Text style={s.link}>قدّم الآن ←</Text></Pressable>
 <Pressable onPress={()=>router.push("/login")}><Text style={s.signin}>لديك حساب بالفعل؟ تسجيل الدخول</Text></Pressable>

@@ -1,7 +1,7 @@
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { Redirect, Slot, useFocusEffect } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -24,7 +24,7 @@ type Status =
 
 export default function ProtectedRoute({ role }: { role: Role }) {
   const [status, setStatus] = useState<Status>("loading");
-  const [retry, setRetry] = useState(0);
+  const focused = useRef(false);
 
   const checkAccess = useCallback(async (isActive: () => boolean) => {
     if (isActive()) setStatus("loading");
@@ -67,12 +67,12 @@ export default function ProtectedRoute({ role }: { role: Role }) {
     } catch (error) {
       if (!isActive()) return;
 
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (isAxiosError(error) && error.response?.status === 401) {
         await SecureStore.deleteItemAsync("deliveryhub_token");
 
         if (isActive()) setStatus("unauthorized");
       } else if (
-        axios.isAxiosError(error) &&
+        isAxiosError(error) &&
         error.response?.status === 403 &&
         error.response?.data?.code === "ACCOUNT_NOT_ACTIVE"
       ) {
@@ -81,19 +81,21 @@ export default function ProtectedRoute({ role }: { role: Role }) {
         setStatus("offline");
       }
     }
-  }, []);
+  }, [role]);
 
   // Recheck when the protected route gains focus.
   useFocusEffect(
     useCallback(() => {
       let active = true;
+      focused.current = true;
 
       void checkAccess(() => active);
 
       return () => {
         active = false;
+        focused.current = false;
       };
-    }, [checkAccess, retry]),
+    }, [checkAccess]),
   );
 
   if (status === "allowed") {
@@ -133,7 +135,7 @@ export default function ProtectedRoute({ role }: { role: Role }) {
 
           <Pressable
             style={styles.button}
-            onPress={() => setRetry((value) => value + 1)}
+            onPress={() => void checkAccess(() => focused.current)}
           >
             <Text style={styles.buttonText}>إعادة المحاولة</Text>
           </Pressable>

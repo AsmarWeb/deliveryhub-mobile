@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import {
   Alert,
+  AppState,
   Pressable,
   StyleSheet,
   Text,
@@ -28,6 +29,8 @@ export default function DriverTrackingControl({
   const [starting, setStarting] = useState(false);
   const subscription = useRef<Location.LocationSubscription | null>(null);
   const active = useRef(false);
+  const generation = useRef(0);
+  const pending = useRef(false);
   const callback = useRef(onLocationUpdate);
 
   useEffect(() => {
@@ -35,7 +38,22 @@ export default function DriverTrackingControl({
   }, [onLocationUpdate]);
 
   useEffect(() => {
+    const appState = AppState.addEventListener("change", state => {
+      if (state === "active") return;
+      // A permission sheet may briefly make iOS inactive; it is not a background trip.
+      if (state === "inactive" && pending.current && !active.current) return;
+      generation.current += 1;
+      pending.current = false;
+      active.current = false;
+      subscription.current?.remove();
+      subscription.current = null;
+      setTracking(false);
+      setStarting(false);
+    });
     return () => {
+      appState.remove();
+      generation.current += 1;
+      pending.current = false;
       active.current = false;
       subscription.current?.remove();
       subscription.current = null;
@@ -43,12 +61,14 @@ export default function DriverTrackingControl({
   }, []);
 
   async function startTracking() {
-    if (active.current || starting) return;
-
+    if (active.current || pending.current) return;
+    const token = ++generation.current;
+    pending.current = true;
     setStarting(true);
 
     try {
       const allowed = await requestDriverLocationPermission();
+      if (token !== generation.current) return;
 
       if (!allowed) {
         Alert.alert(
@@ -62,7 +82,7 @@ export default function DriverTrackingControl({
 
       const watcher = await watchDriverCoordinates(
         (coordinates) => {
-          if (!active.current) return;
+          if (!active.current || token !== generation.current) return;
 
           Promise.resolve(callback.current(coordinates)).catch(
             (error) => {
@@ -72,7 +92,7 @@ export default function DriverTrackingControl({
         }
       );
 
-      if (!active.current) {
+      if (!active.current || token !== generation.current) {
         watcher.remove();
         return;
       }
@@ -80,6 +100,7 @@ export default function DriverTrackingControl({
       subscription.current = watcher;
       setTracking(true);
     } catch {
+      if (token !== generation.current) return;
       active.current = false;
 
       Alert.alert(
@@ -87,11 +108,17 @@ export default function DriverTrackingControl({
         "تعذر تشغيل خدمة الموقع."
       );
     } finally {
-      setStarting(false);
+      if (token === generation.current) {
+        pending.current = false;
+        setStarting(false);
+      }
     }
   }
 
   function stopTracking() {
+    generation.current += 1;
+    pending.current = false;
+    setStarting(false);
     active.current = false;
     subscription.current?.remove();
     subscription.current = null;

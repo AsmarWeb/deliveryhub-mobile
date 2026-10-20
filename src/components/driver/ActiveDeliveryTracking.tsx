@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
 import DriverTrackingControl from "./DriverTrackingControl";
@@ -55,7 +55,8 @@ export default function ActiveDeliveryTracking({
       try {
         await syncDriverLocation(
           coordinates,
-          locationEndpoint
+          locationEndpoint,
+          deliveryId
         );
       } catch (error) {
         console.warn(

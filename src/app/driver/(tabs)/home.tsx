@@ -1,3 +1,4 @@
+import { getDriverAssignments } from "../../../services/driver";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -122,6 +123,28 @@ export default function DriverHomeScreen() {
     setLocationBusy(true);
 
     try {
+      const candidates = new Set<number>();
+      let page = 1;
+      while (true) {
+        const assignments = await getDriverAssignments(page);
+        assignments.data.forEach(item => {
+          if (item.status === "accepted" && item.delivery &&
+              ["accepted", "pickup", "in_transit"].includes(item.delivery.status)) {
+            candidates.add(item.delivery.id);
+          }
+        });
+        if (candidates.size > 1 || page >= assignments.last_page) break;
+        page += 1;
+      }
+      if (candidates.size !== 1) {
+        Alert.alert(t("حدد مهمة التوصيل", "Choose a delivery"),
+          candidates.size === 0
+            ? t("لا توجد مهمة نشطة لإرسال الموقع.", "There is no active delivery to track.")
+            : t("لديك أكثر من مهمة نشطة. افتح التوصيلات وحدد المهمة المراد تتبعها.", "Open deliveries and select which active delivery to track."));
+        if (candidates.size > 1) router.push("/driver/deliveries");
+        return;
+      }
+      const deliveryId = [...candidates][0];
       const granted = await requestDriverLocationPermission();
       if (!granted) {
         Alert.alert(
@@ -134,7 +157,7 @@ export default function DriverHomeScreen() {
         return;
       }
 
-      await updateCurrentDriverLocation();
+      await updateCurrentDriverLocation(deliveryId);
       Alert.alert(
         t("تم تحديث الموقع", "Location updated"),
         t(

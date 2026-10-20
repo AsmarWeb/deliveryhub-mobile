@@ -73,6 +73,65 @@ function DetailRow({
   );
 }
 
+  function AddressCard({
+    title,
+    icon,
+    address,
+    location,
+    onNavigate,
+  }: {
+    title: string;
+    icon: IconName;
+    address?: DriverAddress | null;
+    location: string;
+    onNavigate: (address: string) => Promise<void>;
+  }) {
+    const { t } = useLanguage();
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardTitleRow}>
+          <Ionicons name={icon} size={22} color="#2563EB" />
+          <Text style={styles.sectionTitle}>{title}</Text>
+        </View>
+        <Text style={styles.addressText}>
+          {location || t("العنوان غير متوفر", "Address unavailable")}
+        </Text>
+        {address?.contact_name ? (
+          <DetailRow
+            icon="person-outline"
+            label={t("جهة الاتصال", "Contact")}
+            value={address.contact_name}
+          />
+        ) : null}
+        {address?.contact_phone ? (
+          <DetailRow
+            icon="call-outline"
+            label={t("الهاتف", "Phone")}
+            value={address.contact_phone}
+          />
+        ) : null}
+        {location ? (
+          <Pressable
+            style={styles.navigationButton}
+            onPress={() => void onNavigate(location)}
+          >
+            <Ionicons name="navigate-outline" size={19} color="#FFFFFF" />
+            <Text style={styles.navigationButtonText}>
+              {t("فتح الاتجاهات", "Open directions")}
+            </Text>
+          </Pressable>
+        ) : (
+          <Text style={styles.missingHint}>
+            {t(
+              "أضف عنواناً كاملاً قبل استخدام الملاحة.",
+              "A complete address is needed for navigation.",
+            )}
+          </Text>
+        )}
+      </View>
+    );
+  }
+
 export default function DriverAssignmentDetails() {
   const params = useLocalSearchParams<{ id: string }>();
   const assignmentId = Number(params.id);
@@ -185,61 +244,6 @@ export default function DriverAssignmentDetails() {
     cancelled: t("ملغاة", "Cancelled"),
   };
 
-  function AddressCard({
-    title,
-    icon,
-    address,
-    location,
-  }: {
-    title: string;
-    icon: IconName;
-    address?: DriverAddress | null;
-    location: string;
-  }) {
-    return (
-      <View style={styles.card}>
-        <View style={styles.cardTitleRow}>
-          <Ionicons name={icon} size={22} color="#2563EB" />
-          <Text style={styles.sectionTitle}>{title}</Text>
-        </View>
-        <Text style={styles.addressText}>
-          {location || t("العنوان غير متوفر", "Address unavailable")}
-        </Text>
-        {address?.contact_name ? (
-          <DetailRow
-            icon="person-outline"
-            label={t("جهة الاتصال", "Contact")}
-            value={address.contact_name}
-          />
-        ) : null}
-        {address?.contact_phone ? (
-          <DetailRow
-            icon="call-outline"
-            label={t("الهاتف", "Phone")}
-            value={address.contact_phone}
-          />
-        ) : null}
-        {location ? (
-          <Pressable
-            style={styles.navigationButton}
-            onPress={() => void openAddress(location)}
-          >
-            <Ionicons name="navigate-outline" size={19} color="#FFFFFF" />
-            <Text style={styles.navigationButtonText}>
-              {t("فتح الاتجاهات", "Open directions")}
-            </Text>
-          </Pressable>
-        ) : (
-          <Text style={styles.missingHint}>
-            {t(
-              "أضف عنواناً كاملاً قبل استخدام الملاحة.",
-              "A complete address is needed for navigation.",
-            )}
-          </Text>
-        )}
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
@@ -312,12 +316,14 @@ export default function DriverAssignmentDetails() {
               </View>
 
               <AddressCard
+                onNavigate={openAddress}
                 title={t("موقع الاستلام", "Pickup location")}
                 icon="location-outline"
                 address={pickup}
                 location={pickupText}
               />
               <AddressCard
+                onNavigate={openAddress}
                 title={t("موقع التسليم", "Drop-off location")}
                 icon="flag-outline"
                 address={dropoff}
