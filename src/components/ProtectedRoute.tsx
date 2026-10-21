@@ -116,7 +116,7 @@ export default function ProtectedRoute({ role, accessory }: { role: Role; access
         <Text style={styles.icon}>D</Text>
       </View>
 
-      <Text style={styles.title}>DeliveryHub</Text>
+      <Text style={styles.title}>Raslo</Text>
 
       {status === "loading" ? (
         <>

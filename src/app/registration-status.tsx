@@ -67,7 +67,7 @@ export default function RegistrationStatusScreen() {
     <SafeAreaView style={styles.root}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.brand}>DeliveryHub</Text>
+          <Text style={styles.brand}>Raslo</Text>
           <Pressable onPress={() => setLanguage(ar ? "en" : "ar")} style={styles.langButton} accessibilityRole="button">
             <Ionicons name="language-outline" size={17} color="#2563EB" />
             <Text style={styles.langText}>{ar ? "EN" : "عربي"}</Text>

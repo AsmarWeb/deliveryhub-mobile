@@ -161,8 +161,8 @@ export default function DriverHomeScreen() {
       Alert.alert(
         t("تم تحديث الموقع", "Location updated"),
         t(
-          "تم إرسال موقعك إلى DeliveryHub بنجاح.",
-          "Your location was sent to DeliveryHub.",
+          "تم إرسال موقعك إلى Raslo بنجاح.",
+          "Your location was sent to Raslo.",
         ),
       );
     } catch (err: unknown) {
@@ -240,7 +240,7 @@ export default function DriverHomeScreen() {
         <View style={styles.topRow}>
           <View style={styles.brandRow}>
             <Ionicons name="cube" size={24} color="#FFFFFF" />
-            <Text style={styles.brand}>DeliveryHub</Text>
+            <Text style={styles.brand}>Raslo</Text>
           </View>
 
           <Pressable
@@ -428,8 +428,8 @@ export default function DriverHomeScreen() {
 
           <Text style={styles.noticeText}>
             {t(
-              "اسحب الصفحة للأسفل لتحديث بيانات مهامك. يتم جلب الإحصاءات مباشرة من DeliveryHub.",
-              "Pull down to refresh your assignments. Statistics are loaded directly from DeliveryHub.",
+              "اسحب الصفحة للأسفل لتحديث بيانات مهامك. يتم جلب الإحصاءات مباشرة من Raslo.",
+              "Pull down to refresh your assignments. Statistics are loaded directly from Raslo.",
             )}
           </Text>
         </View>

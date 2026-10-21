@@ -87,7 +87,7 @@ export default function StartupScreen() {
         <Text style={styles.logoText}>D</Text>
       </View>
 
-      <Text style={styles.title}>DeliveryHub</Text>
+      <Text style={styles.title}>Raslo</Text>
 
       {error ? (
         <>

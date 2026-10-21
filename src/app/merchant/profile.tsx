@@ -115,7 +115,7 @@ export default function MerchantProfileScreen() {
             <Ionicons name="person-outline" size={38} color="#FFFFFF" />
           </View>
           <Text style={styles.name}>{profile?.name || t("حساب التاجر", "Merchant account")}</Text>
-          <Text style={styles.email}>{profile?.email || "DeliveryHub"}</Text>
+          <Text style={styles.email}>{profile?.email || "Raslo"}</Text>
         </LinearGradient>
 
         <View style={styles.body}>

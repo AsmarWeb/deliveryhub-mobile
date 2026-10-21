@@ -367,7 +367,7 @@ export default function DriverOrdersScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerCaption}>DELIVERYHUB DRIVER</Text>
+        <Text style={styles.headerCaption}>RASLO DRIVER</Text>
         <Text style={styles.title}>{t("الطلبات", "Orders")}</Text>
         <Text style={styles.headerSubtitle}>
           {t("إدارة المهام المسندة إليك", "Manage your assigned deliveries")}

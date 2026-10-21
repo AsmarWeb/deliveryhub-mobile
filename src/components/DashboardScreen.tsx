@@ -147,8 +147,8 @@ export default function DashboardScreen({ role }: { role: Role }) {
     Alert.alert(
       t("قريباً", "Coming soon"),
       t(
-        "سنربط هذه الخدمة ببيانات DeliveryHub الحقيقية.",
-        "This feature will connect to live DeliveryHub data.",
+        "سنربط هذه الخدمة ببيانات Raslo الحقيقية.",
+        "This feature will connect to live Raslo data.",
       ),
     );
   }
@@ -190,7 +190,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
           <View style={styles.topRow}>
             <View style={styles.brand}>
               <Ionicons name="cube" size={22} color="#FFFFFF" />
-              <Text style={styles.brandText}>DeliveryHub</Text>
+              <Text style={styles.brandText}>Raslo</Text>
             </View>
 
             <Pressable
@@ -202,7 +202,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
           </View>
 
           <Text style={styles.welcome}>
-            {t("مرحباً بك في DeliveryHub", "Welcome to DeliveryHub")}
+            {t("مرحباً بك في Raslo", "Welcome to Raslo")}
           </Text>
 
           <Text style={styles.heroTitle}>
@@ -284,8 +284,8 @@ export default function DashboardScreen({ role }: { role: Role }) {
                       "Loading your account data...",
                     )
                   : t(
-                      "إحصائيات حسابك من DeliveryHub",
-                      "Your DeliveryHub account statistics",
+                      "إحصائيات حسابك من Raslo",
+                      "Your Raslo account statistics",
                     )}
             </Text>
             <Pressable

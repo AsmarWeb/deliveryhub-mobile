@@ -472,7 +472,7 @@ export default function DriverDeliveriesScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.caption}>DELIVERYHUB DRIVER</Text>
+        <Text style={styles.caption}>RASLO DRIVER</Text>
         <Text style={styles.title}>{t("التوصيل", "Deliveries")}</Text>
         <Text style={styles.subtitle}>
           {t(

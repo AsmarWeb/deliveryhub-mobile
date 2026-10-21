@@ -1,56 +1,67 @@
-# Welcome to your Expo app 👋
+# Raslo Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Merchant and driver application for Raslo, the open-source delivery platform.**
 
-## Get started
+Built with Expo SDK 57, React Native, TypeScript, and Expo Router. Previously named DeliveryHub Mobile.
 
-1. Install dependencies
+## Current capabilities
 
-   ```bash
-   npm install
-   ```
+- Merchant and driver registration, login, and account status.
+- Merchant delivery creation and delivery views.
+- Driver assignments and delivery workflow screens.
+- In-app notifications and optional native phone push.
+- Arabic and English interfaces.
 
-2. Start the app
+This is an application under active development. Real Android push has been tested on a development build; production rollout and complete end-to-end validation remain separate milestones.
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Development
 
 ```bash
-npm run reset-project
+git clone https://github.com/AsmarWeb/deliveryhub-mobile.git raslo-mobile
+cd raslo-mobile
+npm ci
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Configure `EXPO_PUBLIC_API_URL` in your local environment to point to a backend reachable from the device. A phone's `localhost` is the phone itself, not your development computer. Public Expo environment values are bundled into the client; never put private credentials there.
 
-### Other setup steps
+```bash
+npx expo start --dev-client --clear
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Install an EAS development build on your device first. See [phone push setup](docs/phone-push.md). Expo Go does not provide the Android remote push test environment used by this project.
 
-## Learn more
+## Checks
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm test
+npx tsc --noEmit
+npm run lint
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Android development build
 
-## Join the community
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest build --profile development --platform android
+```
 
-Join our community of developers creating universal apps.
+Contributors must link their own Expo project and configure matching Firebase credentials. Keep service-account private keys and local environment files out of Git.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The existing installation retains its EAS project ID, project slug, application identifiers, URL scheme, and storage keys. The visible application name is **Raslo**. Rebuild and reinstall to update the native launcher name; changing JavaScript alone does not update installed native metadata.
+
+## Roadmap
+
+- Validate the full merchant-to-driver delivery journey.
+- Improve quote, booking, tracking, and failure recovery experiences.
+- Add store connection management once the backend integration API exists.
+- Prepare production builds after operational validation.
+
+Store integration and checkout delivery quotes are planned backend capabilities, not features already exposed by this app.
+
+## Project links
+
+- [Backend](https://github.com/AsmarWeb/deliveryhub)
+- [Mobile source](https://github.com/AsmarWeb/deliveryhub-mobile)
+- [Rename guide](docs/raslo-rebrand.md)
+
+The GitHub repositories currently retain their original URLs. See the rename guide before changing repository or Expo identifiers.

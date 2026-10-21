@@ -114,7 +114,7 @@ export default function LoginScreen() {
               <View style={styles.brandIcon}>
                 <Ionicons name="cube-outline" size={23} color="#FFFFFF" />
               </View>
-              <Text style={styles.brand}>DeliveryHub</Text>
+              <Text style={styles.brand}>Raslo</Text>
             </View>
 
             <Pressable
@@ -252,7 +252,7 @@ export default function LoginScreen() {
               "Designed for delivery operations in the UAE",
             )}
           </Text>
-          <Text style={styles.copyright}>© 2026 DeliveryHub</Text>
+          <Text style={styles.copyright}>© 2026 Raslo</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

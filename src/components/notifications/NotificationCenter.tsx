@@ -265,7 +265,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
     <View style={styles.container}>
       <View style={styles.header}>
         {role === "merchant" && <Pressable accessibilityRole="button" onPress={() => router.replace("/merchant")}><Text style={styles.subtitle}>{t("العودة للرئيسية", "Back to home")}</Text></Pressable>}
-        <Text style={styles.caption}>DELIVERYHUB</Text>
+        <Text style={styles.caption}>RASLO</Text>
         <Text style={styles.title}>{t("الإشعارات", "Notifications")}</Text>
         <Text style={styles.subtitle}>
           {unread === 0

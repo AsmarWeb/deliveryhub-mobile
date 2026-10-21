@@ -8,7 +8,7 @@ export default function RegistrationChoice() {
   const insets = useSafeAreaInsets();
   const align = { textAlign: language === "ar" ? "right" as const : "left" as const };
   return <ScrollView style={s.root} contentContainerStyle={[s.body, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>
-    <View style={s.header}><Text style={s.brand}>DeliveryHub · UAE</Text><Pressable accessibilityRole="button" style={s.touch} onPress={() => void setLanguage(language === "ar" ? "en" : "ar")}><Text style={s.link}>{language === "ar" ? "EN" : "عربي"}</Text></Pressable></View>
+    <View style={s.header}><Text style={s.brand}>Raslo · UAE</Text><Pressable accessibilityRole="button" style={s.touch} onPress={() => void setLanguage(language === "ar" ? "en" : "ar")}><Text style={s.link}>{language === "ar" ? "EN" : "عربي"}</Text></Pressable></View>
     <Text style={[s.title, align]}>{t("لنبدأ معًا", "Let’s get started")}</Text><Text style={[s.description, align]}>{t("اختر حسابك. بيانات قليلة الآن، وبقية التفاصيل داخل الحساب.", "Choose your account. A few essentials now, the rest in your profile.")}</Text>
     {(["merchant", "driver"] as const).map(type => <Pressable accessibilityRole="button" key={type} style={s.card} onPress={() => router.push(type === "merchant" ? "/register/merchant" : "/register/driver")}>
       <Ionicons name={type === "merchant" ? "storefront-outline" : "bicycle-outline"} size={32} color="#2563EB" />

@@ -153,7 +153,7 @@ export default function DriverProfileScreen() {
         <View style={styles.heroTop}>
           <View style={styles.brandRow}>
             <Ionicons name="cube-outline" size={22} color="#FFFFFF" />
-            <Text style={styles.brand}>DeliveryHub</Text>
+            <Text style={styles.brand}>Raslo</Text>
           </View>
           <View style={styles.heroBadge}>
             <Ionicons
@@ -443,7 +443,7 @@ export default function DriverProfileScreen() {
               </>
             )}
           </Pressable>
-          <Text style={styles.footer}>DeliveryHub · UAE</Text>
+          <Text style={styles.footer}>Raslo · UAE</Text>
         </>
       ) : null}
     </ScrollView>

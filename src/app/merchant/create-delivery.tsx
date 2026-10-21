@@ -669,7 +669,7 @@ export default function CreateDeliveryScreen() {
         </Text>
         <Text style={styles.hint}>
           {t(
-            "تم تسجيل الطلب في DeliveryHub",
+            "تم تسجيل الطلب في Raslo",
             "Your delivery has been registered",
           )}
         </Text>
