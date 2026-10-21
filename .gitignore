@@ -44,3 +44,9 @@ example
 
 .env
 .env.local
+
+# Native push credentials/configuration: provide privately to local/EAS builds.
+google-services.json
+GoogleService-Info.plist
+*firebase-adminsdk*.json
+service-account*.json

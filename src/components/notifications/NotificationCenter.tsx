@@ -1,3 +1,4 @@
+import PushControl from "./PushControl";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -276,6 +277,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
         </Text>
       </View>
 
+      <PushControl />
       <View style={styles.toolbar}>
         <Text style={styles.toolbarTitle}>
           {t("مركز الإشعارات", "Notification center")}
