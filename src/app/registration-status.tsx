@@ -18,15 +18,15 @@ import {
   operationalRoute,
 } from "../services/application";
 import { logout } from "../services/auth";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function RegistrationStatusScreen() {
-  const [language, setLanguage] = useState<"ar" | "en">("ar");
+  const { language, setLanguage, t } = useLanguage();
   const [application, setApplication] = useState<ApplicationInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ar = language === "ar";
-  const t = (arabic: string, english: string) => ar ? arabic : english;
 
   const load = useCallback(async (initial: boolean) => {
     if (initial) setLoading(true);
@@ -68,7 +68,7 @@ export default function RegistrationStatusScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <Text style={styles.brand}>{t("رسلو", "Raslo")}</Text>
-          <Pressable onPress={() => setLanguage(ar ? "en" : "ar")} style={styles.langButton} accessibilityRole="button">
+          <Pressable onPress={() => { void setLanguage(ar ? "en" : "ar").catch(() => setError(t("تعذر حفظ اللغة.", "Could not save language."))); }} style={styles.langButton} accessibilityRole="button">
             <Ionicons name="language-outline" size={17} color="#17634F" />
             <Text style={styles.langText}>{ar ? "EN" : "عربي"}</Text>
           </Pressable>
@@ -109,6 +109,7 @@ export default function RegistrationStatusScreen() {
               <Pressable style={styles.primaryButton} onPress={() => router.push("/account")} accessibilityRole="button">
                 <Text style={styles.primaryText}>{t("بيانات الحساب واستكمال الطلب", "Account details & application")}</Text>
               </Pressable>
+              {application.type === "driver" && <Pressable style={styles.primaryButton} onPress={() => router.push("/documents")} accessibilityRole="button"><Text style={styles.primaryText}>{t("مستنداتي · رفع ومتابعة المراجعة", "My documents · upload & review")}</Text></Pressable>}
               {active ? (
                 <Pressable style={styles.primaryButton} onPress={() => router.replace(operationalRoute(application))} accessibilityRole="button">
                   <Text style={styles.primaryText}>{t("الانتقال إلى لوحة التحكم", "Open dashboard")}</Text>

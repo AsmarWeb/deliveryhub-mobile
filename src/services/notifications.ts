@@ -63,6 +63,10 @@ const messages: Record<string, [string, string]> = {
 };
 export function notificationMessage(item: AppNotification, role: "merchant" | "driver", language: string): string {
   const ar = language === "ar";
+  if (item.data?.type === "driver_document") {
+    const title = item.data?.[ar ? "title_ar" : "title_en"];
+    return typeof title === "string" ? title : ar ? "تحديث مستنداتك" : "Document update";
+  }
   const status = item.data?.status;
   let text: string;
   if (role === "driver" && status === "assigned") text = ar ? "لديك عرض توصيل جديد؛ افتحه للتحقق من صلاحيته وقبوله" : "New delivery offer; open to check availability and accept";
@@ -79,6 +83,7 @@ function positiveId(value: unknown): string | null {
   return /^[1-9]\d*$/.test(text) && Number.isSafeInteger(Number(text)) ? text : null;
 }
 export function notificationTarget(item: AppNotification, role: "merchant" | "driver") {
+  if (role === "driver" && item.data?.type === "driver_document") return { pathname: "/documents" as const };
   const delivery = positiveId(item.data?.delivery_id);
   if (!delivery) return null;
   if (role === "merchant") return { pathname: "/merchant/deliveries/[id]" as const, params: { id: delivery } };

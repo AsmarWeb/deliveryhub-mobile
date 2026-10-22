@@ -18,21 +18,12 @@ export interface DriverProfileResponse {
   data: DriverProfile;
 }
 
-/**
- * Proposed endpoint.
- * Implement and verify this route in Laravel
- * before calling it from the mobile app.
- */
 export async function getDriverProfile(): Promise<DriverProfile> {
   const response = await api.get<DriverProfileResponse>("/driver/profile");
 
   return response.data.data;
 }
 
-/**
- * Proposed endpoint.
- * Requires Laravel implementation and authorization.
- */
 export async function updateDriverAvailability(
   isAvailable: boolean,
 ): Promise<DriverProfile> {

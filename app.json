@@ -35,7 +35,16 @@
         }
       ],
       "expo-secure-store",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "اسمح لرسلو باختيار صور المستندات وإثبات التسليم. Allow Raslo to choose document and delivery photos.",
+          "cameraPermission": "اسمح لرسلو بتصوير مستنداتك وإثبات التسليم. Allow Raslo to photograph documents and delivery proof.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

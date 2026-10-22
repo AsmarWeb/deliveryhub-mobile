@@ -72,3 +72,7 @@ The GitHub repositories currently retain their original URLs. See the rename gui
 ## Raslo / رسلو visual identity
 
 The UAE visual refresh uses an emerald, ivory and gold palette, bilingual wordmarks and a consistent route-inspired icon. See [the brand guide](docs/raslo-brand.md) for assets, typography, naming and release checks.
+
+## Driver document onboarding
+
+Private document upload and review status are available under My account → My documents. Merchant integrations are grouped inside the account menu. See [the setup and device checks](docs/driver-documents.md). A new development build is required.

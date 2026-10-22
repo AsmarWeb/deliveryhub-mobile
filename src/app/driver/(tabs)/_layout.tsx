@@ -1,8 +1,9 @@
 import { useUnreadNotifications } from "../../../hooks/useUnreadNotifications";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Platform, StyleSheet, type ColorValue } from "react-native";
+import { StyleSheet, type ColorValue } from "react-native";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -26,6 +27,7 @@ function TabIcon({ focused, color, activeIcon, inactiveIcon }: TabIconProps) {
 
 export default function DriverTabsLayout() {
   const { t } = useLanguage();
+  const insets = useSafeAreaInsets();
   const unread = useUnreadNotifications();
 
   return (
@@ -36,7 +38,7 @@ export default function DriverTabsLayout() {
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: "#17634F",
         tabBarInactiveTintColor: "#94A3B8",
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [styles.tabBar, { height: 76 + insets.bottom, paddingBottom: Math.max(8, insets.bottom) }],
         tabBarItemStyle: styles.tabItem,
         tabBarLabelStyle: styles.tabLabel,
         tabBarIconStyle: styles.tabIcon,
@@ -135,20 +137,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
     borderTopColor: "#DDDED2",
-    height: Platform.OS === "ios" ? 88 : 70,
+    height: 76,
     paddingTop: 8,
-    paddingBottom: Platform.OS === "ios" ? 24 : 9,
+    paddingBottom: 8,
     elevation: 8,
     shadowColor: "#123D35",
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
   },
-  tabItem: { paddingTop: 3 },
-  tabIcon: { marginBottom: 2 },
+  tabItem: { paddingTop: 0, justifyContent: "center" },
+  tabIcon: { marginBottom: 0 },
   tabLabel: {
     fontSize: 11,
+    lineHeight: 16,
     fontWeight: "700",
-    marginTop: 2,
+    marginTop: 0,
   },
 });
