@@ -127,7 +127,7 @@ export default function MerchantSubscriptionScreen() {
   }
 
   async function subscribe(slug: string) {
-    if (slug !== "growth" && slug !== "business") return;
+    if (slug !== "growth" && slug !== "business" && slug !== "enterprise") return;
     if (shouldManageSubscription(current)) { await manageSubscription(); return; }
     if (busy.current) return;
     busy.current = true;
@@ -240,7 +240,7 @@ export default function MerchantSubscriptionScreen() {
 
           {plans.map((plan) => {
             const eligible =
-              plan.slug === "growth" || plan.slug === "business";
+              plan.slug === "growth" || plan.slug === "business" || (plan.slug === "enterprise" && Number(plan.monthly_price) > 0);
 
             return (
               <View key={plan.id} style={styles.card}>

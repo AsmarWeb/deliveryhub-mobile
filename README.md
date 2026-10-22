@@ -10,6 +10,8 @@ Built with Expo SDK 57, React Native, TypeScript, and Expo Router. Previously na
 - Merchant delivery creation and delivery views.
 - Driver assignments and delivery workflow screens.
 - In-app notifications and optional native phone push.
+- Public merchant product catalog with search and product detail cards.
+- Enterprise connection status and manual feed sync requests; create keys/connections from the merchant web dashboard.
 - Arabic and English interfaces.
 
 This is an application under active development. Real Android push has been tested on a development build; production rollout and complete end-to-end validation remain separate milestones.
@@ -56,7 +58,7 @@ The existing installation retains its EAS project ID, project slug, application 
 - Add store connection management once the backend integration API exists.
 - Prepare production builds after operational validation.
 
-Store integration and checkout delivery quotes are planned backend capabilities, not features already exposed by this app.
+Enterprise product discovery and integration status are implemented against the backend catalog API. Native store adapters, in-app shopping checkout, and checkout delivery quotes remain separate future work.
 
 ## Project links
 

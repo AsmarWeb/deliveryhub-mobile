@@ -18,6 +18,7 @@ export type CurrentSubscription = {
   ends_at: string | null;
   has_access: boolean;
   can_use_automations: boolean;
+  can_use_catalog_api?: boolean;
   stripe_status: string | null;
   automation_usage: number;
   provider: "stripe" | "manual";
@@ -39,7 +40,7 @@ export async function getCurrentSubscription(signal?: AbortSignal): Promise<Curr
 }
 
 export async function createBillingCheckout(
-  plan: "growth" | "business"
+  plan: "growth" | "business" | "enterprise"
 ): Promise<string> {
   const response = await api.post<{ checkout_url: string }>(
     "/merchant/billing/checkout",

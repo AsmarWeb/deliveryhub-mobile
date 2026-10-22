@@ -101,6 +101,7 @@ export default function MerchantProfileScreen() {
   return (
     <View style={styles.root}>
       <ScrollView contentContainerStyle={styles.content}>
+      <Pressable accessibilityRole="button" onPress={() => router.push("/merchant/integrations")} style={{ padding: 18, backgroundColor: "#EFF6FF", borderRadius: 14, margin: 15 }}><Text style={{ color: "#2563EB", fontWeight: "800" }}>{t("تكاملات المتجر · Enterprise", "Store integrations · Enterprise")}</Text></Pressable>
         <LinearGradient colors={[C.navy, "#18376D", C.blue]} style={styles.hero}>
           <View style={styles.topRow}>
             <Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} onPress={() => router.back()}>
