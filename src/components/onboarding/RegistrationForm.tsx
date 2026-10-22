@@ -44,15 +44,15 @@ export default function RegistrationForm({ type }: { type: "merchant" | "driver"
     finally { lock.current = false; setBusy(false); }
   };
   return <ScrollView style={s.root} keyboardShouldPersistTaps="handled" contentContainerStyle={[s.body, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 30 }]}>
-    <View style={s.header}><Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} style={s.touch} disabled={busy} onPress={() => router.canGoBack() ? router.back() : router.replace("/register")}><Ionicons name={ar ? "arrow-forward" : "arrow-back"} size={24} color="#0B1730" /></Pressable><Text style={s.brand}>Raslo · UAE</Text><Pressable accessibilityRole="button" style={s.touch} onPress={() => void setLanguage(ar ? "en" : "ar")}><Text style={s.link}>{ar ? "EN" : "عربي"}</Text></Pressable></View>
-    <View style={s.symbol}><Ionicons name={type === "merchant" ? "storefront-outline" : "bicycle-outline"} size={32} color="#2563EB" /></View>
+    <View style={s.header}><Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} style={s.touch} disabled={busy} onPress={() => router.canGoBack() ? router.back() : router.replace("/register")}><Ionicons name={ar ? "arrow-forward" : "arrow-back"} size={24} color="#123D35" /></Pressable><Text style={s.brand}>{t("رسلو · الإمارات", "Raslo · UAE")}</Text><Pressable accessibilityRole="button" style={s.touch} onPress={() => void setLanguage(ar ? "en" : "ar")}><Text style={s.link}>{ar ? "EN" : "عربي"}</Text></Pressable></View>
+    <View style={s.symbol}><Ionicons name={type === "merchant" ? "storefront-outline" : "bicycle-outline"} size={32} color="#17634F" /></View>
     <Text style={[s.title, align]}>{done ? t("تم إنشاء حسابك", "Your account is created") : type === "merchant" ? t("ابدأ كتاجر", "Join as a merchant") : t("انضم كشريك توصيل", "Join as a delivery partner")}</Text>
     <Text style={[s.subtitle, align]}>{done ? t("سجّل الدخول لإكمال بيانات حسابك ومتابعة المراجعة. تشغيل الخدمة يتطلب موافقة الإدارة.", "Sign in to complete your account and follow the review. Service access requires approval.") : t("ابدأ بالأساسيات، وأكمل بقية البيانات من حسابك.", "Start with the essentials. Complete the rest from your account.")}</Text>
     {!done && <View style={s.card}>
       {fields.map(({ key, label, hint }) => <View key={key} style={s.field}>
         <Text style={[s.label, align]}>{label}</Text>
         <View style={s.inputRow}><TextInput accessibilityLabel={label} style={[s.input, key === "phone" || key === "email" ? { textAlign: "left", writingDirection: "ltr" } : align]} value={form[key]} onChangeText={value => setForm(previous => ({ ...previous, [key]: value }))} editable={!busy} secureTextEntry={key === "password" && !visible} autoCapitalize={key === "email" || key === "password" ? "none" : "words"} autoCorrect={key !== "email" && key !== "password"} keyboardType={key === "email" ? "email-address" : key === "phone" ? "phone-pad" : "default"} autoComplete={key === "password" ? "new-password" : key === "email" ? "email" : key === "phone" ? "tel" : key === "name" ? "name" : "off"} maxLength={key === "phone" ? 25 : 255} />
-          {key === "password" && <Pressable accessibilityRole="button" accessibilityLabel={visible ? t("إخفاء كلمة المرور", "Hide password") : t("إظهار كلمة المرور", "Show password")} onPress={() => setVisible(!visible)} style={s.touch}><Ionicons name={visible ? "eye-off-outline" : "eye-outline"} size={22} color="#64748B" /></Pressable>}
+          {key === "password" && <Pressable accessibilityRole="button" accessibilityLabel={visible ? t("إخفاء كلمة المرور", "Hide password") : t("إظهار كلمة المرور", "Show password")} onPress={() => setVisible(!visible)} style={s.touch}><Ionicons name={visible ? "eye-off-outline" : "eye-outline"} size={22} color="#62726B" /></Pressable>}
         </View>{hint && <Text style={[s.hint, align]}>{hint}</Text>}
       </View>)}
       {error && <Text accessibilityRole="alert" style={[s.error, align]}>{error}</Text>}
@@ -63,11 +63,11 @@ export default function RegistrationForm({ type }: { type: "merchant" | "driver"
   </ScrollView>;
 }
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F5F7FB" }, body: { width: "100%", maxWidth: 540, alignSelf: "center", paddingHorizontal: 22, gap: 16 },
+  root: { flex: 1, backgroundColor: "#F6F3EB" }, body: { width: "100%", maxWidth: 540, alignSelf: "center", paddingHorizontal: 22, gap: 16 },
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" }, touch: { minHeight: 44, minWidth: 44, justifyContent: "center", alignItems: "center" },
-  brand: { color: "#0B1730", fontWeight: "800", fontSize: 17 }, link: { color: "#2563EB", fontWeight: "700" }, symbol: { width: 64, height: 64, borderRadius: 20, backgroundColor: "#DBEAFE", justifyContent: "center", alignItems: "center" },
-  title: { fontSize: 29, fontWeight: "800", color: "#0B1730" }, subtitle: { color: "#475569", lineHeight: 24, fontSize: 15 },
-  card: { backgroundColor: "white", borderRadius: 22, padding: 20, borderWidth: 1, borderColor: "#E2E8F0", gap: 18 }, field: { gap: 8 }, label: { color: "#334155", fontWeight: "700", fontSize: 14 },
-  inputRow: { borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, flexDirection: "row", alignItems: "center" }, input: { flex: 1, minWidth: 0, minHeight: 50, padding: 12, fontSize: 16, color: "#0B1730" },
-  hint: { color: "#64748B", fontSize: 12, lineHeight: 20 }, error: { color: "#B91C1C", lineHeight: 22 }, button: { backgroundColor: "#2563EB", borderRadius: 14, minHeight: 52, alignItems: "center", justifyContent: "center" }, buttonText: { color: "white", fontWeight: "800", fontSize: 16 }, disabled: { opacity: 0.6 }, signin: { color: "#2563EB", fontWeight: "700", textAlign: "center" },
+  brand: { color: "#123D35", fontWeight: "800", fontSize: 17 }, link: { color: "#17634F", fontWeight: "700" }, symbol: { width: 64, height: 64, borderRadius: 20, backgroundColor: "#D9E5D6", justifyContent: "center", alignItems: "center" },
+  title: { fontSize: 29, fontWeight: "800", color: "#123D35" }, subtitle: { color: "#475569", lineHeight: 24, fontSize: 15 },
+  card: { backgroundColor: "white", borderRadius: 22, padding: 20, borderWidth: 1, borderColor: "#DDDED2", gap: 18 }, field: { gap: 8 }, label: { color: "#334155", fontWeight: "700", fontSize: 14 },
+  inputRow: { borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, flexDirection: "row", alignItems: "center" }, input: { flex: 1, minWidth: 0, minHeight: 50, padding: 12, fontSize: 16, color: "#123D35" },
+  hint: { color: "#62726B", fontSize: 12, lineHeight: 20 }, error: { color: "#B91C1C", lineHeight: 22 }, button: { backgroundColor: "#17634F", borderRadius: 14, minHeight: 52, alignItems: "center", justifyContent: "center" }, buttonText: { color: "white", fontWeight: "800", fontSize: 16 }, disabled: { opacity: 0.6 }, signin: { color: "#17634F", fontWeight: "700", textAlign: "center" },
 });

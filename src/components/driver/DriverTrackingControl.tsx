@@ -131,7 +131,7 @@ export default function DriverTrackingControl({
         <Ionicons
           name={tracking ? "navigate" : "location-outline"}
           size={24}
-          color={tracking ? "#059669" : "#64748B"}
+          color={tracking ? "#059669" : "#62726B"}
         />
 
         <View style={{ flex: 1 }}>
@@ -155,7 +155,7 @@ export default function DriverTrackingControl({
           {
             backgroundColor: tracking
               ? "#DC2626"
-              : "#2563EB",
+              : "#17634F",
           },
         ]}
       >
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     gap: 16,
   },
   info: {
@@ -188,10 +188,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   subtitle: {
-    color: "#64748B",
+    color: "#62726B",
     marginTop: 5,
     fontSize: 12,
   },

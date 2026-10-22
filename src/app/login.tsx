@@ -1,3 +1,5 @@
+import { useLanguage } from "../contexts/LanguageContext";
+import Brand from "../components/Brand";
 import { Ionicons } from "@expo/vector-icons";
 import { isAxiosError } from "axios";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,7 +22,7 @@ import { login } from "../services/auth";
 import { getApplicationStatus, operationalRoute } from "../services/application";
 
 export default function LoginScreen() {
-  const [language, setLanguage] = useState<"ar" | "en">("ar");
+  const { language, setLanguage } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -106,16 +108,11 @@ export default function LoginScreen() {
         showsVerticalScrollIndicator={false}
       >
         <LinearGradient
-          colors={["#0B1730", "#183A72", "#2563EB"]}
+          colors={["#123D35", "#205545", "#17634F"]}
           style={styles.hero}
         >
           <View style={styles.topBar}>
-            <View style={styles.brandRow}>
-              <View style={styles.brandIcon}>
-                <Ionicons name="cube-outline" size={23} color="#FFFFFF" />
-              </View>
-              <Text style={styles.brand}>Raslo</Text>
-            </View>
+            <Brand arabic={ar} inverse />
 
             <Pressable
               style={styles.languageButton}
@@ -164,7 +161,7 @@ export default function LoginScreen() {
           </Text>
 
           <View style={styles.inputWrapper}>
-            <Ionicons name="mail-outline" size={20} color="#718096" />
+            <Ionicons name="mail-outline" size={20} color="#66766C" />
             <TextInput
               style={styles.input}
               placeholder="name@example.com"
@@ -184,7 +181,7 @@ export default function LoginScreen() {
           </Text>
 
           <View style={styles.inputWrapper}>
-            <Ionicons name="lock-closed-outline" size={20} color="#718096" />
+            <Ionicons name="lock-closed-outline" size={20} color="#66766C" />
 
             <TextInput
               style={styles.input}
@@ -209,7 +206,7 @@ export default function LoginScreen() {
               <Ionicons
                 name={showPassword ? "eye-off-outline" : "eye-outline"}
                 size={21}
-                color="#718096"
+                color="#66766C"
               />
             </Pressable>
           </View>
@@ -252,7 +249,7 @@ export default function LoginScreen() {
               "Designed for delivery operations in the UAE",
             )}
           </Text>
-          <Text style={styles.copyright}>© 2026 Raslo</Text>
+          <Text style={styles.copyright}>{t("© 2026 رسلو", "© 2026 Raslo")}</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -262,7 +259,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
   },
   scroll: {
     flexGrow: 1,
@@ -331,7 +328,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   heroSubtitle: {
-    color: "#DBEAFE",
+    color: "#D9E5D6",
     fontSize: 14,
     lineHeight: 23,
     textAlign: "center",
@@ -345,8 +342,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     marginTop: -60,
     borderWidth: 1,
-    borderColor: "#E7ECF4",
-    shadowColor: "#0B1730",
+    borderColor: "#E1E1D5",
+    shadowColor: "#123D35",
     shadowOpacity: 0.08,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
@@ -356,13 +353,13 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   heading: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 25,
     fontWeight: "800",
     textAlign: "center",
   },
   description: {
-    color: "#718096",
+    color: "#66766C",
     fontSize: 13,
     textAlign: "center",
     marginTop: 9,
@@ -378,7 +375,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F8FAFC",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     borderRadius: 15,
     paddingHorizontal: 14,
     minHeight: 56,
@@ -387,13 +384,13 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 15,
     paddingVertical: 13,
     textAlign: "left",
   },
   submitButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     borderRadius: 16,
     minHeight: 56,
     flexDirection: "row",
@@ -418,7 +415,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   securityText: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 12,
   },
   footer: {
@@ -427,7 +424,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   footerText: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 12,
     textAlign: "center",
   },

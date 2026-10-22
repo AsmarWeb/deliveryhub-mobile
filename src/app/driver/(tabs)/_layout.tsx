@@ -34,13 +34,13 @@ export default function DriverTabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: "#2563EB",
+        tabBarActiveTintColor: "#17634F",
         tabBarInactiveTintColor: "#94A3B8",
         tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabItem,
         tabBarLabelStyle: styles.tabLabel,
         tabBarIconStyle: styles.tabIcon,
-        sceneStyle: { backgroundColor: "#F5F7FB" },
+        sceneStyle: { backgroundColor: "#F6F3EB" },
       }}
     >
       <Tabs.Screen
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
-    borderTopColor: "#E2E8F0",
+    borderTopColor: "#DDDED2",
     height: Platform.OS === "ios" ? 88 : 70,
     paddingTop: 8,
     paddingBottom: Platform.OS === "ios" ? 24 : 9,
     elevation: 8,
-    shadowColor: "#0B1730",
+    shadowColor: "#123D35",
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.05,
     shadowRadius: 8,

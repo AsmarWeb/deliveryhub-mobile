@@ -26,7 +26,7 @@ import {
 
 type Filter = "all" | "new" | "active" | "history";
 const FILTERS: Filter[] = ["all", "new", "active", "history"];
-const BLUE = "#2563EB";
+const BLUE = "#17634F";
 
 function groupOf(item: DriverAssignment): Filter {
   if (item.status === "pending") return "new";
@@ -284,7 +284,7 @@ export default function DriverOrdersScreen() {
         </View>
         <View style={styles.divider} />
         <View style={styles.infoRow}>
-          <Ionicons name="person-outline" size={18} color="#64748B" />
+          <Ionicons name="person-outline" size={18} color="#62726B" />
           <Text
             style={[
               styles.infoText,
@@ -297,7 +297,7 @@ export default function DriverOrdersScreen() {
           </Text>
         </View>
         <View style={styles.infoRow}>
-          <Ionicons name="call-outline" size={18} color="#64748B" />
+          <Ionicons name="call-outline" size={18} color="#62726B" />
           <Text
             style={[
               styles.infoText,
@@ -373,7 +373,7 @@ export default function DriverOrdersScreen() {
           {t("إدارة المهام المسندة إليك", "Manage your assigned deliveries")}
         </Text>
         <View style={styles.summaryRow}>
-          <Ionicons name="cube-outline" size={16} color="#BFDBFE" />
+          <Ionicons name="cube-outline" size={16} color="#E3CB95" />
           <Text style={styles.summaryText}>
             {t("إجمالي المهام", "Total assignments")}: {counts.all}
           </Text>
@@ -382,7 +382,7 @@ export default function DriverOrdersScreen() {
 
       <View style={styles.toolbar}>
         <View style={styles.searchBox}>
-          <Ionicons name="search-outline" size={19} color="#64748B" />
+          <Ionicons name="search-outline" size={19} color="#62726B" />
           <TextInput
             accessibilityLabel={t("البحث عن طلب", "Search orders")}
             style={[
@@ -570,9 +570,9 @@ export default function DriverOrdersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 62,
     paddingHorizontal: 22,
     paddingBottom: 22,
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
   headerCaption: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#93C5FD",
+    color: "#E3CB95",
     letterSpacing: 1,
   },
   title: { color: "#FFFFFF", fontSize: 29, fontWeight: "800", marginTop: 7 },
@@ -591,14 +591,14 @@ const styles = StyleSheet.create({
     gap: 7,
     marginTop: 16,
   },
-  summaryText: { color: "#DBEAFE", fontSize: 12, fontWeight: "700" },
+  summaryText: { color: "#D9E5D6", fontSize: 12, fontWeight: "700" },
   toolbar: {
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 12,
     paddingTop: 12,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: "#DDDED2",
   },
   searchBox: {
     height: 45,
@@ -608,14 +608,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     paddingHorizontal: 12,
   },
   searchInput: {
     flex: 1,
     height: "100%",
     fontSize: 13,
-    color: "#0F172A",
+    color: "#15382F",
     paddingVertical: 0,
   },
   filters: { flexDirection: "row", gap: 5, marginTop: 11 },
@@ -626,8 +626,8 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 10,
   },
-  selectedFilter: { backgroundColor: "#EFF6FF" },
-  filterText: { color: "#64748B", fontSize: 11, fontWeight: "700" },
+  selectedFilter: { backgroundColor: "#EAF0E7" },
+  filterText: { color: "#62726B", fontSize: 11, fontWeight: "700" },
   selectedFilterText: { color: BLUE },
   list: { padding: 16, gap: 13, flexGrow: 1, paddingBottom: 35 },
   card: {
@@ -636,13 +636,13 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 13,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   cardTop: { flexDirection: "row", alignItems: "center", gap: 10 },
-  packageIcon: { padding: 11, borderRadius: 12, backgroundColor: "#EFF6FF" },
+  packageIcon: { padding: 11, borderRadius: 12, backgroundColor: "#EAF0E7" },
   cardHeading: { flex: 1, minWidth: 0 },
-  tracking: { fontSize: 14, fontWeight: "800", color: "#0B1730" },
-  muted: { fontSize: 12, color: "#64748B", marginTop: 4 },
+  tracking: { fontSize: 14, fontWeight: "800", color: "#123D35" },
+  muted: { fontSize: 12, color: "#62726B", marginTop: 4 },
   badge: {
     paddingHorizontal: 9,
     paddingVertical: 7,
@@ -650,13 +650,13 @@ const styles = StyleSheet.create({
     maxWidth: 105,
   },
   badgeText: { fontSize: 10, fontWeight: "800", textAlign: "center" },
-  newBadge: { backgroundColor: "#EFF6FF" },
-  newBadgeText: { color: "#1D4ED8" },
+  newBadge: { backgroundColor: "#EAF0E7" },
+  newBadgeText: { color: "#145340" },
   activeBadge: { backgroundColor: "#ECFDF5" },
   activeBadgeText: { color: "#047857" },
   historyBadge: { backgroundColor: "#F1F5F9" },
   historyBadgeText: { color: "#475569" },
-  divider: { height: 1, backgroundColor: "#E2E8F0" },
+  divider: { height: 1, backgroundColor: "#DDDED2" },
   infoRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   infoText: { fontSize: 13, color: "#475569", flex: 1 },
   actionRow: { flexDirection: "row", gap: 10, marginTop: 3 },
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   whiteText: { color: "#FFFFFF", fontWeight: "800", fontSize: 13 },
   rejectText: { color: "#DC2626", fontWeight: "800", fontSize: 13 },
   detailsButton: {
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     padding: 13,
     borderRadius: 12,
     alignItems: "center",
@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
   retryButton: {
     paddingHorizontal: 18,
     paddingVertical: 12,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 12,
   },
   warningText: {
@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
     padding: 22,
   },
   modal: { backgroundColor: "#FFFFFF", padding: 22, borderRadius: 20, gap: 14 },
-  modalTitle: { fontSize: 20, fontWeight: "800", color: "#0B1730" },
+  modalTitle: { fontSize: 20, fontWeight: "800", color: "#123D35" },
   reasonInput: {
     minHeight: 105,
     borderWidth: 1,
@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     fontSize: 14,
-    color: "#0F172A",
+    color: "#15382F",
   },
   rejectConfirmButton: {
     flex: 1,

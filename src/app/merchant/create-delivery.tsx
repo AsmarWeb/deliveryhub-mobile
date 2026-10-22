@@ -32,13 +32,13 @@ import {
 type AddressKind = "pickup" | "dropoff";
 type Coordinate = { latitude: number; longitude: number };
 const C = {
-  navy: "#0B1730",
-  blue: "#2563EB",
-  bg: "#F5F7FB",
+  navy: "#123D35",
+  blue: "#17634F",
+  bg: "#F6F3EB",
   white: "#FFFFFF",
-  muted: "#64748B",
-  border: "#E2E8F0",
-  pale: "#EFF6FF",
+  muted: "#62726B",
+  border: "#DDDED2",
+  pale: "#EAF0E7",
   red: "#DC2626",
   green: "#059669",
 };
@@ -58,7 +58,7 @@ function mapHtml(point: Coordinate): string {
 <style>
 html, body, #map { height: 100%; width: 100%; margin: 0; padding: 0; background: #eef3f9; }
 .leaflet-container { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-.pin { width: 18px; height: 18px; border: 4px solid white; border-radius: 50%; background: #2563eb; box-shadow: 0 2px 12px #0004; }
+.pin { width: 18px; height: 18px; border: 4px solid white; border-radius: 50%; background: #17634F; box-shadow: 0 2px 12px #0004; }
 #message { position: absolute; z-index: 1000; top: 12px; left: 12px; right: 12px; padding: 10px; background: white; border-radius: 10px; color: #334155; font-size: 12px; display: none; }
 </style></head><body>
 <div id="map"></div><div id="message">Map could not load. Check your internet connection.</div>
@@ -669,7 +669,7 @@ export default function CreateDeliveryScreen() {
         </Text>
         <Text style={styles.hint}>
           {t(
-            "تم تسجيل الطلب في Raslo",
+            "تم تسجيل الطلب في رسلو",
             "Your delivery has been registered",
           )}
         </Text>
@@ -731,7 +731,7 @@ export default function CreateDeliveryScreen() {
             />
           </Pressable>
           <Text style={styles.brand}>
-            Delivery<Text style={{ color: "#93C5FD" }}>Hub</Text>
+            {t("رسلو", "Raslo")}
           </Text>
           <Pressable
             onPress={() => setLanguage(ar ? "en" : "ar")}
@@ -1106,7 +1106,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   heroSubtitle: {
-    color: "#DBEAFE",
+    color: "#D9E5D6",
     textAlign: "center",
     marginTop: 8,
     fontSize: 12,
@@ -1141,7 +1141,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 17,
     borderRadius: 20,
-    borderColor: "#E7ECF4",
+    borderColor: "#E1E1D5",
     borderWidth: 1,
     gap: 13,
   },

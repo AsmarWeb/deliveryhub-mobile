@@ -56,7 +56,7 @@ export default function ConnectedDeliveryTracking({
   if (loading && !data) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color="#17634F" />
         <Text style={styles.message}>
           {t("جارٍ تحميل بيانات التتبع...", "Loading tracking data...")}
         </Text>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   message: {
-    color: "#64748B",
+    color: "#62726B",
     textAlign: "center",
   },
   errorBox: {
@@ -124,11 +124,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   retry: {
-    color: "#2563EB",
+    color: "#17634F",
     fontWeight: "700",
   },
   updating: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 11,
     textAlign: "center",
   },

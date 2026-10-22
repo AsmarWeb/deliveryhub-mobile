@@ -100,7 +100,7 @@ const HTML = `
         "driver",
         data.driverLocation,
         data.labels?.driver || "Driver",
-        "#2563EB"
+        "#17634F"
       );
 
       updateMarker(
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   map: {
     width: "100%",

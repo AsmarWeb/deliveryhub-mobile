@@ -164,7 +164,7 @@ export default function ProofOfDeliveryScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Ionicons name="checkmark-circle-outline" size={48} color="#2563EB" />
+          <Ionicons name="checkmark-circle-outline" size={48} color="#17634F" />
           <Text style={styles.title}>إثبات تسليم الشحنة</Text>
           <Text style={styles.subtitle}>
             تأكد من تسليم الشحنة للمستلم قبل إرسال الإثبات.
@@ -202,7 +202,7 @@ export default function ProofOfDeliveryScreen() {
               onPress={takePhoto}
               disabled={submitting}
             >
-              <Ionicons name="camera-outline" size={23} color="#2563EB" />
+              <Ionicons name="camera-outline" size={23} color="#17634F" />
               <Text style={styles.photoButtonText}>التقاط صورة</Text>
             </Pressable>
 
@@ -211,7 +211,7 @@ export default function ProofOfDeliveryScreen() {
               onPress={choosePhoto}
               disabled={submitting}
             >
-              <Ionicons name="images-outline" size={23} color="#2563EB" />
+              <Ionicons name="images-outline" size={23} color="#17634F" />
               <Text style={styles.photoButtonText}>المعرض</Text>
             </Pressable>
           </View>
@@ -249,7 +249,7 @@ export default function ProofOfDeliveryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
   },
   content: {
     padding: 20,
@@ -264,10 +264,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   subtitle: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 14,
     textAlign: "center",
     lineHeight: 23,
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 14,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   label: {
     fontSize: 15,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     fontSize: 15,
-    color: "#0F172A",
+    color: "#15382F",
   },
   textarea: {
     minHeight: 110,
@@ -303,14 +303,14 @@ const styles = StyleSheet.create({
   },
   photoButton: {
     flex: 1,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 14,
     padding: 16,
     alignItems: "center",
     gap: 8,
   },
   photoButtonText: {
-    color: "#2563EB",
+    color: "#17634F",
     fontWeight: "700",
     fontSize: 13,
   },

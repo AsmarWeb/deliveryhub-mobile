@@ -17,11 +17,11 @@ import { logout } from "../../services/auth";
 import { getMyProfile, type UserProfile } from "../../services/profile";
 
 const C = {
-  bg: "#F5F7FB",
-  navy: "#0B1730",
-  blue: "#2563EB",
-  muted: "#64748B",
-  border: "#E7ECF4",
+  bg: "#F6F3EB",
+  navy: "#123D35",
+  blue: "#17634F",
+  muted: "#62726B",
+  border: "#E1E1D5",
   danger: "#DC2626",
 };
 
@@ -101,8 +101,8 @@ export default function MerchantProfileScreen() {
   return (
     <View style={styles.root}>
       <ScrollView contentContainerStyle={styles.content}>
-      <Pressable accessibilityRole="button" onPress={() => router.push("/merchant/integrations")} style={{ padding: 18, backgroundColor: "#EFF6FF", borderRadius: 14, margin: 15 }}><Text style={{ color: "#2563EB", fontWeight: "800" }}>{t("تكاملات المتجر · Enterprise", "Store integrations · Enterprise")}</Text></Pressable>
-        <LinearGradient colors={[C.navy, "#18376D", C.blue]} style={styles.hero}>
+      <Pressable accessibilityRole="button" onPress={() => router.push("/merchant/integrations")} style={{ padding: 18, backgroundColor: "#EAF0E7", borderRadius: 14, margin: 15 }}><Text style={{ color: "#17634F", fontWeight: "800" }}>{t("تكاملات المتجر · Enterprise", "Store integrations · Enterprise")}</Text></Pressable>
+        <LinearGradient colors={[C.navy, "#205545", C.blue]} style={styles.hero}>
           <View style={styles.topRow}>
             <Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
@@ -116,7 +116,7 @@ export default function MerchantProfileScreen() {
             <Ionicons name="person-outline" size={38} color="#FFFFFF" />
           </View>
           <Text style={styles.name}>{profile?.name || t("حساب التاجر", "Merchant account")}</Text>
-          <Text style={styles.email}>{profile?.email || "Raslo"}</Text>
+          <Text style={styles.email}>{profile?.email || t("رسلو", "Raslo")}</Text>
         </LinearGradient>
 
         <View style={styles.body}>
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   language: { color: "#FFFFFF", fontWeight: "800", fontSize: 14 },
   avatar: { width: 78, height: 78, borderRadius: 25, backgroundColor: "#FFFFFF25", alignItems: "center", justifyContent: "center", marginTop: 28 },
   name: { color: "#FFFFFF", fontSize: 23, fontWeight: "900", marginTop: 14, textAlign: "center" },
-  email: { color: "#DBEAFE", fontSize: 13, marginTop: 5, textAlign: "center" },
+  email: { color: "#D9E5D6", fontSize: 13, marginTop: 5, textAlign: "center" },
   body: { padding: 18 },
   loader: { marginVertical: 18 },
   sectionTitle: { fontSize: 17, fontWeight: "800", color: C.navy, marginTop: 19, marginBottom: 12, textAlign: "right" },

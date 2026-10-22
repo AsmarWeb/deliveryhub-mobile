@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   title: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 16,
     fontWeight: "800",
   },
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   inactiveText: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 13,
     textAlign: "center",
   },

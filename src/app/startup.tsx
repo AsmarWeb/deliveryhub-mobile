@@ -87,7 +87,7 @@ export default function StartupScreen() {
         <Text style={styles.logoText}>D</Text>
       </View>
 
-      <Text style={styles.title}>Raslo</Text>
+      <Text style={styles.title}>رسلو · Raslo</Text>
 
       {error ? (
         <>
@@ -106,7 +106,7 @@ export default function StartupScreen() {
         <>
           <ActivityIndicator
             size="large"
-            color="#2563EB"
+            color="#17634F"
             style={styles.loader}
           />
 
@@ -120,7 +120,7 @@ export default function StartupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
     justifyContent: "center",
     alignItems: "center",
     padding: 30,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 25,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 18,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   loader: {
     marginTop: 30,
@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     textAlign: "center",
-    color: "#64748B",
+    color: "#62726B",
   },
   button: {
     marginTop: 24,
     paddingHorizontal: 28,
     paddingVertical: 15,
     borderRadius: 14,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
   },
   buttonText: {
     color: "#FFFFFF",

@@ -28,7 +28,7 @@ export default function PushControl() {
   return <View style={{padding:16, backgroundColor:"#fff", gap:8}}>
     <Text style={{fontWeight:"700"}}>{t("إشعارات الهاتف", "Phone notifications")}</Text>
     <Text>{pushSupported ? t("تنبيه بعروض التوصيل وتحديثات الطلب حتى عند إغلاق التطبيق.", "Alerts for offers and delivery updates, including when the app is closed.") : t("تحتاج هاتفًا حقيقيًا ونسخة تطوير. إشعارات الويب داخل التطبيق تعمل كالمعتاد.", "Requires a physical phone and a development build. In-app web alerts remain available.")}</Text>
-    {pushSupported && <Pressable accessibilityRole="button" disabled={busy || enabled === null} onPress={() => void toggle()} style={{padding:12,backgroundColor:"#EFF6FF",borderRadius:10}}><Text style={{color:"#2563EB"}}>{busy ? t("جارٍ التحديث...", "Updating...") : enabled ? t("إيقاف إشعارات هذا الجهاز", "Disable on this device") : t("تفعيل إشعارات الهاتف", "Enable phone notifications")}</Text></Pressable>}
+    {pushSupported && <Pressable accessibilityRole="button" disabled={busy || enabled === null} onPress={() => void toggle()} style={{padding:12,backgroundColor:"#EAF0E7",borderRadius:10}}><Text style={{color:"#17634F"}}>{busy ? t("جارٍ التحديث...", "Updating...") : enabled ? t("إيقاف إشعارات هذا الجهاز", "Disable on this device") : t("تفعيل إشعارات الهاتف", "Enable phone notifications")}</Text></Pressable>}
     {!!error && <Text accessibilityRole="alert" style={{color:"#B91C1C"}}>{error}</Text>}
   </View>;
 }

@@ -1,3 +1,4 @@
+import Brand from "../../components/Brand";
 import { useUnreadNotifications } from "../../hooks/useUnreadNotifications";
 import AvailableDrivers from "../../components/dispatch/AvailableDrivers";
 import { useLanguage } from "../../contexts/LanguageContext";
@@ -23,12 +24,12 @@ type MerchantData = Extract<DashboardResponse, { role: "merchant" }>["data"];
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
 const C = {
-  bg: "#F5F7FB",
+  bg: "#F6F3EB",
   surface: "#FFFFFF",
-  border: "#E7ECF4",
-  cyan: "#2563EB",
-  text: "#0B1730",
-  muted: "#718096",
+  border: "#E1E1D5",
+  cyan: "#17634F",
+  text: "#123D35",
+  muted: "#66766C",
   green: "#059669",
   amber: "#D97706",
 };
@@ -159,7 +160,7 @@ export default function MerchantDashboard() {
         }
       >
         <LinearGradient
-          colors={["#0B1730", "#18376D", "#2563EB"]}
+          colors={["#123D35", "#205545", "#17634F"]}
           style={styles.hero}
         >
           <View style={styles.header}>
@@ -175,12 +176,7 @@ export default function MerchantDashboard() {
                 color="#FFFFFF"
               />
             </Pressable>
-            <View style={styles.brand}>
-              <Ionicons name="cube" color="#FFFFFF" size={26} />
-              <Text style={styles.brandName}>
-                Delivery<Text style={{ color: "#BFDBFE" }}>Hub</Text>
-              </Text>
-            </View>
+            <Brand arabic={language === "ar"} inverse compact />
             <Pressable
               accessibilityRole="button"
               onPress={() => setLanguage(language === "ar" ? "en" : "ar")}
@@ -208,11 +204,11 @@ export default function MerchantDashboard() {
             onPress={() => router.push("/merchant/create-delivery")}
             style={styles.heroButton}
           >
-            <Ionicons name="add-circle" size={22} color="#0B1730" />
+            <Ionicons name="add-circle" size={22} color="#123D35" />
             <Text style={styles.heroButtonText}>
               {t("إنشاء طلب توصيل", "Create delivery")}
             </Text>
-            <Ionicons name="arrow-forward" size={18} color="#0B1730" />
+            <Ionicons name="arrow-forward" size={18} color="#123D35" />
           </Pressable>
         </LinearGradient>
 
@@ -464,7 +460,7 @@ const styles = StyleSheet.create({
   },
   languageText: { color: "#FFFFFF", fontWeight: "800" },
   eyebrow: {
-    color: "#BFDBFE",
+    color: "#E3CB95",
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.2,
@@ -477,7 +473,7 @@ const styles = StyleSheet.create({
     lineHeight: 37,
   },
   subtitle: {
-    color: "#DBEAFE",
+    color: "#D9E5D6",
     fontSize: 14,
     lineHeight: 23,
     marginTop: 8,
@@ -494,7 +490,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   heroButtonText: {
-    color: "#0B1730",
+    color: "#123D35",
     fontWeight: "900",
     fontSize: 15,
     flex: 1,
@@ -569,7 +565,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
   },
   deliveryCode: { color: C.text, fontWeight: "800", fontSize: 13 },
   deliveryStatus: {

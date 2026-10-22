@@ -1,3 +1,4 @@
+import Brand from "./Brand";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -19,12 +20,12 @@ type Role = "merchant" | "driver";
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
 const colors = {
-  navy: "#0B1730",
-  blue: "#2563EB",
-  background: "#F5F7FB",
+  navy: "#123D35",
+  blue: "#17634F",
+  background: "#F6F3EB",
   white: "#FFFFFF",
-  muted: "#718096",
-  border: "#E7ECF4",
+  muted: "#66766C",
+  border: "#E1E1D5",
 };
 
 export default function DashboardScreen({ role }: { role: Role }) {
@@ -94,7 +95,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
         {
           title: t("طلب توصيل", "New delivery"),
           icon: "add-circle-outline",
-          color: "#2563EB",
+          color: "#17634F",
           action: () => router.push("/merchant/create-delivery"),
         },
         {
@@ -120,7 +121,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
         {
           title: t("المهام", "Assignments"),
           icon: "clipboard-outline",
-          color: "#2563EB",
+          color: "#17634F",
           action: () => router.push("/driver/assignments"),
         },
         {
@@ -147,7 +148,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
     Alert.alert(
       t("قريباً", "Coming soon"),
       t(
-        "سنربط هذه الخدمة ببيانات Raslo الحقيقية.",
+        "سنربط هذه الخدمة ببيانات رسلو الحقيقية.",
         "This feature will connect to live Raslo data.",
       ),
     );
@@ -184,13 +185,12 @@ export default function DashboardScreen({ role }: { role: Role }) {
         contentContainerStyle={styles.content}
       >
         <LinearGradient
-          colors={["#0B1730", "#18376D", "#2563EB"]}
+          colors={["#123D35", "#205545", "#17634F"]}
           style={styles.hero}
         >
           <View style={styles.topRow}>
             <View style={styles.brand}>
-              <Ionicons name="cube" size={22} color="#FFFFFF" />
-              <Text style={styles.brandText}>Raslo</Text>
+              <Brand arabic={ar} inverse compact />
             </View>
 
             <Pressable
@@ -202,7 +202,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
           </View>
 
           <Text style={styles.welcome}>
-            {t("مرحباً بك في Raslo", "Welcome to Raslo")}
+            {t("مرحباً بك في رسلو", "Welcome to Raslo")}
           </Text>
 
           <Text style={styles.heroTitle}>
@@ -284,7 +284,7 @@ export default function DashboardScreen({ role }: { role: Role }) {
                       "Loading your account data...",
                     )
                   : t(
-                      "إحصائيات حسابك من Raslo",
+                      "إحصائيات حسابك من رسلو",
                       "Your Raslo account statistics",
                     )}
             </Text>
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   welcome: {
-    color: "#BFDBFE",
+    color: "#E3CB95",
     fontSize: 14,
     marginBottom: 10,
     textAlign: "left",
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   heroDescription: {
-    color: "#DBEAFE",
+    color: "#D9E5D6",
     fontSize: 14,
     lineHeight: 23,
     maxWidth: 320,
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 13,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     justifyContent: "center",
     alignItems: "center",
   },

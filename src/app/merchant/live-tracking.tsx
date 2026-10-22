@@ -117,7 +117,7 @@ export default function LiveTrackingScreen() {
       {loading && deliveries.length === 0 ? (
         <ActivityIndicator
           size="large"
-          color="#2563EB"
+          color="#17634F"
           style={{ marginTop: 45 }}
         />
       ) : (
@@ -136,7 +136,7 @@ export default function LiveTrackingScreen() {
               <Ionicons
                 name="navigate-circle-outline"
                 size={24}
-                color="#2563EB"
+                color="#17634F"
               />
               <Text style={styles.infoText}>
                 {t("الطلبات النشطة التي يمكن متابعة تقدمها", "Active deliveries you can track")}
@@ -157,7 +157,7 @@ export default function LiveTrackingScreen() {
                 <Ionicons
                   name="cube-outline"
                   size={25}
-                  color="#2563EB"
+                  color="#17634F"
                 />
 
                 <View style={{ flex: 1 }}>
@@ -185,7 +185,7 @@ export default function LiveTrackingScreen() {
                 <Ionicons
                   name="location-outline"
                   size={18}
-                  color="#2563EB"
+                  color="#17634F"
                 />
                 <Text style={styles.trackText}>
                   {t("عرض تفاصيل التوصيل", "View Delivery Details")}
@@ -224,10 +224,10 @@ export default function LiveTrackingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
   },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 60,
     paddingBottom: 22,
     paddingHorizontal: 20,
@@ -249,14 +249,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     padding: 16,
     borderRadius: 14,
     marginBottom: 20,
   },
   infoText: {
     flex: 1,
-    color: "#1D4ED8",
+    color: "#145340",
     fontWeight: "700",
   },
   card: {
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   cardTop: {
     flexDirection: "row",
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tracking: {
-    color: "#0B1730",
+    color: "#123D35",
     fontWeight: "800",
     fontSize: 15,
   },
@@ -294,10 +294,10 @@ const styles = StyleSheet.create({
     marginTop: 18,
     padding: 12,
     borderRadius: 12,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
   },
   trackText: {
-    color: "#2563EB",
+    color: "#17634F",
     fontWeight: "800",
   },
   empty: {
@@ -306,11 +306,11 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   emptyText: {
-    color: "#64748B",
+    color: "#62726B",
     textAlign: "center",
   },
   retry: {
-    color: "#2563EB",
+    color: "#17634F",
     fontWeight: "800",
   },
 });

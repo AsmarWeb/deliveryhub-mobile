@@ -77,16 +77,16 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   status: {
-    color: "#2563EB",
+    color: "#17634F",
     fontSize: 12,
     fontWeight: "700",
   },
   note: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#62726B",
     lineHeight: 19,
   },
 });

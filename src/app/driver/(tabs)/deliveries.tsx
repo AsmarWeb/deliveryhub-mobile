@@ -273,7 +273,7 @@ export default function DriverDeliveriesScreen() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconBox}>
-            <Ionicons name="cube-outline" size={23} color="#2563EB" />
+            <Ionicons name="cube-outline" size={23} color="#17634F" />
           </View>
           <View style={styles.heading}>
             <Text style={styles.tracking} numberOfLines={1}>
@@ -289,7 +289,7 @@ export default function DriverDeliveriesScreen() {
           <Ionicons
             name={finished ? "checkmark-circle" : "ellipse"}
             size={finished ? 17 : 10}
-            color={finished ? "#15803D" : "#2563EB"}
+            color={finished ? "#15803D" : "#17634F"}
           />
           <Text style={[styles.statusText, finished && styles.finishedText]}>
             {statusLabel(status)}
@@ -297,7 +297,7 @@ export default function DriverDeliveriesScreen() {
         </View>
         <View style={styles.divider} />
         <View style={styles.infoRow}>
-          <Ionicons name="person-outline" size={18} color="#64748B" />
+          <Ionicons name="person-outline" size={18} color="#62726B" />
           <View style={styles.infoContent}>
             <Text style={styles.label}>{t("المستلم", "Recipient")}</Text>
             <Text style={styles.value}>
@@ -306,7 +306,7 @@ export default function DriverDeliveriesScreen() {
           </View>
         </View>
         <View style={styles.infoRow}>
-          <Ionicons name="call-outline" size={18} color="#64748B" />
+          <Ionicons name="call-outline" size={18} color="#62726B" />
           <View style={styles.infoContent}>
             <Text style={styles.label}>{t("رقم الهاتف", "Phone number")}</Text>
             <Text style={styles.value}>
@@ -349,7 +349,7 @@ export default function DriverDeliveriesScreen() {
         {canTrack && (
           <View style={styles.trackingPanel}>
             <View style={styles.trackingHeading}>
-              <Ionicons name="location-outline" size={21} color="#2563EB" />
+              <Ionicons name="location-outline" size={21} color="#17634F" />
               <Text style={styles.trackingTitle}>
                 {t(
                   "مشاركة الموقع أثناء التوصيل",
@@ -462,7 +462,7 @@ export default function DriverDeliveriesScreen() {
           <Ionicons
             name={isArabic ? "arrow-back" : "arrow-forward"}
             size={18}
-            color="#2563EB"
+            color="#17634F"
           />
         </Pressable>
       </View>
@@ -501,7 +501,7 @@ export default function DriverDeliveriesScreen() {
           ))}
         </View>
         <View style={styles.searchBox}>
-          <Ionicons name="search-outline" size={19} color="#64748B" />
+          <Ionicons name="search-outline" size={19} color="#62726B" />
           <TextInput
             style={styles.searchInput}
             placeholder={t(
@@ -526,7 +526,7 @@ export default function DriverDeliveriesScreen() {
       </View>
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
         </View>
       ) : error ? (
         <View style={styles.center}>
@@ -546,7 +546,7 @@ export default function DriverDeliveriesScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor="#2563EB"
+              tintColor="#17634F"
             />
           }
           ListEmptyComponent={
@@ -570,15 +570,15 @@ export default function DriverDeliveriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 62,
     paddingHorizontal: 22,
     paddingBottom: 24,
   },
   caption: {
-    color: "#93C5FD",
+    color: "#E3CB95",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 1,
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: "#DDDED2",
   },
   tabs: { flexDirection: "row", gap: 8 },
   tab: {
@@ -601,9 +601,9 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     backgroundColor: "#F8FAFC",
   },
-  selectedTab: { backgroundColor: "#EFF6FF" },
-  tabText: { color: "#64748B", fontWeight: "700", fontSize: 12 },
-  selectedText: { color: "#2563EB" },
+  selectedTab: { backgroundColor: "#EAF0E7" },
+  tabText: { color: "#62726B", fontWeight: "700", fontSize: 12 },
+  selectedText: { color: "#17634F" },
   searchBox: {
     height: 45,
     flexDirection: "row",
@@ -613,9 +613,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
-  searchInput: { flex: 1, fontSize: 13, color: "#0B1730", paddingVertical: 8 },
+  searchInput: { flex: 1, fontSize: 13, color: "#123D35", paddingVertical: 8 },
   list: { padding: 16, gap: 14, paddingBottom: 35, flexGrow: 1 },
   card: {
     backgroundColor: "#FFFFFF",
@@ -623,30 +623,30 @@ const styles = StyleSheet.create({
     padding: 18,
     gap: 12,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   cardHeader: { flexDirection: "row", alignItems: "center", gap: 11 },
-  iconBox: { backgroundColor: "#EFF6FF", padding: 12, borderRadius: 13 },
+  iconBox: { backgroundColor: "#EAF0E7", padding: 12, borderRadius: 13 },
   heading: { flex: 1 },
-  tracking: { color: "#0B1730", fontSize: 16, fontWeight: "800" },
-  muted: { color: "#64748B", fontSize: 12, marginTop: 4, textAlign: "center" },
+  tracking: { color: "#123D35", fontSize: 16, fontWeight: "800" },
+  muted: { color: "#62726B", fontSize: 12, marginTop: 4, textAlign: "center" },
   statusBox: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     padding: 11,
     borderRadius: 11,
   },
   finishedStatus: { backgroundColor: "#F0FDF4" },
-  statusText: { color: "#1D4ED8", fontWeight: "700", fontSize: 12 },
-  divider: { height: 1, backgroundColor: "#E2E8F0" },
+  statusText: { color: "#145340", fontWeight: "700", fontSize: 12 },
+  divider: { height: 1, backgroundColor: "#DDDED2" },
   infoRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   infoContent: { flex: 1, gap: 3 },
   label: { color: "#94A3B8", fontSize: 11 },
   value: { color: "#334155", fontSize: 14, fontWeight: "600" },
   primaryButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     padding: 15,
     borderRadius: 12,
     flexDirection: "row",
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   finishedText: { color: "#15803D", fontWeight: "800", fontSize: 12 },
   detailsButton: {
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     padding: 13,
     borderRadius: 12,
     flexDirection: "row",
@@ -684,18 +684,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 9,
   },
-  detailsText: { color: "#2563EB", fontWeight: "800", fontSize: 13 },
+  detailsText: { color: "#17634F", fontWeight: "800", fontSize: 13 },
   trackingPanel: {
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 13,
     padding: 14,
     gap: 10,
   },
   trackingHeading: { flexDirection: "row", alignItems: "center", gap: 8 },
-  trackingTitle: { color: "#1D4ED8", fontSize: 13, fontWeight: "800", flex: 1 },
+  trackingTitle: { color: "#145340", fontSize: 13, fontWeight: "800", flex: 1 },
   trackingHint: { color: "#475569", fontSize: 12, lineHeight: 19 },
   trackingButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     borderRadius: 11,
     padding: 13,
     flexDirection: "row",
@@ -714,12 +714,12 @@ const styles = StyleSheet.create({
   },
   error: { color: "#DC2626", textAlign: "center" },
   retryButton: {
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 10,
   },
-  retry: { color: "#2563EB", fontWeight: "800" },
+  retry: { color: "#17634F", fontWeight: "800" },
   empty: {
     flex: 1,
     justifyContent: "center",

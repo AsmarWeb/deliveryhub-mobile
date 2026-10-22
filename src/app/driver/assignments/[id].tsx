@@ -54,7 +54,7 @@ function DetailRow({
   return (
     <View style={styles.detailRow}>
       <View style={styles.detailIcon}>
-        <Ionicons name={icon} size={19} color="#2563EB" />
+        <Ionicons name={icon} size={19} color="#17634F" />
       </View>
       <View style={styles.detailContent}>
         <Text style={styles.detailLabel}>{label}</Text>
@@ -83,7 +83,7 @@ function DetailRow({
     return (
       <View style={styles.card}>
         <View style={styles.cardTitleRow}>
-          <Ionicons name={icon} size={22} color="#2563EB" />
+          <Ionicons name={icon} size={22} color="#17634F" />
           <Text style={styles.sectionTitle}>{title}</Text>
         </View>
         <Text style={styles.addressText}>
@@ -266,7 +266,7 @@ export default function DriverAssignmentDetails() {
 
       {loading && !assignment ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
         </View>
       ) : error && !assignment ? (
         <View style={styles.center}>
@@ -297,7 +297,7 @@ export default function DriverAssignmentDetails() {
             <>
               <View style={styles.summaryCard}>
                 <View style={styles.parcelIcon}>
-                  <Ionicons name="cube-outline" size={31} color="#2563EB" />
+                  <Ionicons name="cube-outline" size={31} color="#17634F" />
                 </View>
                 <Text style={styles.tracking}>
                   {delivery?.tracking_number ?? `#${assignment.id}`}
@@ -412,7 +412,7 @@ export default function DriverAssignmentDetails() {
                   </Text>
                 </View>
               ) : null}
-              {busy ? <ActivityIndicator color="#2563EB" /> : null}
+              {busy ? <ActivityIndicator color="#17634F" /> : null}
               {error ? (
                 <Text style={styles.error}>
                   {t(
@@ -430,9 +430,9 @@ export default function DriverAssignmentDetails() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 60,
     paddingBottom: 23,
     paddingHorizontal: 20,
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   error: { color: "#DC2626", textAlign: "center" },
-  retry: { color: "#2563EB", fontWeight: "800" },
+  retry: { color: "#17634F", fontWeight: "800" },
   content: { padding: 18, paddingBottom: 50, gap: 15 },
   summaryCard: {
     borderRadius: 20,
@@ -458,34 +458,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
-  parcelIcon: { backgroundColor: "#EFF6FF", borderRadius: 16, padding: 15 },
+  parcelIcon: { backgroundColor: "#EAF0E7", borderRadius: 16, padding: 15 },
   tracking: {
     fontSize: 21,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
     textAlign: "center",
   },
-  status: { color: "#2563EB", fontWeight: "800" },
-  assignmentNumber: { color: "#64748B", fontSize: 12 },
+  status: { color: "#17634F", fontWeight: "800" },
+  assignmentNumber: { color: "#62726B", fontSize: 12 },
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 18,
     padding: 19,
     gap: 14,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   cardTitleRow: { flexDirection: "row", alignItems: "center", gap: 9 },
-  sectionTitle: { color: "#0B1730", fontSize: 17, fontWeight: "800" },
+  sectionTitle: { color: "#123D35", fontSize: 17, fontWeight: "800" },
   addressText: { color: "#334155", fontSize: 14, lineHeight: 23 },
   missingHint: { color: "#94A3B8", fontSize: 12 },
   detailRow: { flexDirection: "row", gap: 11, alignItems: "flex-start" },
   detailIcon: {
     width: 37,
     height: 37,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   navigationButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     minHeight: 48,
     borderRadius: 12,
     flexDirection: "row",
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   },
   navigationButtonText: { color: "#FFFFFF", fontWeight: "800", fontSize: 14 },
   primaryButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     padding: 17,
     borderRadius: 15,
     flexDirection: "row",

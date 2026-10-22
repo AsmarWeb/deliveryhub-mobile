@@ -116,13 +116,13 @@ export default function ProtectedRoute({ role, accessory }: { role: Role; access
         <Text style={styles.icon}>D</Text>
       </View>
 
-      <Text style={styles.title}>Raslo</Text>
+      <Text style={styles.title}>رسلو · Raslo</Text>
 
       {status === "loading" ? (
         <>
           <ActivityIndicator
             size="large"
-            color="#2563EB"
+            color="#17634F"
             style={styles.loader}
           />
           <Text style={styles.description}>جاري التحقق من حسابك...</Text>
@@ -148,7 +148,7 @@ export default function ProtectedRoute({ role, accessory }: { role: Role; access
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
     justifyContent: "center",
     alignItems: "center",
     padding: 30,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 76,
     height: 76,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     borderRadius: 23,
     justifyContent: "center",
     alignItems: "center",
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 27,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   loader: {
     marginTop: 30,
@@ -180,11 +180,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     textAlign: "center",
-    color: "#64748B",
+    color: "#62726B",
   },
   button: {
     marginTop: 25,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     borderRadius: 14,
     paddingHorizontal: 28,
     paddingVertical: 15,

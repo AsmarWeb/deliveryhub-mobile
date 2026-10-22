@@ -4,19 +4,17 @@
     "slug": "deliveryhub-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/brand/raslo-icon.png",
     "scheme": "deliveryhubmobile",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/brand/raslo-icon.png",
       "bundleIdentifier": "com.anonymous.deliveryhub-mobile"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#123D35",
+        "foregroundImage": "./assets/brand/raslo-adaptive.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.asmarweb.deliveryhub",
@@ -24,15 +22,15 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/brand/raslo-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
+          "backgroundColor": "#123D35",
+          "image": "./assets/brand/raslo-icon.png",
           "imageWidth": 76
         }
       ],

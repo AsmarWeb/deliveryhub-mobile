@@ -96,7 +96,7 @@ export default function DeliveriesScreen() {
     return <Pressable style={[styles.card, needsApproval && styles.attentionCard]}
       onPress={() => router.push({ pathname: "/merchant/deliveries/[id]", params: { id: String(item.id) } })}>
       <View style={styles.cardHeader}>
-        <Ionicons name="cube-outline" size={24} color="#2563EB" />
+        <Ionicons name="cube-outline" size={24} color="#17634F" />
         <Text style={styles.tracking} numberOfLines={1}>{item.tracking_number}</Text>
         <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
       </View>
@@ -122,7 +122,7 @@ export default function DeliveriesScreen() {
         <Ionicons name="refresh-outline" size={24} color="#FFFFFF" />
       </Pressable>
     </View>
-    {loading && items.length === 0 ? <ActivityIndicator size="large" color="#2563EB" style={styles.center} /> :
+    {loading && items.length === 0 ? <ActivityIndicator size="large" color="#17634F" style={styles.center} /> :
       <FlatList data={items} keyExtractor={item => String(item.id)} renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
@@ -138,34 +138,34 @@ export default function DeliveriesScreen() {
             <Text style={styles.retryText}>{t("إعادة المحاولة", "Try again")}</Text>
           </Pressable>}
         </View>}
-        ListFooterComponent={loadingMore ? <ActivityIndicator color="#2563EB" style={{ margin: 20 }} /> : null}
+        ListFooterComponent={loadingMore ? <ActivityIndicator color="#17634F" style={{ margin: 20 }} /> : null}
       />}
   </View>;
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
-  header: { backgroundColor: "#0B1730", paddingTop: 58, paddingHorizontal: 22,
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
+  header: { backgroundColor: "#123D35", paddingTop: 58, paddingHorizontal: 22,
     paddingBottom: 24, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   title: { color: "#FFFFFF", fontSize: 22, fontWeight: "800" },
   center: { flex: 1 },
   list: { padding: 18, flexGrow: 1 },
   card: { backgroundColor: "#FFFFFF", padding: 18, borderRadius: 18,
-    marginBottom: 12, borderWidth: 1, borderColor: "#E7ECF4" },
+    marginBottom: 12, borderWidth: 1, borderColor: "#E1E1D5" },
   attentionCard: { borderColor: "#F59E0B", borderWidth: 1.5 },
   cardHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
-  tracking: { flex: 1, fontWeight: "800", color: "#0B1730", fontSize: 12 },
+  tracking: { flex: 1, fontWeight: "800", color: "#123D35", fontSize: 12 },
   recipient: { fontSize: 16, fontWeight: "700", color: "#334155", marginTop: 16 },
   cardFooter: { flexDirection: "row", justifyContent: "space-between", marginTop: 15, alignItems: "center" },
-  status: { color: "#2563EB", fontWeight: "700", fontSize: 12 },
+  status: { color: "#17634F", fontWeight: "700", fontSize: 12 },
   attentionText: { color: "#B45309" },
-  date: { color: "#64748B", fontSize: 12 },
+  date: { color: "#62726B", fontSize: 12 },
   priceRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 14,
     paddingTop: 12, borderTopWidth: 1, borderTopColor: "#FDE68A" },
   priceLabel: { color: "#92400E", fontWeight: "700", fontSize: 13 },
   empty: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 100, gap: 16 },
-  emptyTitle: { color: "#64748B", fontSize: 15, textAlign: "center" },
-  retry: { backgroundColor: "#2563EB", paddingHorizontal: 22, paddingVertical: 12, borderRadius: 12 },
+  emptyTitle: { color: "#62726B", fontSize: 15, textAlign: "center" },
+  retry: { backgroundColor: "#17634F", paddingHorizontal: 22, paddingVertical: 12, borderRadius: 12 },
   retryText: { color: "#FFFFFF", fontWeight: "700" },
   errorBanner: { padding: 12, backgroundColor: "#FEF2F2", borderRadius: 12, marginBottom: 12 },
   errorText: { color: "#B91C1C", textAlign: "center" },

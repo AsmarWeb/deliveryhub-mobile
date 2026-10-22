@@ -67,3 +67,8 @@ Enterprise product discovery and integration status are implemented against the 
 - [Rename guide](docs/raslo-rebrand.md)
 
 The GitHub repositories currently retain their original URLs. See the rename guide before changing repository or Expo identifiers.
+
+
+## Raslo / رسلو visual identity
+
+The UAE visual refresh uses an emerald, ivory and gold palette, bilingual wordmarks and a consistent route-inspired icon. See [the brand guide](docs/raslo-brand.md) for assets, typography, naming and release checks.

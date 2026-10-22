@@ -233,7 +233,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
           <Ionicons
             name={isUnread ? "notifications" : "notifications-outline"}
             size={22}
-            color={isUnread ? "#2563EB" : "#64748B"}
+            color={isUnread ? "#17634F" : "#62726B"}
           />
         </View>
         <View style={styles.cardBody}>
@@ -253,7 +253,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
           )}
         </View>
         {markingId === item.id ? (
-          <ActivityIndicator size="small" color="#2563EB" />
+          <ActivityIndicator size="small" color="#17634F" />
         ) : isUnread ? (
           <View style={styles.dot} />
         ) : null}
@@ -289,7 +289,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
           style={styles.markAllButton}
         >
           {markingAll ? (
-            <ActivityIndicator size="small" color="#2563EB" />
+            <ActivityIndicator size="small" color="#17634F" />
           ) : (
             <Text
               style={[
@@ -325,7 +325,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
 
       {loading && !refreshing ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
         </View>
       ) : error && items.length === 0 ? (
         <View style={styles.center}>
@@ -347,7 +347,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor="#2563EB"
+              tintColor="#17634F"
             />
           }
           ListHeaderComponent={
@@ -393,7 +393,7 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
                 style={styles.moreButton}
               >
                 {loadingMore ? (
-                  <ActivityIndicator color="#2563EB" />
+                  <ActivityIndicator color="#17634F" />
                 ) : (
                   <Text style={styles.moreText}>
                     {t("تحميل المزيد", "Load more")}
@@ -409,15 +409,15 @@ export default function NotificationCenter({ role }: { role: "merchant" | "drive
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 62,
     paddingHorizontal: 22,
     paddingBottom: 25,
   },
   caption: {
-    color: "#93C5FD",
+    color: "#E3CB95",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 1,
@@ -434,13 +434,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   toolbarTitle: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 15,
     fontWeight: "800",
     flexShrink: 1,
   },
   markAllButton: { padding: 7, minWidth: 85, alignItems: "center" },
-  markAll: { color: "#2563EB", fontSize: 12, fontWeight: "800" },
+  markAll: { color: "#17634F", fontSize: 12, fontWeight: "800" },
   disabled: { opacity: 0.4 },
   filters: {
     flexDirection: "row",
@@ -456,9 +456,9 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     alignItems: "center",
   },
-  filterActive: { backgroundColor: "#EFF6FF" },
-  filterText: { color: "#64748B", fontSize: 13, fontWeight: "700" },
-  filterTextActive: { color: "#2563EB" },
+  filterActive: { backgroundColor: "#EAF0E7" },
+  filterText: { color: "#62726B", fontSize: 13, fontWeight: "700" },
+  filterTextActive: { color: "#17634F" },
   list: { padding: 16, gap: 12, flexGrow: 1, paddingBottom: 35 },
   card: {
     flexDirection: "row",
@@ -468,25 +468,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
-  unreadCard: { backgroundColor: "#EFF6FF", borderColor: "#BFDBFE" },
-  iconBox: { backgroundColor: "#DBEAFE", padding: 11, borderRadius: 12 },
+  unreadCard: { backgroundColor: "#EAF0E7", borderColor: "#E3CB95" },
+  iconBox: { backgroundColor: "#D9E5D6", padding: 11, borderRadius: 12 },
   readIconBox: { backgroundColor: "#F1F5F9" },
   cardBody: { flex: 1, gap: 7 },
   message: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 14,
     fontWeight: "700",
     lineHeight: 22,
   },
-  date: { color: "#64748B", fontSize: 11 },
-  hint: { color: "#2563EB", fontSize: 11, fontWeight: "600" },
+  date: { color: "#62726B", fontSize: 11 },
+  hint: { color: "#17634F", fontSize: 11, fontWeight: "600" },
   dot: {
     width: 9,
     height: 9,
     borderRadius: 5,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     marginTop: 8,
   },
   center: {
@@ -499,12 +499,12 @@ const styles = StyleSheet.create({
   error: { color: "#DC2626", textAlign: "center", fontSize: 13 },
   errorBanner: { color: "#B91C1C", textAlign: "center", marginBottom: 8 },
   retryButton: {
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  retryText: { color: "#2563EB", fontWeight: "800" },
+  retryText: { color: "#17634F", fontWeight: "800" },
   empty: {
     flex: 1,
     justifyContent: "center",
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textAlign: "center",
   },
-  emptySubtitle: { color: "#64748B", textAlign: "center", fontSize: 13 },
+  emptySubtitle: { color: "#62726B", textAlign: "center", fontSize: 13 },
   moreButton: { padding: 16, alignItems: "center" },
-  moreText: { color: "#2563EB", fontWeight: "800" },
+  moreText: { color: "#17634F", fontWeight: "800" },
 });

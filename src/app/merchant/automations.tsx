@@ -80,7 +80,7 @@ export default function MerchantAutomations() {
       <Text accessibilityRole="alert" style={s.error}>{automationError(error, isArabic)}</Text>
       <AutomationButton secondary disabled={loading || busy !== null} onPress={() => void load(result?.current_page ?? 1)}>{t("تحديث القائمة", "Refresh list")}</AutomationButton>
     </View>}
-    {loading && !result && <ActivityIndicator color="#2563EB" />}
+    {loading && !result && <ActivityIndicator color="#17634F" />}
     {result && <Text style={s.body}>{t("إجمالي الجداول", "Total schedules")}: {result.total}</Text>}
     {result?.data.length === 0 && <Text style={s.body}>{t("ليس لديك جداول بعد. ابدأ بإنشاء جدول جديد.", "No schedules yet. Create your first schedule.")}</Text>}
     {result?.data.map(item => <View key={item.id} style={s.card}>

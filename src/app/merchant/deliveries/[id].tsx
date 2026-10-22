@@ -171,7 +171,7 @@ export default function DeliveryDetailsScreen() {
 
   if (loading && !delivery) return (
     <View style={styles.center}>
-      <ActivityIndicator size="large" color="#2563EB" />
+      <ActivityIndicator size="large" color="#17634F" />
       <Text style={styles.loadingText}>{t("جاري تحميل تفاصيل التوصيل...", "Loading delivery details...")}</Text>
     </View>
   );
@@ -283,7 +283,7 @@ export default function DeliveryDetailsScreen() {
           </>}
         </View>}
         {!isDraft && <View style={styles.noticeCard}>
-          <Ionicons name="information-circle-outline" size={22} color="#2563EB" />
+          <Ionicons name="information-circle-outline" size={22} color="#17634F" />
           <Text style={styles.noticeText}>{t("حالة الطلب الحالية: ", "Current status: ")}{statusLabel}</Text>
         </View>}
       </ScrollView>
@@ -295,7 +295,7 @@ function InfoRow({ icon, label, value }: {
   icon: keyof typeof Ionicons.glyphMap; label: string; value: string;
 }) {
   return <View style={styles.infoRow}>
-    <Ionicons name={icon} size={22} color="#2563EB" />
+    <Ionicons name={icon} size={22} color="#17634F" />
     <View style={styles.infoText}>
       <Text style={styles.infoLabel}>{label}</Text>
       <Text style={styles.infoValue} selectable>{value}</Text>
@@ -306,39 +306,39 @@ function InfoRow({ icon, label, value }: {
 const styles = StyleSheet.create({
   cancelButton: { minHeight: 48, padding: 12, borderRadius: 12, backgroundColor: "#FEF2F2", alignItems: "center", justifyContent: "center", marginTop: 12 },
   cancelText: { color: "#B91C1C", fontWeight: "700", lineHeight: 23 },
-  cancelInput: { minHeight: 85, borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, padding: 12, fontSize: 16, marginTop: 12, color: "#0B1730" },
-  container: { flex: 1, backgroundColor: "#F5F7FB" },
-  header: { backgroundColor: "#0B1730", paddingTop: 60, paddingHorizontal: 22,
+  cancelInput: { minHeight: 85, borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, padding: 12, fontSize: 16, marginTop: 12, color: "#123D35" },
+  container: { flex: 1, backgroundColor: "#F6F3EB" },
+  header: { backgroundColor: "#123D35", paddingTop: 60, paddingHorizontal: 22,
     paddingBottom: 24, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   headerTitle: { color: "#FFFFFF", fontSize: 20, fontWeight: "800" },
   content: { padding: 18, paddingBottom: 40, gap: 16 },
-  trackingCard: { backgroundColor: "#0B1730", borderRadius: 22, padding: 25, alignItems: "center", gap: 12 },
+  trackingCard: { backgroundColor: "#123D35", borderRadius: 22, padding: 25, alignItems: "center", gap: 12 },
   trackingLabel: { color: "#94A3B8", fontSize: 13 },
   trackingNumber: { color: "#FFFFFF", fontSize: 15, fontWeight: "800", textAlign: "center" },
-  statusBadge: { backgroundColor: "#1D4ED8", paddingHorizontal: 20, paddingVertical: 8, borderRadius: 30 },
+  statusBadge: { backgroundColor: "#145340", paddingHorizontal: 20, paddingVertical: 8, borderRadius: 30 },
   statusBadgeAttention: { backgroundColor: "#B45309" },
   statusText: { color: "#FFFFFF", fontWeight: "700" },
-  card: { backgroundColor: "#FFFFFF", padding: 22, borderRadius: 20, borderWidth: 1, borderColor: "#E7ECF4" },
-  sectionTitle: { fontSize: 17, fontWeight: "800", color: "#0B1730", marginBottom: 15, textAlign: "right" },
+  card: { backgroundColor: "#FFFFFF", padding: 22, borderRadius: 20, borderWidth: 1, borderColor: "#E1E1D5" },
+  sectionTitle: { fontSize: 17, fontWeight: "800", color: "#123D35", marginBottom: 15, textAlign: "right" },
   infoRow: { flexDirection: "row", alignItems: "flex-start", gap: 14, paddingVertical: 14,
     borderBottomWidth: 1, borderBottomColor: "#F1F5F9" },
   infoText: { flex: 1 },
-  infoLabel: { fontSize: 12, color: "#64748B", marginBottom: 5, textAlign: "right" },
-  infoValue: { fontSize: 15, fontWeight: "700", color: "#0B1730", textAlign: "right" },
+  infoLabel: { fontSize: 12, color: "#62726B", marginBottom: 5, textAlign: "right" },
+  infoValue: { fontSize: 15, fontWeight: "700", color: "#123D35", textAlign: "right" },
   feeText: { fontSize: 30, fontWeight: "800", color: "#047857", textAlign: "center", marginVertical: 12 },
-  hint: { fontSize: 13, lineHeight: 21, color: "#64748B", textAlign: "right", marginBottom: 12 },
-  submitButton: { backgroundColor: "#2563EB", borderRadius: 16, paddingVertical: 18,
+  hint: { fontSize: 13, lineHeight: 21, color: "#62726B", textAlign: "right", marginBottom: 12 },
+  submitButton: { backgroundColor: "#17634F", borderRadius: 16, paddingVertical: 18,
     paddingHorizontal: 20, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10, marginTop: 8 },
   approveButton: { backgroundColor: "#047857", borderRadius: 16, paddingVertical: 18,
     paddingHorizontal: 20, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
   submitButtonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "800" },
   disabledButton: { opacity: 0.6 },
-  noticeCard: { backgroundColor: "#EFF6FF", borderRadius: 15, padding: 18,
+  noticeCard: { backgroundColor: "#EAF0E7", borderRadius: 15, padding: 18,
     flexDirection: "row", alignItems: "center", gap: 12 },
-  noticeText: { flex: 1, color: "#1D4ED8", fontWeight: "700", textAlign: "right" },
+  noticeText: { flex: 1, color: "#145340", fontWeight: "700", textAlign: "right" },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 15, padding: 24 },
-  loadingText: { color: "#64748B" },
+  loadingText: { color: "#62726B" },
   errorText: { color: "#EF4444", fontSize: 16, fontWeight: "700" },
-  backButton: { backgroundColor: "#2563EB", paddingHorizontal: 28, paddingVertical: 12, borderRadius: 12 },
+  backButton: { backgroundColor: "#17634F", paddingHorizontal: 28, paddingVertical: 12, borderRadius: 12 },
   backButtonText: { color: "#FFFFFF", fontWeight: "700" },
 });

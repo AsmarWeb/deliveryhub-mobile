@@ -174,7 +174,7 @@ export default function DriverAssignmentsScreen() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconBox}>
-            <Ionicons name="cube-outline" size={23} color="#2563EB" />
+            <Ionicons name="cube-outline" size={23} color="#17634F" />
           </View>
 
           <View style={styles.cardHeaderText}>
@@ -231,7 +231,7 @@ export default function DriverAssignmentsScreen() {
         )}
 
         {busy && (
-          <ActivityIndicator color="#2563EB" style={{ marginTop: 12 }} />
+          <ActivityIndicator color="#17634F" style={{ marginTop: 12 }} />
         )}
       </View>
     );
@@ -253,7 +253,7 @@ export default function DriverAssignmentsScreen() {
 
       {loading && assignments.length === 0 ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
           <Text>جاري تحميل المهام...</Text>
         </View>
       ) : (
@@ -295,7 +295,7 @@ export default function DriverAssignmentsScreen() {
                 onPress={() => void load(page + 1, true)}
               >
                 {loadingMore ? (
-                  <ActivityIndicator color="#2563EB" />
+                  <ActivityIndicator color="#17634F" />
                 ) : (
                   <Text style={styles.moreText}>تحميل المزيد</Text>
                 )}
@@ -354,10 +354,10 @@ export default function DriverAssignmentsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
   },
   header: {
-    backgroundColor: "#0B1730",
+    backgroundColor: "#123D35",
     paddingTop: 60,
     paddingBottom: 24,
     paddingHorizontal: 22,
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#E7ECF4",
+    borderColor: "#E1E1D5",
   },
   cardHeader: {
     flexDirection: "row",
@@ -397,18 +397,18 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 14,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     alignItems: "center",
     justifyContent: "center",
   },
   tracking: {
     fontSize: 15,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
   },
   status: {
     fontSize: 12,
-    color: "#2563EB",
+    color: "#17634F",
   },
   addressBlock: {
     flexDirection: "row",
@@ -420,13 +420,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#62726B",
     textAlign: "right",
   },
   value: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#0B1730",
+    color: "#123D35",
     marginTop: 5,
     textAlign: "right",
   },
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     flex: 1,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     borderRadius: 12,
     padding: 14,
     alignItems: "center",
@@ -483,13 +483,13 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   emptyTitle: {
-    color: "#0B1730",
+    color: "#123D35",
     fontWeight: "800",
     fontSize: 17,
     textAlign: "center",
   },
   emptyDescription: {
-    color: "#64748B",
+    color: "#62726B",
     textAlign: "center",
     lineHeight: 22,
   },
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   moreText: {
-    color: "#2563EB",
+    color: "#17634F",
     fontWeight: "700",
   },
   overlay: {
@@ -517,11 +517,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 19,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
     textAlign: "right",
   },
   modalDescription: {
-    color: "#64748B",
+    color: "#62726B",
     marginTop: 8,
     textAlign: "right",
   },

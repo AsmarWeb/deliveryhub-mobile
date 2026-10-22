@@ -147,13 +147,13 @@ export default function DriverProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       <LinearGradient
-        colors={["#0B1730", "#183A72", "#2563EB"]}
+        colors={["#123D35", "#205545", "#17634F"]}
         style={styles.hero}
       >
         <View style={styles.heroTop}>
           <View style={styles.brandRow}>
             <Ionicons name="cube-outline" size={22} color="#FFFFFF" />
-            <Text style={styles.brand}>Raslo</Text>
+            <Text style={styles.brand}>{t("رسلو", "Raslo")}</Text>
           </View>
           <View style={styles.heroBadge}>
             <Ionicons
@@ -190,7 +190,7 @@ export default function DriverProfileScreen() {
       <DispatchControl />
       {loading && !profile ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
         </View>
       ) : error && !profile ? (
         <View style={styles.center}>
@@ -211,7 +211,7 @@ export default function DriverProfileScreen() {
         <>
           <View style={styles.identityCard}>
             <View style={styles.avatar}>
-              <Ionicons name="person" size={34} color="#2563EB" />
+              <Ionicons name="person" size={34} color="#17634F" />
             </View>
             <Text style={styles.name}>{profile.name}</Text>
             <Text style={styles.email}>{profile.email}</Text>
@@ -232,7 +232,7 @@ export default function DriverProfileScreen() {
             {t("المعلومات الشخصية", "Personal information")}
           </Text>
           <Pressable accessibilityRole="button" onPress={() => router.push("/account")} style={{ padding: 16, minHeight: 48 }}>
-            <Text style={{ color: "#2563EB", fontWeight: "700", textAlign: language === "ar" ? "right" : "left" }}>{t("تعديل واستكمال بيانات الحساب", "Edit & complete account details")}</Text>
+            <Text style={{ color: "#17634F", fontWeight: "700", textAlign: language === "ar" ? "right" : "left" }}>{t("تعديل واستكمال بيانات الحساب", "Edit & complete account details")}</Text>
           </Pressable>
           <View style={styles.card}>
             <InfoRow
@@ -265,7 +265,7 @@ export default function DriverProfileScreen() {
           <View style={styles.card}>
             <View style={styles.settingHeading}>
               <View style={styles.iconTile}>
-                <Ionicons name="language-outline" size={23} color="#2563EB" />
+                <Ionicons name="language-outline" size={23} color="#17634F" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.settingTitle}>
@@ -301,7 +301,7 @@ export default function DriverProfileScreen() {
                     <Ionicons
                       name="checkmark-circle"
                       size={18}
-                      color="#2563EB"
+                      color="#17634F"
                     />
                   )}
                 </Pressable>
@@ -316,7 +316,7 @@ export default function DriverProfileScreen() {
                 <Ionicons
                   name="notifications-outline"
                   size={23}
-                  color="#2563EB"
+                  color="#17634F"
                 />
               </View>
               <View style={{ flex: 1 }}>
@@ -384,7 +384,7 @@ export default function DriverProfileScreen() {
                     </Text>
                   </View>
                   {availabilityBusy && (
-                    <ActivityIndicator size="small" color="#2563EB" />
+                    <ActivityIndicator size="small" color="#17634F" />
                   )}
                   <Switch
                     value={driver.is_available}
@@ -393,8 +393,8 @@ export default function DriverProfileScreen() {
                       availabilityBusy ||
                       (driver.status !== "active" && !driver.is_available)
                     }
-                    trackColor={{ false: "#CBD5E1", true: "#93C5FD" }}
-                    thumbColor={driver.is_available ? "#2563EB" : "#F8FAFC"}
+                    trackColor={{ false: "#CBD5E1", true: "#E3CB95" }}
+                    thumbColor={driver.is_available ? "#17634F" : "#F8FAFC"}
                     accessibilityLabel={t(
                       "حالة توفر السائق",
                       "Driver availability",
@@ -405,7 +405,7 @@ export default function DriverProfileScreen() {
             ) : (
               <View style={styles.settingHeading}>
                 <View style={styles.iconTile}>
-                  <Ionicons name="car-outline" size={23} color="#2563EB" />
+                  <Ionicons name="car-outline" size={23} color="#17634F" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.settingTitle}>
@@ -443,7 +443,7 @@ export default function DriverProfileScreen() {
               </>
             )}
           </Pressable>
-          <Text style={styles.footer}>Raslo · UAE</Text>
+          <Text style={styles.footer}>{t("رسلو · الإمارات", "Raslo · UAE")}</Text>
         </>
       ) : null}
     </ScrollView>
@@ -462,7 +462,7 @@ function InfoRow({
   return (
     <View style={styles.infoRow}>
       <View style={styles.smallIcon}>
-        <Ionicons name={icon} size={20} color="#64748B" />
+        <Ionicons name={icon} size={20} color="#62726B" />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.infoLabel}>{label}</Text>
@@ -475,7 +475,7 @@ function InfoRow({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F5F7FB" },
+  root: { flex: 1, backgroundColor: "#F6F3EB" },
   content: { paddingBottom: 42 },
   hero: {
     paddingTop: 62,
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     marginTop: 30,
   },
-  heroSubtitle: { color: "#DBEAFE", fontSize: 14, marginTop: 8 },
+  heroSubtitle: { color: "#D9E5D6", fontSize: 14, marginTop: 8 },
   center: { padding: 36, gap: 14, alignItems: "center" },
   identityCard: {
     marginHorizontal: 18,
@@ -516,24 +516,24 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   avatar: {
     width: 78,
     height: 78,
     borderRadius: 39,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     alignItems: "center",
     justifyContent: "center",
   },
   name: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#0B1730",
+    color: "#123D35",
     marginTop: 14,
     textAlign: "center",
   },
-  email: { color: "#64748B", marginTop: 5, textAlign: "center" },
+  email: { color: "#62726B", marginTop: 5, textAlign: "center" },
   roleBadge: {
     marginTop: 13,
     paddingHorizontal: 12,
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 12,
     marginHorizontal: 22,
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 17,
     fontWeight: "800",
   },
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     gap: 12,
   },
   infoRow: {
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 4,
   },
-  divider: { height: 1, backgroundColor: "#E2E8F0", marginVertical: 5 },
+  divider: { height: 1, backgroundColor: "#DDDED2", marginVertical: 5 },
   availabilityRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -595,12 +595,12 @@ const styles = StyleSheet.create({
     width: 43,
     height: 43,
     borderRadius: 13,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     alignItems: "center",
     justifyContent: "center",
   },
-  settingTitle: { color: "#0B1730", fontSize: 15, fontWeight: "700" },
-  muted: { color: "#64748B", fontSize: 12, lineHeight: 19, marginTop: 4 },
+  settingTitle: { color: "#123D35", fontSize: 15, fontWeight: "700" },
+  muted: { color: "#62726B", fontSize: 12, lineHeight: 19, marginTop: 4 },
   languageRow: { flexDirection: "row", gap: 10, marginTop: 5 },
   languageButton: {
     flex: 1,
@@ -611,12 +611,12 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: "#F8FAFC",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     borderRadius: 12,
   },
-  languageActive: { backgroundColor: "#EFF6FF", borderColor: "#2563EB" },
-  languageText: { color: "#64748B", fontWeight: "700" },
-  languageActiveText: { color: "#2563EB" },
+  languageActive: { backgroundColor: "#EAF0E7", borderColor: "#17634F" },
+  languageText: { color: "#62726B", fontWeight: "700" },
+  languageActiveText: { color: "#17634F" },
   logoutButton: {
     marginHorizontal: 18,
     marginTop: 27,
@@ -629,8 +629,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   logoutText: { color: "#DC2626", fontWeight: "800", fontSize: 16 },
-  retryButton: { padding: 12, borderRadius: 10, backgroundColor: "#EFF6FF" },
-  retryText: { color: "#2563EB", fontWeight: "700" },
+  retryButton: { padding: 12, borderRadius: 10, backgroundColor: "#EAF0E7" },
+  retryText: { color: "#17634F", fontWeight: "700" },
   footer: {
     marginTop: 25,
     textAlign: "center",

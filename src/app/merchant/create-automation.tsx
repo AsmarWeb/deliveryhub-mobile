@@ -104,7 +104,7 @@ export default function CreateAutomationScreen() {
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={[s.content, { direction: isArabic ? "rtl" : "ltr" }]}>
       <AutomationHeader title={t("جدول توصيل جديد", "New delivery schedule")} />
       <Text style={s.body}>{t("ستُنشأ مسودة في كل موعد. لا يتم اعتماد السعر أو إسناد السائق تلقائياً.", "A draft is created at each occurrence. Price approval and driver assignment remain manual.")}</Text>
-      {loading ? <ActivityIndicator color="#2563EB" /> : addressError ? <View style={s.card}>
+      {loading ? <ActivityIndicator color="#17634F" /> : addressError ? <View style={s.card}>
         <Text style={s.error}>{t("تعذر تحميل العناوين.", "Unable to load addresses.")}</Text>
         <AutomationButton secondary onPress={() => { setLoading(true); setRetry(value => value + 1); }}>{t("إعادة المحاولة", "Retry")}</AutomationButton>
       </View> : addresses.length === 0 ? <View style={s.card}>

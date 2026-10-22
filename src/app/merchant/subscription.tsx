@@ -26,12 +26,12 @@ import {
 } from "../../services/billing";
 
 const C = {
-  bg: "#F5F7FB",
+  bg: "#F6F3EB",
   surface: "#FFFFFF",
-  text: "#0B1730",
-  muted: "#718096",
-  blue: "#2563EB",
-  border: "#E7ECF4",
+  text: "#123D35",
+  muted: "#66766C",
+  blue: "#17634F",
+  border: "#E1E1D5",
   green: "#059669",
 };
 

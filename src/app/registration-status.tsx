@@ -67,9 +67,9 @@ export default function RegistrationStatusScreen() {
     <SafeAreaView style={styles.root}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.brand}>Raslo</Text>
+          <Text style={styles.brand}>{t("رسلو", "Raslo")}</Text>
           <Pressable onPress={() => setLanguage(ar ? "en" : "ar")} style={styles.langButton} accessibilityRole="button">
-            <Ionicons name="language-outline" size={17} color="#2563EB" />
+            <Ionicons name="language-outline" size={17} color="#17634F" />
             <Text style={styles.langText}>{ar ? "EN" : "عربي"}</Text>
           </Pressable>
         </View>
@@ -77,7 +77,7 @@ export default function RegistrationStatusScreen() {
         <Text style={styles.subtitle}>{t("تابع مراجعة طلبك من هنا", "Track your application review here")}</Text>
         <View style={styles.card}>
           {loading ? (
-            <ActivityIndicator size="large" color="#2563EB" />
+            <ActivityIndicator size="large" color="#17634F" />
           ) : error ? (
             <>
               <Ionicons name="alert-circle-outline" size={62} color="#DC2626" />
@@ -118,11 +118,11 @@ export default function RegistrationStatusScreen() {
           ) : null}
         </View>
         <Pressable style={[styles.secondaryButton, refreshing && styles.disabled]} onPress={() => void load(false)} disabled={loading || refreshing} accessibilityRole="button">
-          {refreshing ? <ActivityIndicator color="#2563EB" /> : <Ionicons name="refresh-outline" size={19} color="#2563EB" />}
+          {refreshing ? <ActivityIndicator color="#17634F" /> : <Ionicons name="refresh-outline" size={19} color="#17634F" />}
           <Text style={styles.secondaryText}>{t("تحديث حالة الطلب", "Refresh status")}</Text>
         </Pressable>
         <Pressable style={styles.signoutButton} onPress={() => void signOut()} accessibilityRole="button">
-          <Ionicons name="log-out-outline" size={18} color="#64748B" />
+          <Ionicons name="log-out-outline" size={18} color="#62726B" />
           <Text style={styles.signoutText}>{t("تسجيل الخروج", "Sign out")}</Text>
         </Pressable>
       </ScrollView>
@@ -131,25 +131,25 @@ export default function RegistrationStatusScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#F5F7FB" },
+  root: { flex: 1, backgroundColor: "#F6F3EB" },
   container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 28, paddingBottom: 40 },
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 45 },
-  brand: { color: "#0B1730", fontSize: 22, fontWeight: "800" },
-  langButton: { flexDirection: "row", gap: 7, alignItems: "center", borderRadius: 20, backgroundColor: "#DBEAFE", paddingHorizontal: 14, paddingVertical: 9 },
-  langText: { color: "#2563EB", fontWeight: "700" },
-  title: { fontSize: 26, fontWeight: "800", color: "#0B1730", textAlign: "center" },
-  subtitle: { fontSize: 14, color: "#64748B", textAlign: "center", marginTop: 9, marginBottom: 28 },
-  card: { borderRadius: 25, backgroundColor: "white", borderWidth: 1, borderColor: "#E7ECF4", padding: 25, alignItems: "center", minHeight: 280, justifyContent: "center" },
+  brand: { color: "#123D35", fontSize: 22, fontWeight: "800" },
+  langButton: { flexDirection: "row", gap: 7, alignItems: "center", borderRadius: 20, backgroundColor: "#D9E5D6", paddingHorizontal: 14, paddingVertical: 9 },
+  langText: { color: "#17634F", fontWeight: "700" },
+  title: { fontSize: 26, fontWeight: "800", color: "#123D35", textAlign: "center" },
+  subtitle: { fontSize: 14, color: "#62726B", textAlign: "center", marginTop: 9, marginBottom: 28 },
+  card: { borderRadius: 25, backgroundColor: "white", borderWidth: 1, borderColor: "#E1E1D5", padding: 25, alignItems: "center", minHeight: 280, justifyContent: "center" },
   status: { fontSize: 23, fontWeight: "800", marginTop: 15, textAlign: "center" },
-  message: { fontSize: 14, color: "#64748B", textAlign: "center", lineHeight: 24, marginTop: 12, marginBottom: 15 },
+  message: { fontSize: 14, color: "#62726B", textAlign: "center", lineHeight: 24, marginTop: 12, marginBottom: 15 },
   detail: { width: "100%", flexDirection: "row", justifyContent: "space-between", gap: 12, borderTopWidth: 1, borderColor: "#F1F5F9", paddingVertical: 15 },
-  detailLabel: { color: "#64748B", fontSize: 13 },
-  detailValue: { color: "#0B1730", fontWeight: "700", flexShrink: 1 },
-  primaryButton: { width: "100%", backgroundColor: "#2563EB", paddingVertical: 17, borderRadius: 15, alignItems: "center", marginTop: 16 },
+  detailLabel: { color: "#62726B", fontSize: 13 },
+  detailValue: { color: "#123D35", fontWeight: "700", flexShrink: 1 },
+  primaryButton: { width: "100%", backgroundColor: "#17634F", paddingVertical: 17, borderRadius: 15, alignItems: "center", marginTop: 16 },
   primaryText: { color: "white", fontWeight: "800", fontSize: 15 },
-  secondaryButton: { flexDirection: "row", gap: 9, alignItems: "center", justifyContent: "center", borderRadius: 15, backgroundColor: "#DBEAFE", paddingVertical: 16, marginTop: 20 },
-  secondaryText: { color: "#2563EB", fontWeight: "700" },
+  secondaryButton: { flexDirection: "row", gap: 9, alignItems: "center", justifyContent: "center", borderRadius: 15, backgroundColor: "#D9E5D6", paddingVertical: 16, marginTop: 20 },
+  secondaryText: { color: "#17634F", fontWeight: "700" },
   disabled: { opacity: 0.6 },
   signoutButton: { flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", marginTop: 24, padding: 12 },
-  signoutText: { color: "#64748B", fontWeight: "600" },
+  signoutText: { color: "#62726B", fontWeight: "600" },
 });

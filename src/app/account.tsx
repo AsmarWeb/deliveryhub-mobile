@@ -61,10 +61,10 @@ export default function AccountScreen() {
     finally { lock.current = false; if (mounted.current) setBusy(false); }
   };
   return <ScrollView style={s.root} keyboardShouldPersistTaps="handled" contentContainerStyle={[s.body, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 30 }]}>
-    <Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} style={s.back} disabled={busy} onPress={() => router.canGoBack() ? router.back() : router.replace("/registration-status")}><Ionicons name={ar ? "arrow-forward" : "arrow-back"} size={24} color="#0B1730" /></Pressable>
+    <Pressable accessibilityRole="button" accessibilityLabel={t("رجوع", "Back")} style={s.back} disabled={busy} onPress={() => router.canGoBack() ? router.back() : router.replace("/registration-status")}><Ionicons name={ar ? "arrow-forward" : "arrow-back"} size={24} color="#123D35" /></Pressable>
     <Text style={[s.title, align]}>{t("بيانات حسابك", "Your account details")}</Text>
     <Text style={[s.subtitle, align]}>{t("أكمل بياناتك هنا. اكتمال البيانات لا يعني تفعيل الحساب؛ الطلب يخضع لمراجعة الإدارة.", "Complete your details here. Completing your profile does not activate service access; approval is required.")}</Text>
-    {loading && <ActivityIndicator color="#2563EB" />}
+    {loading && <ActivityIndicator color="#17634F" />}
     {error && <Text accessibilityRole="alert" style={[s.error, align]}>{error}</Text>}
     {saved && <Text accessibilityRole="alert" style={[s.success, align]}>{t("تم حفظ البيانات.", "Details saved.")}</Text>}
     {account && !loading && <>
@@ -83,4 +83,4 @@ export default function AccountScreen() {
     </>}
   </ScrollView>;
 }
-const s = StyleSheet.create({ root: { flex: 1, backgroundColor: "#F5F7FB" }, body: { width: "100%", maxWidth: 600, alignSelf: "center", paddingHorizontal: 22, gap: 16 }, back: { minHeight: 44, minWidth: 44, justifyContent: "center" }, title: { color: "#0B1730", fontWeight: "800", fontSize: 27 }, subtitle: { color: "#475569", lineHeight: 23 }, card: { backgroundColor: "white", padding: 20, borderRadius: 20, borderWidth: 1, borderColor: "#E2E8F0", gap: 18 }, field: { gap: 8 }, label: { color: "#334155", fontWeight: "700" }, input: { borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, padding: 13, minHeight: 50, fontSize: 16, color: "#0B1730" }, disabled: { opacity: 0.55 }, notice: { backgroundColor: "#DBEAFE", padding: 18, borderRadius: 16, gap: 8 }, error: { color: "#B91C1C", lineHeight: 23 }, success: { color: "#047857" }, button: { minHeight: 52, backgroundColor: "#2563EB", justifyContent: "center", alignItems: "center", borderRadius: 14 }, buttonText: { color: "white", fontWeight: "800", fontSize: 16 } });
+const s = StyleSheet.create({ root: { flex: 1, backgroundColor: "#F6F3EB" }, body: { width: "100%", maxWidth: 600, alignSelf: "center", paddingHorizontal: 22, gap: 16 }, back: { minHeight: 44, minWidth: 44, justifyContent: "center" }, title: { color: "#123D35", fontWeight: "800", fontSize: 27 }, subtitle: { color: "#475569", lineHeight: 23 }, card: { backgroundColor: "white", padding: 20, borderRadius: 20, borderWidth: 1, borderColor: "#DDDED2", gap: 18 }, field: { gap: 8 }, label: { color: "#334155", fontWeight: "700" }, input: { borderWidth: 1, borderColor: "#CBD5E1", borderRadius: 12, padding: 13, minHeight: 50, fontSize: 16, color: "#123D35" }, disabled: { opacity: 0.55 }, notice: { backgroundColor: "#D9E5D6", padding: 18, borderRadius: 16, gap: 8 }, error: { color: "#B91C1C", lineHeight: 23 }, success: { color: "#047857" }, button: { minHeight: 52, backgroundColor: "#17634F", justifyContent: "center", alignItems: "center", borderRadius: 14 }, buttonText: { color: "white", fontWeight: "800", fontSize: 16 } });

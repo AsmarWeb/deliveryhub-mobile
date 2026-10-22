@@ -1,3 +1,4 @@
+import Brand from "../../../components/Brand";
 import { getDriverAssignments } from "../../../services/driver";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -161,7 +162,7 @@ export default function DriverHomeScreen() {
       Alert.alert(
         t("تم تحديث الموقع", "Location updated"),
         t(
-          "تم إرسال موقعك إلى Raslo بنجاح.",
+          "تم إرسال موقعك إلى رسلو بنجاح.",
           "Your location was sent to Raslo.",
         ),
       );
@@ -199,7 +200,7 @@ export default function DriverHomeScreen() {
     {
       label: t("الطلبات", "Orders"),
       icon: "cube-outline",
-      color: "#2563EB",
+      color: "#17634F",
       route: "/driver/orders",
     },
     {
@@ -234,13 +235,12 @@ export default function DriverHomeScreen() {
       contentContainerStyle={styles.content}
     >
       <LinearGradient
-        colors={["#0B1730", "#183A72", "#2563EB"]}
+        colors={["#123D35", "#205545", "#17634F"]}
         style={styles.hero}
       >
         <View style={styles.topRow}>
           <View style={styles.brandRow}>
-            <Ionicons name="cube" size={24} color="#FFFFFF" />
-            <Text style={styles.brand}>Raslo</Text>
+            <Brand arabic={language === "ar"} inverse compact />
           </View>
 
           <Pressable
@@ -297,7 +297,7 @@ export default function DriverHomeScreen() {
               (driver.status !== "active" && !driver.is_available)
             }
             onValueChange={(value) => void toggleAvailability(value)}
-            trackColor={{ false: "#64748B", true: "#34D399" }}
+            trackColor={{ false: "#62726B", true: "#34D399" }}
             thumbColor="#FFFFFF"
           />
         </View>
@@ -308,12 +308,12 @@ export default function DriverHomeScreen() {
           <Text style={styles.sectionTitle}>{t("نظرة عامة", "Overview")}</Text>
 
           <Pressable onPress={() => void load(true)}>
-            <Ionicons name="refresh-outline" size={22} color="#2563EB" />
+            <Ionicons name="refresh-outline" size={22} color="#17634F" />
           </Pressable>
         </View>
 
         {loading && !stats ? (
-          <ActivityIndicator size="large" color="#2563EB" />
+          <ActivityIndicator size="large" color="#17634F" />
         ) : (
           <View style={styles.statsGrid}>
             <StatCard
@@ -326,7 +326,7 @@ export default function DriverHomeScreen() {
               label={t("مهام مقبولة", "Accepted tasks")}
               value={stats?.accepted_assignments}
               icon="bicycle-outline"
-              color="#2563EB"
+              color="#17634F"
             />
             <StatCard
               label={t("توصيلات مكتملة", "Completed")}
@@ -423,12 +423,12 @@ export default function DriverHomeScreen() {
           <Ionicons
             name="information-circle-outline"
             size={22}
-            color="#2563EB"
+            color="#17634F"
           />
 
           <Text style={styles.noticeText}>
             {t(
-              "اسحب الصفحة للأسفل لتحديث بيانات مهامك. يتم جلب الإحصاءات مباشرة من Raslo.",
+              "اسحب الصفحة للأسفل لتحديث بيانات مهامك. يتم جلب الإحصاءات مباشرة من رسلو.",
               "Pull down to refresh your assignments. Statistics are loaded directly from Raslo.",
             )}
           </Text>
@@ -465,7 +465,7 @@ function StatCard({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FB",
+    backgroundColor: "#F6F3EB",
   },
   content: {
     paddingBottom: 36,
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   welcome: {
-    color: "#BFDBFE",
+    color: "#E3CB95",
     fontSize: 16,
     marginTop: 34,
   },
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     marginTop: 9,
   },
   heroSubtitle: {
-    color: "#DBEAFE",
+    color: "#D9E5D6",
     fontSize: 14,
     lineHeight: 23,
     marginTop: 10,
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   sectionTitle: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 18,
     fontWeight: "800",
   },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
   },
   statIcon: {
     width: 44,
@@ -577,13 +577,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   statValue: {
-    color: "#0B1730",
+    color: "#123D35",
     fontSize: 27,
     fontWeight: "800",
     marginTop: 14,
   },
   statLabel: {
-    color: "#64748B",
+    color: "#62726B",
     fontSize: 12,
     marginTop: 5,
   },
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 17,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#DDDED2",
     gap: 14,
   },
   actionIcon: {
@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   locationTestButton: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#17634F",
     padding: 17,
     borderRadius: 15,
     flexDirection: "row",
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 12,
     padding: 17,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#EAF0E7",
     borderRadius: 16,
   },
   noticeText: {
