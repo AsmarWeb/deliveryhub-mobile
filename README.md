@@ -19,7 +19,7 @@ This is an application under active development. Real Android push has been test
 ## Development
 
 ```bash
-git clone https://github.com/AsmarWeb/deliveryhub-mobile.git raslo-mobile
+git clone https://github.com/AsmarWeb/raslo-mobile.git raslo-mobile
 cd raslo-mobile
 npm ci
 ```
@@ -55,18 +55,18 @@ The existing installation retains its EAS project ID, project slug, application 
 
 - Validate the full merchant-to-driver delivery journey.
 - Improve quote, booking, tracking, and failure recovery experiences.
-- Add store connection management once the backend integration API exists.
+- Extend mobile store setup beyond connection status and sync; web setup already supports the integration API.
 - Prepare production builds after operational validation.
 
 Enterprise product discovery and integration status are implemented against the backend catalog API. Native store adapters, in-app shopping checkout, and checkout delivery quotes remain separate future work.
 
 ## Project links
 
-- [Backend](https://github.com/AsmarWeb/deliveryhub)
-- [Mobile source](https://github.com/AsmarWeb/deliveryhub-mobile)
+- [Backend](https://github.com/AsmarWeb/raslo)
+- [Mobile source](https://github.com/AsmarWeb/raslo-mobile)
 - [Rename guide](docs/raslo-rebrand.md)
 
-The GitHub repositories currently retain their original URLs. See the rename guide before changing repository or Expo identifiers.
+GitHub repositories use Raslo names. Expo project and native identifiers remain unchanged for compatibility.
 
 
 ## Raslo / رسلو visual identity
@@ -76,3 +76,7 @@ The UAE visual refresh uses an emerald, ivory and gold palette, bilingual wordma
 ## Driver document onboarding
 
 Private document upload and review status are available under My account → My documents. Merchant integrations are grouped inside the account menu. See [the setup and device checks](docs/driver-documents.md). A new development build is required.
+
+## Continuous integration
+
+GitHub Actions runs `npm ci --include=dev`, TypeScript, lint and unit tests for main pushes and pull requests. Project `.npmrc` is required to reproduce the lockfile dependency strategy. These checks do not build/sign Android or iOS or verify device behavior. EAS currently defines development and internal preview profiles only.
